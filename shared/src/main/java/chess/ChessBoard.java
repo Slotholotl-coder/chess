@@ -8,8 +8,21 @@ package chess;
  */
 public class ChessBoard {
 
+    int xValue;
+    int yValue;
+
+    ChessPiece[][] coordinates;
+    //int[] yCoordinate;
+
+    ChessPiece[] boardGrid;
+
     public ChessBoard() {
-        
+        this.xValue = 1;
+        this.yValue = 1;
+        //this.xCoordinate = new int[8];
+        //this.yCoordinate = new int[8];
+        this.coordinates = new int[8][8];
+        }
     }
 
     /**
@@ -19,7 +32,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        throw new RuntimeException("Not implemented");
+        coordinates[position.getRow()][position.getCol()] = piece;
     }
 
     /**
@@ -30,7 +43,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        throw new RuntimeException("Not implemented");
+        return coordinates[position.getRow(), position.getCol()];
     }
 
     /**
@@ -38,6 +51,15 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        //Clear board
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                coordinates[x][y] = null;
+            }
+        }
+        //Set Pawns
+        for (int i = 0; i < 8; i++) {
+            coordinates[2][i] = new ChessPiece(ChessGame.TeamColor.White, ChessPiece.PieceType.Pawn);
+            coordinates[7][i] = new ChessPiece(ChessGame.TeamColor.Black, ChessPiece.PieceType.Pawn);
     }
 }
