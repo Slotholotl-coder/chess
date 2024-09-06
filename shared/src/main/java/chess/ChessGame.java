@@ -50,11 +50,11 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        if (chessBoard.coordinates[startPosition.getRow()][startPosition.getCol()] == null){
+        if (chessBoard.coordinates[startPosition.getRow()][startPosition.getColumn()] == null){
             return null;
         }
         else {
-            return chessBoard.coordinates[startPosition.getRow()][startPosition.getCol()].pieceMoves(chessBoard, startPosition);
+            return chessBoard.coordinates[startPosition.getRow()][startPosition.getColumn()].pieceMoves(chessBoard, startPosition);
         }
     }
 

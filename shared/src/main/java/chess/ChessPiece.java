@@ -54,8 +54,103 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> moves = new ArrayList<ChessMove>();
-        case pieceType = PieceType.KING:
+        switch (pieceType) {
+            case KING:
+                kingMoves(moves, board, myPosition);
+                break;
+            case QUEEN:
+                bishopMoves(moves, board, myPosition);
+                rookMoves(moves, board, myPosition);
+                break;
+            case BISHOP:
+                break;
+            case KNIGHT:
+                knightMoves(moves, board, myPosition);
+                break;
+            case ROOK:
+                rookMoves(moves, board, myPosition);
+                break;
+            case PAWN:
+                pawnMoves(moves, board, myPosition);
+                break;
+        }
+        return moves;
+    }
 
-            return moves;
+    private void kingMoves(Collection<ChessMove> moves, ChessBoard board, ChessPosition myPosition) {
+        //                  Right   up     left    down   rightUp rightDwn leftUp leftDown
+        int[][] kingMoves = {{1,0},{0,1}, {-1,0}, {0,-1}, {1,1}, {1,-1}, {-1,1}, {-1,-1}};
+        for (int[] move : kingMoves) {
+            if (myPosition.getRow() + move[0] < 8 && myPosition.getColumn() + move[1] < 8) {
+                ChessPosition newPosition = new ChessPosition(myPosition.getRow() + move[0], myPosition.getColumn() + move[1]);
+                moves.add(new ChessMove(myPosition, newPosition, null));
+            }
+        }
+    }
+
+    private  void pawnMoves(Collection<ChessMove> moves, ChessBoard board, ChessPosition myPosition) {
+        if(myPosition.getColumn() + 1 < 8) {
+            ChessPosition forwardMove = new ChessPosition(myPosition.getRow(), myPosition.getColumn() + 1);
+            moves.add(new ChessMove(myPosition, forwardMove, null));
+        }
+    }
+
+    private  void knightMoves(Collection<ChessMove> moves, ChessBoard board, ChessPosition myPosition) {
+        //                      Right           Left            up              down
+        int[][] knightMoves = {{2,1}, {2,-1}, {-2,1}, {-2,-1}, {1,2},{-1,2}, {1,-2}, {-1,-2}};
+        for (int[] move : knightMoves) {
+            if(myPosition.getRow() + move[0] < 8 && myPosition.getColumn() + move[1] < 8) {
+                ChessPosition newPosition = new ChessPosition(myPosition.getRow() + move[0], myPosition.getColumn() + move[1]);
+                moves.add(new ChessMove(myPosition, newPosition, null));
+            }
+        }
+    }
+
+    private  void  rookMoves(Collection<ChessMove> moves, ChessBoard board, ChessPosition myPosition) {
+        int[] xMoves = new int[8];
+        int[] yMoves = new int[8];
+        //Positve x
+        for (int i = 0; i < 8; i++) {
+            if (myPosition.getRow() + i < 8) {
+                ChessPosition newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn());
+                moves.add(new ChessMove(myPosition, newPosition, null));
+            }
+        }
+        //Negative x
+        for (int i = 0; i > -8; i--) {
+            if (myPosition.getRow() + i > 8) {
+                ChessPosition newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn());
+                moves.add(new ChessMove(myPosition, newPosition, null));
+            }
+        }
+        //Positive y
+        for (int i = 0; i < 8; i++) {
+            if (myPosition.getColumn() + i < 8) {
+                ChessPosition newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn());
+                moves.add(new ChessMove(myPosition, newPosition, null));
+            }
+        }
+        //Negative y
+        for (int i = 0; i > -8; i--) {
+            if (myPosition.getRow() + i > 8) {
+                ChessPosition newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn());
+                moves.add(new ChessMove(myPosition, newPosition, null));
+            }
+        }
+    }
+
+    private  void bishopMoves(Collection<ChessMove> moves, ChessBoard board, ChessPosition myPosition) {
+        for (int i = 0; i < 8; i++) {
+            if (myPosition.getRow() + i < 8 && myPosition.getColumn() + i < 8) {
+                ChessPosition newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + i);
+                moves.add(new ChessMove(myPosition, newPosition, null));
+            }
+        }
+        for (int i = 0; i > -8; i--) {
+            if (myPosition.getRow() + i > 8 && myPosition.getColumn() + i < 8) {
+                ChessPosition newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + i);
+                moves.add(new ChessMove(myPosition, newPosition, null));
+            }
+        }
     }
 }

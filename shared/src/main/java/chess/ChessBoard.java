@@ -22,7 +22,6 @@ public class ChessBoard {
         //this.xCoordinate = new int[8];
         //this.yCoordinate = new int[8];
         this.coordinates = new ChessPiece[8][8];
-        }
     }
 
     /**
@@ -32,7 +31,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        coordinates[position.getRow()][position.getCol()] = piece;
+        coordinates[position.getRow()][position.getColumn()] = piece;
     }
 
     /**
@@ -43,7 +42,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return coordinates[position.getRow()][position.getCol()];
+        return coordinates[position.getRow()][position.getColumn()];
     }
 
     /**
@@ -59,7 +58,8 @@ public class ChessBoard {
         }
         //Set Pawns
         for (int i = 0; i < 8; i++) {
-            coordinates[2][i] = new ChessPiece(ChessGame.TeamColor.White, ChessPiece.PieceType.Pawn);
-            coordinates[7][i] = new ChessPiece(ChessGame.TeamColor.Black, ChessPiece.PieceType.Pawn);
+            coordinates[2][i] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+            coordinates[7][i] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+        }
     }
 }
