@@ -15,6 +15,7 @@ public class ChessGame {
 
     public ChessGame() {
         this.teamColorTurn = TeamColor.WHITE;
+        this.chessBoard = new ChessBoard();
     }
 
     /**
@@ -49,11 +50,11 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        if (chessBoard.coordinates[ChessPosition.getRow()][ChessPosition.getCol()] == null){
+        if (chessBoard.coordinates[startPosition.getRow()][startPosition.getCol()] == null){
             return null;
         }
         else {
-            chessBoard.coordinates[ChessPosition.getRow()][ChessPosition.getCol()].pieceMoves(chessBoard, startPosition);
+            return chessBoard.coordinates[startPosition.getRow()][startPosition.getCol()].pieceMoves(chessBoard, startPosition);
         }
     }
 

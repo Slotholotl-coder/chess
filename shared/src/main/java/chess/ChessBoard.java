@@ -21,7 +21,7 @@ public class ChessBoard {
         this.yValue = 1;
         //this.xCoordinate = new int[8];
         //this.yCoordinate = new int[8];
-        this.coordinates = new int[8][8];
+        this.coordinates = new ChessPiece[8][8];
         }
     }
 
@@ -43,7 +43,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return coordinates[position.getRow(), position.getCol()];
+        return coordinates[position.getRow()][position.getCol()];
     }
 
     /**

@@ -40,8 +40,4 @@ public class ChessPosition {
             currentChessPiece = chessPiece;
         else currentChessPiece = null;
     }
-
-    public void getCurrentChessPiece(){
-        return currentChessPiece;
-    }
 }
