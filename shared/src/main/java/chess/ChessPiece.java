@@ -21,6 +21,7 @@ public class ChessPiece {
         this.pieceColor = pieceColor;
         pieceType = type;
         this.directionInt = 0;
+
     }
 
     /**
