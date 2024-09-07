@@ -110,6 +110,12 @@ public class ChessPiece {
             ChessPosition forwardMove = new ChessPosition(myPosition.getRow(), myPosition.getColumn() + 1);
             moves.add(new ChessMove(myPosition, forwardMove, null));
         }
+        if(board.getPiece(new ChessPosition(myPosition.getRow()+1, myPosition.getColumn() + 1)) != null && !isBlocked(board, myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1))) {
+            moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1), null));
+        }
+        if(board.getPiece(new ChessPosition(myPosition.getRow()-1, myPosition.getColumn() - 1)) != null && !isBlocked(board, myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 1))) {
+            moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() - 1), null));
+        }
     }
 
     private  void knightMoves(Collection<ChessMove> moves, ChessBoard board, ChessPosition myPosition) {
