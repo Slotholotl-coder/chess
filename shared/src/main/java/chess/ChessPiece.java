@@ -77,11 +77,28 @@ public class ChessPiece {
         return moves;
     }
 
+    private boolean isBlocked(ChessBoard chessBoard, ChessPosition myPosition, ChessPosition moveToPosition) {
+        boolean spotTaken = chessBoard.getPiece(moveToPosition) != null;
+        if (spotTaken) {
+            if (canCapture(chessBoard, moveToPosition, myPosition)) {
+                return false;
+            }
+            else
+                return true;
+        }
+        else
+            return spotTaken;
+    }
+
+    private boolean canCapture(ChessBoard board, ChessPosition moveToPosition, ChessPosition myPosition) {
+        return board.getPiece(myPosition).getTeamColor() != board.getPiece(moveToPosition).getTeamColor();
+    }
+
     private void kingMoves(Collection<ChessMove> moves, ChessBoard board, ChessPosition myPosition) {
         //                  Right   up     left    down   rightUp rightDwn leftUp leftDown
         int[][] kingMoves = {{1,0},{0,1}, {-1,0}, {0,-1}, {1,1}, {1,-1}, {-1,1}, {-1,-1}};
         for (int[] move : kingMoves) {
-            if (myPosition.getRow() + move[0] < 8 && myPosition.getColumn() + move[1] < 8) {
+            if (myPosition.getRow() + move[0] < 8 && myPosition.getColumn() + move[1] < 8 && !isBlocked(board, myPosition, new ChessPosition(move[0],move[1]))) {
                 ChessPosition newPosition = new ChessPosition(myPosition.getRow() + move[0], myPosition.getColumn() + move[1]);
                 moves.add(new ChessMove(myPosition, newPosition, null));
             }
@@ -89,7 +106,7 @@ public class ChessPiece {
     }
 
     private  void pawnMoves(Collection<ChessMove> moves, ChessBoard board, ChessPosition myPosition) {
-        if(myPosition.getColumn() + 1 < 8) {
+        if(myPosition.getColumn() + 1 < 8 && !isBlocked(board, myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn() + 1))) {
             ChessPosition forwardMove = new ChessPosition(myPosition.getRow(), myPosition.getColumn() + 1);
             moves.add(new ChessMove(myPosition, forwardMove, null));
         }
@@ -99,7 +116,7 @@ public class ChessPiece {
         //                      Right           Left            up              down
         int[][] knightMoves = {{2,1}, {2,-1}, {-2,1}, {-2,-1}, {1,2},{-1,2}, {1,-2}, {-1,-2}};
         for (int[] move : knightMoves) {
-            if(myPosition.getRow() + move[0] < 8 && myPosition.getColumn() + move[1] < 8) {
+            if(myPosition.getRow() + move[0] < 8 && myPosition.getColumn() + move[1] < 8 && !isBlocked(board, myPosition, new ChessPosition(move[0],move[1]))) {
                 ChessPosition newPosition = new ChessPosition(myPosition.getRow() + move[0], myPosition.getColumn() + move[1]);
                 moves.add(new ChessMove(myPosition, newPosition, null));
             }
@@ -111,28 +128,28 @@ public class ChessPiece {
         int[] yMoves = new int[8];
         //Positve x
         for (int i = 0; i < 8; i++) {
-            if (myPosition.getRow() + i < 8) {
+            if (myPosition.getRow() + i < 8 && !isBlocked(board, myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn()))) {
                 ChessPosition newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn());
                 moves.add(new ChessMove(myPosition, newPosition, null));
             }
         }
         //Negative x
         for (int i = 0; i > -8; i--) {
-            if (myPosition.getRow() + i > 8) {
+            if (myPosition.getRow() + i > 8 && !isBlocked(board, myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn()))) {
                 ChessPosition newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn());
                 moves.add(new ChessMove(myPosition, newPosition, null));
             }
         }
         //Positive y
         for (int i = 0; i < 8; i++) {
-            if (myPosition.getColumn() + i < 8) {
+            if (myPosition.getColumn() + i < 8 && !isBlocked(board, myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn() + i))) {
                 ChessPosition newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn());
                 moves.add(new ChessMove(myPosition, newPosition, null));
             }
         }
         //Negative y
         for (int i = 0; i > -8; i--) {
-            if (myPosition.getRow() + i > 8) {
+            if (myPosition.getRow() + i > 8 && !isBlocked(board, myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn() + 1))) {
                 ChessPosition newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn());
                 moves.add(new ChessMove(myPosition, newPosition, null));
             }
@@ -141,13 +158,13 @@ public class ChessPiece {
 
     private  void bishopMoves(Collection<ChessMove> moves, ChessBoard board, ChessPosition myPosition) {
         for (int i = 0; i < 8; i++) {
-            if (myPosition.getRow() + i < 8 && myPosition.getColumn() + i < 8) {
+            if (myPosition.getRow() + i < 8 && myPosition.getColumn() + i < 8 && !isBlocked(board, myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + i))) {
                 ChessPosition newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + i);
                 moves.add(new ChessMove(myPosition, newPosition, null));
             }
         }
         for (int i = 0; i > -8; i--) {
-            if (myPosition.getRow() + i > 8 && myPosition.getColumn() + i < 8) {
+            if (myPosition.getRow() + i > 8 && myPosition.getColumn() + i < 8 && !isBlocked(board, myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + i))) {
                 ChessPosition newPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + i);
                 moves.add(new ChessMove(myPosition, newPosition, null));
             }
