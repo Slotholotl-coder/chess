@@ -29,7 +29,11 @@ public class ChessPiece {
         this.pieceColor = pieceColor;
         pieceType = type;
         this.directionInt = 0;
+<<<<<<< HEAD
 >>>>>>> 77252ce (6)
+=======
+
+>>>>>>> 106c8cf (6)
     }
 
     /**
