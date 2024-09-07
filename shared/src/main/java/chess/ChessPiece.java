@@ -30,10 +30,13 @@ public class ChessPiece {
         pieceType = type;
         this.directionInt = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 77252ce (6)
 =======
 
 >>>>>>> 106c8cf (6)
+=======
+>>>>>>> 7295645 (6)
     }
 
     /**
