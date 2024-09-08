@@ -2,6 +2,8 @@ package chess;
 
 import java.util.Objects;
 
+//9/7
+
 /**
  * Represents a single square position on a chess board
  * <p>

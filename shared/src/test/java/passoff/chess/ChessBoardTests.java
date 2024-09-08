@@ -65,6 +65,15 @@ public class ChessBoardTests {
                 }
             }
         }
+        for(int x = 7; x >= 0; x--) {
+            for(int y = 7; y >= 0; y--) {
+                if(board.getCoordinates()[x][y] != null) {
+                    System.out.print(board.getCoordinates()[x][y].getPieceType() + ((board.getCoordinates()[x][y].getTeamColor() == ChessGame.TeamColor.WHITE) ? "W " : "B ") + x +y);
+                }
+                else System.out.print("  |  " +x+y);
+            }
+            System.out.println();
+        }
     }
 
 }

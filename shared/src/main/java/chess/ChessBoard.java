@@ -11,6 +11,7 @@ import java.util.Objects;
  */
 public class ChessBoard {
 
+    //9/7
 
     ChessPiece[][] coordinates;
     //int[] yCoordinate;
@@ -32,6 +33,10 @@ public class ChessBoard {
         coordinates[position.getRow()][position.getColumn()] = piece;
     }
 
+    public ChessPiece[][] getCoordinates(){
+        return coordinates;
+    }
+
     /**
      * Gets a chess piece on the chessboard
      *
@@ -40,7 +45,17 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
+        if (position.getRow() > 8 || position.getRow() < 0 || position.getColumn() > 8 || position.getColumn() < 0){
+            throw new IndexOutOfBoundsException("getPiece() needs a position within the game board");
+        }else
         return coordinates[position.getRow()][position.getColumn()];
+    }
+
+    private int height(int index){
+        return index - 1;
+    }
+    private int width(int index){
+        return index-1;
     }
 
     /**
@@ -55,27 +70,28 @@ public class ChessBoard {
             }
         }
         //Set Pawns
-        for (int i = 0; i < 8; i++) {
-            coordinates[i][1] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
-            coordinates[i][6] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+        for (int i = 1; i <= 8; i++) {
+            coordinates[height(2)][width(i)] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+            coordinates[height(7)][width(i)] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
         }
-        coordinates[0][0] = coordinates[7][0] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
-        coordinates[0][7] = coordinates[7][7] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
-        coordinates[1][0] = coordinates[6][0] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
-        coordinates[1][7] = coordinates[6][7] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
-        coordinates[2][0] = coordinates[5][0] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
-        coordinates[2][7] = coordinates[5][7] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
-        coordinates[3][0] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
-        coordinates[3][7] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
-        coordinates[4][0] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
-        coordinates[4][7] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
+          coordinates[height(1)][width(1)] = coordinates[height(1)][width(8)] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
+          coordinates[height(8)][width(1)] = coordinates[height(8)][width(8)] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
+          coordinates[height(1)][width(2)] = coordinates[height(1)][width(7)] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
+          coordinates[height(8)][width(2)] = coordinates[height(8)][width(7)] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
+          coordinates[height(1)][width(3)] = coordinates[height(1)][width(6)] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
+          coordinates[height(8)][width(3)] = coordinates[height(8)][width(6)] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
 
-        for(int x = 0; x < 8; x++) {
+          coordinates[height(1)][width(4)] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
+          coordinates[height(8)][width(4)] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
+          coordinates[height(1)][width(5)] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
+          coordinates[height(8)][width(5)] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
+
+        for(int x = 7; x >= 0; x--) {
             for(int y = 0; y < 8; y++) {
-                if(coordinates[y][x] != null) {
-                    System.out.print(coordinates[y][x].getPieceType() + ((coordinates[y][x].getTeamColor() == ChessGame.TeamColor.WHITE) ? "W " : "B "));
+                if(coordinates[x][y] != null) {
+                    System.out.print(coordinates[x][y].getPieceType() + ((coordinates[x][y].getTeamColor() == ChessGame.TeamColor.WHITE) ? "W " : "B ") + x +y);
                 }
-                else System.out.print("  |  ");
+                else System.out.print("  |  " +x+y);
             }
             System.out.println();
         }

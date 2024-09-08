@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
+//9/7
+
 /**
  * Represents a single chess piece
  * <p>
@@ -17,10 +19,13 @@ public class ChessPiece {
 
     int directionInt;
 
+    ChessBoard chessBoard;
+
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         pieceType = type;
         this.directionInt = 0;
+        this.chessBoard = null;
     }
 
     /**
@@ -56,27 +61,28 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+    public Collection<ChessMove> pieceMoves(ChessBoard chessBoard, ChessPosition myPosition) {
         Collection<ChessMove> moves = new ArrayList<ChessMove>();
+        chessBoard = chessBoard;
         switch (pieceType) {
             case KING:
-                kingMoves(moves, board, myPosition);
+                kingMoves(moves, chessBoard, myPosition);
                 break;
             case QUEEN:
-                bishopMoves(moves, board, myPosition);
-                rookMoves(moves, board, myPosition);
+                bishopMoves(moves, chessBoard, myPosition);
+                rookMoves(moves, chessBoard, myPosition);
                 break;
             case BISHOP:
-                bishopMoves(moves, board, myPosition);
+                bishopMoves(moves, chessBoard, myPosition);
                 break;
             case KNIGHT:
-                knightMoves(moves, board, myPosition);
+                knightMoves(moves, chessBoard, myPosition);
                 break;
             case ROOK:
-                rookMoves(moves, board, myPosition);
+                rookMoves(moves, chessBoard, myPosition);
                 break;
             case PAWN:
-                pawnMoves(moves, board, myPosition);
+                pawnMoves(moves, chessBoard, myPosition);
                 break;
         }
         return moves;
@@ -149,8 +155,8 @@ public class ChessPiece {
         //                   Rightup  Rightdwn Leftup  Leftdwn Upright upleft Dwnright  downleft
         int[][] knightMoves = {{2,1}, {2,-1}, {-2,1}, {-2,-1}, {1,2},{-1,2}, {1,-2}, {-1,-2}};
         for (int[] move : knightMoves) {
-            if(myPosition.getRow() + move[0] < 8 && myPosition.getColumn() + move[1] < 8 && !isBlocked(chessBoard, myPosition, new ChessPosition(move[0],move[1]))) {
-                ChessPosition newPosition = new ChessPosition(myPosition.getRow() + move[0], myPosition.getColumn() + move[1]);
+            ChessPosition newPosition = new ChessPosition(myPosition.getRow() + move[0], myPosition.getColumn() + move[1]);
+            if(moveInBounds(newPosition) && !isBlocked(chessBoard, myPosition, newPosition)) {
                 moves.add(new ChessMove(myPosition, newPosition, null));
             }
         }
@@ -160,40 +166,47 @@ public class ChessPiece {
         switch (pieceColor){
             case WHITE:
                 directionInt = 1;
+
+                //Move up two for White first-move pawns
                 if(myPosition.getRow() == 2){
-                    if(moveInBounds(new ChessPosition(myPosition.getRow(), myPosition.getColumn() + 2))){
-                        moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn() + directionInt), null));
+                    ChessPosition moveToPosition = new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn());
+                    if(moveInBounds(moveToPosition) && !isBlocked(chessBoard, myPosition, moveToPosition)){
+                        moves.add(new ChessMove(myPosition, moveToPosition, null));
                     }
                 }
                 break;
             case BLACK:
                 directionInt = -1;
+
+                //Move down two for Black first move pawns
                 if(myPosition.getRow() == 7){
-                    if(moveInBounds(new ChessPosition(myPosition.getRow(), myPosition.getColumn() - 2))){
-                        moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn() + directionInt), null));
+                    ChessPosition moveToPosition = new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn());
+                    if(moveInBounds(moveToPosition) && !isBlocked(chessBoard, myPosition, moveToPosition)){
+                        moves.add(new ChessMove(myPosition, moveToPosition, null));
                     }
                 }
                 break;
         }
-        if(moveInBounds(new ChessPosition(myPosition.getRow(), myPosition.getColumn() + directionInt))){
-            moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), myPosition.getColumn() + directionInt), null));
+        ChessPosition forwardMove = new ChessPosition(myPosition.getRow() + directionInt, myPosition.getColumn());
+        if(moveInBounds(forwardMove) && !isBlocked(chessBoard, myPosition, forwardMove)){
+            moves.add(new ChessMove(myPosition, forwardMove, null));
         }
 
         //Capture moves
-        ChessPosition rightDiagonal = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + directionInt);
-        ChessPosition leftDiagonal = new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn() + directionInt);
+        ChessPosition rightDiagonal = new ChessPosition(myPosition.getRow() + directionInt, myPosition.getColumn() + 1);
+        ChessPosition leftDiagonal = new ChessPosition(myPosition.getRow() + directionInt, myPosition.getColumn() - 1);
 
-        if(moveInBounds(rightDiagonal) && canCapture(chessBoard, myPosition, rightDiagonal)){
+        if(moveInBounds(rightDiagonal) && !isBlocked(chessBoard, myPosition, rightDiagonal)){
             moves.add(new ChessMove(myPosition, rightDiagonal, null));
         }
-        if(moveInBounds(leftDiagonal) && canCapture(chessBoard, myPosition, leftDiagonal)){
+        if(moveInBounds(leftDiagonal) && !isBlocked(chessBoard, myPosition, leftDiagonal)){
             moves.add(new ChessMove(myPosition, leftDiagonal, null));
         }
     }
 
     private boolean moveInBounds(ChessPosition position){
-        boolean inXBounds = position.getRow() < 8 && position.getRow() > 1;
-        boolean inYBounds = position.getColumn() < 8 && position.getColumn() > 1;
+        boolean inXBounds = position.getRow() < 8 && position.getRow() >= 0;
+        boolean inYBounds = position.getColumn() < 8 && position.getColumn() >= 0;
         return inXBounds && inYBounds;
     }
     private boolean isBlocked(ChessBoard chessBoard, ChessPosition myPosition, ChessPosition moveToPosition) {
