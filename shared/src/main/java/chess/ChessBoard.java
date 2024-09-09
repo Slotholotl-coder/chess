@@ -30,7 +30,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        coordinates[position.getRow()][position.getColumn()] = piece;
+        coordinates[height(position.getRow())][height(position.getColumn())] = piece;
     }
 
     public ChessPiece[][] getCoordinates(){
@@ -45,16 +45,16 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        if (position.getRow() > 8 || position.getRow() < 0 || position.getColumn() > 8 || position.getColumn() < 0){
+        if (position.getRow() > 8 || position.getRow() < 1 || position.getColumn() > 8 || position.getColumn() < 1){
             throw new IndexOutOfBoundsException("getPiece() needs a position within the game board");
         }else
-        return coordinates[position.getRow()][position.getColumn()];
+            return coordinates[height(position.getRow())][width(position.getColumn())];
     }
 
-    private int height(int index){
+    public int height(int index){
         return index - 1;
     }
-    private int width(int index){
+    public int width(int index){
         return index-1;
     }
 
@@ -64,9 +64,9 @@ public class ChessBoard {
      */
     public void resetBoard() {
         //Clear board
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) {
-                coordinates[x][y] = null;
+        for (int x = 1; x <= 8; x++) {
+            for (int y = 1; y <= 8; y++) {
+                coordinates[height(x)][width(y)] = null;
             }
         }
         //Set Pawns
@@ -86,15 +86,15 @@ public class ChessBoard {
           coordinates[height(1)][width(5)] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
           coordinates[height(8)][width(5)] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
 
-        for(int x = 7; x >= 0; x--) {
-            for(int y = 0; y < 8; y++) {
-                if(coordinates[x][y] != null) {
-                    System.out.print(coordinates[x][y].getPieceType() + ((coordinates[x][y].getTeamColor() == ChessGame.TeamColor.WHITE) ? "W " : "B ") + x +y);
-                }
-                else System.out.print("  |  " +x+y);
-            }
-            System.out.println();
-        }
+//        for(int x = 7; x >= 0; x--) {
+//            for(int y = 0; y < 8; y++) {
+//                if(coordinates[x][y] != null) {
+//                    System.out.print(coordinates[x][y].getPieceType() + ((coordinates[x][y].getTeamColor() == ChessGame.TeamColor.WHITE) ? "W " : "B ") + x +y);
+//                }
+//                else System.out.print("  |  " +x+y);
+//            }
+//            System.out.println();
+//        }
     }
 
     @Override
