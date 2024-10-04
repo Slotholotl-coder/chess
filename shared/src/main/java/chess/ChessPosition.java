@@ -2,8 +2,6 @@ package chess;
 
 import java.util.Objects;
 
-//9/7
-
 /**
  * Represents a single square position on a chess board
  * <p>
@@ -12,15 +10,11 @@ import java.util.Objects;
  */
 public class ChessPosition {
 
-    int row;
-    int col;
-
-
+    int row, col;
 
     public ChessPosition(int row, int col) {
         this.row = row;
         this.col = col;
-
     }
 
     /**
@@ -28,8 +22,7 @@ public class ChessPosition {
      * 1 codes for the bottom row
      */
     public int getRow() {
-        return row;
-
+        return  row;
     }
 
     /**
@@ -52,4 +45,5 @@ public class ChessPosition {
     public int hashCode() {
         return Objects.hash(row, col);
     }
+
 }
