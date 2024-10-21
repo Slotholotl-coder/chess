@@ -14,6 +14,7 @@ public class ChessGame {
 
     TeamColor teamTurn;
     ChessBoard chessBoard;
+    int turnCount = 0;
 
     public ChessGame() {
         this.teamTurn = TeamColor.WHITE;
@@ -128,8 +129,24 @@ public class ChessGame {
     }
 
     private void testMakeMove(ChessBoard testChessBoard, ChessMove move){
+        boolean enPassant = false;
+        if(testChessBoard.getPiece(move.getStartPosition()).getPieceType() == ChessPiece.PieceType.PAWN){
+            if(move.getStartPosition().getRow() - move.getEndPosition().getRow() == 2){
+                testChessBoard.addPiece(new ChessPosition(move.getStartPosition().getRow() + 1, move.getStartPosition().getColumn()), chessBoard.getPiece(new ChessPosition(move.getStartPosition().getRow() + 1, move.getStartPosition().getColumn())));
+                enPassant = true;
+            }
+        }
         testChessBoard.addPiece(move.getEndPosition(), new ChessPiece(chessBoard.getPiece(move.getStartPosition()).getTeamColor(), move.getPromotionPiece() == null ? chessBoard.getPiece(move.getStartPosition()).getPieceType() : move.getPromotionPiece()));
         testChessBoard.addPiece(move.getStartPosition(), null);
+        if(enPassant)
+            removeTempPawn(new ChessPosition(move.getStartPosition().getRow() + 1, move.getStartPosition().getColumn()), turnCount);
+        turnCount++;
+    }
+
+    private void removeTempPawn(ChessPosition position, int previousTurnCount){
+        if (turnCount + 2 == previousTurnCount){
+            chessBoard.addPiece(position, null);
+        }
     }
 
     public boolean checkCheck(TeamColor teamColor, ChessBoard testChessBoard) {
