@@ -12,7 +12,7 @@ public class Server {
     private Gson gson = new Gson();
 
     public int run(int desiredPort) {
-        Spark.port(8080);
+        Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
 
@@ -28,5 +28,6 @@ public class Server {
 
     public void stop(){
         Spark.stop();
+        Spark.awaitStop();
     }
 }
