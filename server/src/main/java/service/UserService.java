@@ -25,4 +25,8 @@ public class UserService {
     private String generateAuthToken(){
         return UUID.randomUUID().toString();
     }
+
+    public void logout(String authToken) {
+
+    }
 }
