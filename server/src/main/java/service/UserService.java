@@ -27,6 +27,8 @@ public class UserService {
     }
 
     public void logout(String authToken) {
+        if (authToken == null || authToken.isEmpty())
+            throw new RuntimeException("unauthorized");
         String username = memoryAuthDAO.getAuthToken(authToken).getUsername();
         if (username == null || authToken.isEmpty())
             throw new RuntimeException("unauthorized");
