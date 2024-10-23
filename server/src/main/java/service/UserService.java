@@ -18,6 +18,10 @@ public class UserService {
         throw new RuntimeException("Unauthorized");
     }
 
+    public void register(UserData user){
+        userDAO.insertUser(user);
+    }
+
     private String generateAuthToken(){
         return UUID.randomUUID().toString();
     }
