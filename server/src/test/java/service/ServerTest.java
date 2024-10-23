@@ -2,6 +2,7 @@ package service;
 
 import model.AuthData;
 import model.UserData;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.Server;
@@ -9,10 +10,10 @@ import server.Server;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ServerTest {
-    private UserService userService;
+    private static UserService userService;
 
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    static void setUp() {
         userService = new UserService();
         userService.register(new UserData("testUser", "testPass", "test@example.com"));
     }

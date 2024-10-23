@@ -14,6 +14,7 @@ import spark.Spark;
 import java.io.Reader;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 
 public class Server {
@@ -34,7 +35,7 @@ public class Server {
                 UserData user = gson.fromJson(request.body(), UserData.class);
                 AuthData authData = userService.register(user);
                 response.status(200);
-                return "{ \"username\": \"" + user.getUsername() + "\", \"authToken\": \"" + authData.getAuthToken() + "\" }";
+                return "{ \"username\": \"" + authData.getUsername() + "\", \"authToken\": \"" + authData.getAuthToken() + "\" }";
             } catch (RuntimeException e) {
                 if (e.getMessage().contains("Already Taken")) {
                     response.status(403);
@@ -67,8 +68,9 @@ public class Server {
         //Logout
         Spark.delete("/session", (request, response) -> {
             try {
-                String username = request.headers("authorization");
-                userService.logout(username);
+                String authToken = request.headers("authorization");
+                System.out.println(authToken);
+                userService.logout(authToken);
                 response.status(200);
                 return "{}";
             } catch (RuntimeException e) {
@@ -92,25 +94,6 @@ public class Server {
             }
         }));
 
-        //List games
-        Spark.get("/game", (request, response) -> {
-            try {
-                String authToken = request.headers("authorization");
-                if (authToken == null || authToken.isEmpty()) {
-                    response.status(401);
-                    return "{\"message\": \"Error: unauthorized\"}";
-                }
-                Collection<GameData> games = gameService.listGames(authToken);
-                response.status(200);
-                return gson.toJson(games);
-            } catch (RuntimeException e) {
-                response.status(401);
-                return "{\"message\": \"Error: unauthorized" + "\"}";
-            } catch (Exception e) {
-                response.status(500);
-                return "{\"message\": \"Error: " + e.getMessage() + "\"}";
-            }
-        });
 
         //Create game
         Spark.post("/game", (request, response) -> {
@@ -120,7 +103,7 @@ public class Server {
 
                 // Extract the gameName from the request body
                 GameData gameData = gson.fromJson(requestBody, GameData.class);
-                String gameName = gameData.getGameName(); // Use the getter to get the gameName
+                String gameName = gameData.getGameName();
 
                 // Validate inputs
                 if (authToken == null || authToken.isEmpty() || gameName == null || gameName.isEmpty()) {
@@ -129,9 +112,10 @@ public class Server {
                 }
 
                 // Create the game
-                gameService.createGame(authToken, gameName);
+                int gameId = gameService.createGame(authToken, gameName);
                 response.status(200);
-                return "{}"; // Return an empty response for success
+                System.out.println(gameId);
+                return "{ \"gameID\": \"" + gameId + "\"}";
             } catch (RuntimeException e) {
                 if (e.getMessage().contains("unauthorized")) {
                     response.status(401);
@@ -146,6 +130,57 @@ public class Server {
             }
         });
 
+        //List games
+        Spark.get("/game", (request, response) -> {
+            try {
+                String authToken = request.headers("authorization");
+                if (authToken == null || authToken.isEmpty()) {
+                    response.status(401);
+                    return "{\"message\": \"Error: unauthorized\"}";
+                }
+                Collection<GameData> games = gameService.listGames(authToken);
+                response.status(200);
+                System.out.println(gson.toJson(new GameResponse(games)));
+                return gson.toJson(new GameResponse(games));
+            } catch (RuntimeException e) {
+                response.status(401);
+                return "{\"message\": \"Error: unauthorized" + "\"}";
+            } catch (Exception e) {
+                response.status(500);
+                return "{\"message\": \"Error: " + e.getMessage() + "\"}";
+            }
+        });
+
+        //Join game
+        Spark.put("/game", (request, response) -> {
+            String authToken = request.headers("authorization");
+            if (authToken == null){
+                response.status(401);
+                return "{\"message\": \"Error: unauthorized\"}";
+            }
+            try {
+                JoinGameRequest joinRequest = gson.fromJson(request.body(), JoinGameRequest.class);
+
+                gameService.joinGame(authToken, joinRequest.getGameID(), joinRequest.getPlayerColor());
+                response.status(200);
+                return "{}";
+            } catch (RuntimeException e) {
+                if (e.getMessage().contains("unauthorized")) {
+                    response.status(401);
+                    return "{\"message\": \"Error: unauthorized\"}";
+                } else if (e.getMessage().contains("already taken")) {
+                    response.status(403);
+                    return "{\"message\": \"Error: already taken\"}";
+                }
+                response.status(400);
+                return "{\"message\": \"Error: " + e.getMessage() + "\"}";
+            } catch (Exception e) {
+                response.status(500);
+                return "{\"message\": \"Error: " + e.getMessage() + "\"}";
+            }
+        } );
+
+        Spark.init();
         Spark.awaitInitialization();
         return Spark.port();
     }
@@ -153,6 +188,27 @@ public class Server {
     public void stop(){
         Spark.stop();
         Spark.awaitStop();
+    }
+
+    private static class JoinGameRequest {
+        private String playerColor;
+        private int gameID;
+
+        public String getPlayerColor() {
+            return playerColor;
+        }
+
+        public int getGameID() {
+            return gameID;
+        }
+    }
+
+    public class GameResponse {
+        Collection<GameData> games;
+
+        public GameResponse(Collection<GameData> games) {
+            this.games = games;
+        }
     }
 
 }
