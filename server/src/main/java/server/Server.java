@@ -1,6 +1,9 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.MemoryAuthDAO;
+import dataaccess.MemoryGameDAO;
+import dataaccess.MemoryUserDAO;
 import model.AuthData;
 import model.UserData;
 import service.UserService;
@@ -20,29 +23,52 @@ public class Server {
 
         //Register
         Spark.post("/user", (request, response) -> {
-            UserData user = gson.fromJson(request.body(), UserData.class);
-            userService.register(user);
-            response.status(201);
-            return  "User registered";
+            try {
+                UserData user = gson.fromJson(request.body(), UserData.class);
+                AuthData authData = userService.register(user);
+                response.status(200);
+                return "{ \"username\": \"" + user.getUsername() + "\", \"authToken\": \"" + authData.getAuthToken() + "\" }";
+            } catch (RuntimeException e) {
+                if (e.getMessage().contains("Already Taken")){
+                    response.status(403);
+                    return "{\"message\": \"Error: already taken\"}";
+                }
+                else {
+                    response.status(400);
+                    return "{\"message\": \"Error: bad request\"}";
+                }
+            } catch (Exception e) {
+                response.status(500);
+                return "{\"message\": \"Error: " + e.getMessage() + "\"}";
+            }
         });
 
         //Login
-        Spark.post("/user", (req, res) -> {
-            UserData user = gson.fromJson(req.body(), UserData.class);
-            AuthData authData = userService.login(user);
-            return gson.toJson(authData);
+        Spark.post("/session", (req, res) -> {
+            try {
+                UserData user = gson.fromJson(req.body(), UserData.class);
+                AuthData authData = userService.login(user);
+                return gson.toJson(authData);
+            } catch (RuntimeException e) {
+                res.status(401);
+                return "{\"message\": \"Error: Unauthorized" + "\"}";
+            } catch (Exception e) {
+                res.status(500);
+                return "{\"message\": \"Error: " + e.getMessage() + "\"}";
+            }
         });
 
-        //Delete
+        //Clear
         Spark.delete("/db", ((request, response) -> {
-            String authToken = request.headers("authorization");
-            if (authToken == null || authToken.isEmpty()){
-                response.status(401);
-                return "{\"message\": \"Unathorized\")";
+            try {
+                userService.clear();
+                response.status(200);
+                return "{}";
             }
-            userService.logout(authToken);
-            response.status(200);
-            return "{}";
+            catch (Exception e){
+                response.status(500);
+                return "{\"message\": \"Error: " + e.getMessage() + "\"}";
+            }
         }));
 
         Spark.awaitInitialization();

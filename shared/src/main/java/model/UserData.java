@@ -1,5 +1,8 @@
 package model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class UserData {
     String username;
     String password;
@@ -22,5 +25,6 @@ public class UserData {
     public String getEmail() {
         return email;
     }
+
 
 }

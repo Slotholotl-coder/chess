@@ -8,4 +8,5 @@ import java.util.Map;
 public interface GameDAO {
     void insertGame(GameData game);
     GameData getGame(int gameNum);
+    void clear();
 }
