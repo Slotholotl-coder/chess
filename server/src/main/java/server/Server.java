@@ -9,6 +9,8 @@ import model.UserData;
 import service.UserService;
 import spark.Spark;
 
+import java.io.Reader;
+
 
 public class Server {
     private UserService userService = new UserService();
@@ -54,6 +56,22 @@ public class Server {
                 return "{\"message\": \"Error: Unauthorized" + "\"}";
             } catch (Exception e) {
                 res.status(500);
+                return "{\"message\": \"Error: " + e.getMessage() + "\"}";
+            }
+        });
+
+        //Logout
+        Spark.delete("/session", (request, response) -> {
+            try {
+                String username = String.valueOf(gson.fromJson((Reader) request.headers(), UserData.class));
+                userService.logout(username);
+                response.status(200);
+                return "{}";
+            } catch (RuntimeException e) {
+                response.status(401);
+                return "{\"message\": \"Error: unauthorized" + "\"}";
+            } catch (Exception e) {
+                response.status(500);
                 return "{\"message\": \"Error: " + e.getMessage() + "\"}";
             }
         });

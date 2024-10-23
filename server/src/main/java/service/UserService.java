@@ -26,6 +26,13 @@ public class UserService {
         throw new RuntimeException("Unauthorized");
     }
 
+    public void logout(String authToken) {
+        String username = memoryAuthDAO.getAuthToken(authToken).getUsername();
+        if (username == null || authToken.isEmpty())
+            throw new RuntimeException("unauthorized");
+        userDAO.removeUser(username);
+    }
+
     public AuthData register(UserData user){
         if (!userDataIsValid(user))
             throw new RuntimeException("Error: bad request");
@@ -55,9 +62,6 @@ public class UserService {
         return true;
     }
 
-    public void logout(String authToken) {
-
-    }
 
     public void clear(){
         userDAO.clear();
