@@ -22,8 +22,9 @@ public class GameService {
     }
 
     public int createGame(String authToken, String gameName) {
-        if (authToken.isEmpty() || memoryAuthDAO.getAuthToken(authToken) == null)
+        if (authToken.isEmpty() || memoryAuthDAO.getAuthToken(authToken) == null) {
             throw new RuntimeException("unauthorized");
+        }
         int gameID = gameIdCounter;
         gameIdCounter++;
         GameData newGame = new GameData(gameID, null, null, gameName, new ChessGame());
@@ -36,23 +37,28 @@ public class GameService {
             throw new RuntimeException("unauthorized");
         }
         GameData game = memoryGameDAO.getGame(gameId);
-        if (game == null)
+        if (game == null) {
             throw new RuntimeException("invalid game");
+        }
         String username = memoryAuthDAO.getAuthToken(authToken).getUsername();
-        if (username == null)
+        if (username == null) {
             throw new RuntimeException("unauthorized");
+        }
         if (Objects.equals(teamColor, "BLACK")) {
-            if (game.getBlackUsername() == null)
+            if (game.getBlackUsername() == null) {
                 game.setBlackUsername(memoryAuthDAO.getAuthToken(authToken).getUsername());
-            else
+            } else {
                 throw new RuntimeException("already taken");
+            }
         } else if (Objects.equals(teamColor, "WHITE")) {
-            if (game.getWhiteUsername() == null)
+            if (game.getWhiteUsername() == null) {
                 game.setWhiteUsername(memoryAuthDAO.getAuthToken(authToken).getUsername());
-            else
+            } else {
                 throw new RuntimeException("already taken");
-        } else
+            }
+        } else {
             throw new RuntimeException("invalid team color");
+        }
     }
 
 }

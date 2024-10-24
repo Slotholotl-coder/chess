@@ -34,11 +34,13 @@ public class UserService {
     }
 
     public AuthData register(UserData user) {
-        if (!userDataIsValid(user))
+        if (!userDataIsValid(user)) {
             throw new RuntimeException("Error: bad request");
+        }
 
-        if (userDAO.getUser(user.getUsername()) != null)
+        if (userDAO.getUser(user.getUsername()) != null) {
             throw new RuntimeException("Error: Already Taken");
+        }
 
         userDAO.insertUser(user);
         AuthData authData = new AuthData(generateAuthToken(), user.getUsername());

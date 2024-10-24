@@ -6,16 +6,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MemoryUserDAO implements UserDAO {
-    public static MemoryUserDAO Instance;
+    public static MemoryUserDAO instance;
 
     private final Map<String, UserData> users = new HashMap<>();
 
     public static MemoryUserDAO getInstance() {
         // Lazy initialization
-        if (Instance == null) {
-            Instance = new MemoryUserDAO();
+        if (instance == null) {
+            instance = new MemoryUserDAO();
         }
-        return Instance;
+        return instance;
     }
 
     @Override

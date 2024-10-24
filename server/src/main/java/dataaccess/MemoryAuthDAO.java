@@ -6,15 +6,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MemoryAuthDAO implements AuthDAO {
-    public static MemoryAuthDAO Instance;
+    public static MemoryAuthDAO instance;
     private final Map<String, AuthData> authTokens = new HashMap<>();
 
     public static MemoryAuthDAO getInstance() {
         // Lazy initialization
-        if (Instance == null) {
-            Instance = new MemoryAuthDAO();
+        if (instance == null) {
+            instance = new MemoryAuthDAO();
         }
-        return Instance;
+        return instance;
     }
 
     @Override

@@ -33,7 +33,8 @@ public class ListGamesTest {
     @Test
     void testListGamesSuccess() {
 
-        AuthData authData = userService.register(new UserData("player1", "password", "player1@example.com"));
+        AuthData authData = userService.register(new UserData("player1", "password", "player1" +
+                "@example.com"));
         int gameID = gameService.createGame(authData.getAuthToken(), "testGame");
 
         Collection<GameData> games = gameService.listGames(authData.getAuthToken());
@@ -46,7 +47,8 @@ public class ListGamesTest {
     @Test
     void testListGamesFailure() {
         Exception exception = assertThrows(RuntimeException.class, () -> {
-            AuthData authData = userService.register(new UserData("player1", "password", "player1@example.com"));
+            AuthData authData = userService.register(new UserData("player1", "password", "player1" +
+                    "@example.com"));
             gameService.createGame(authData.getAuthToken(), "testGame");
 
             gameService.listGames(authData.getAuthToken());

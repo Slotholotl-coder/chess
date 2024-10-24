@@ -208,7 +208,8 @@ public class MakeMoveTests {
     public void invalidMakeMoveTooFar() {
         var game = new ChessGame();
         Assertions.assertThrows(InvalidMoveException.class,
-                () -> game.makeMove(new ChessMove(new ChessPosition(2, 1), new ChessPosition(5, 1), null)));
+                () -> game.makeMove(new ChessMove(new ChessPosition(2, 1), new ChessPosition(5,
+                        1), null)));
     }
 
     @Test
@@ -216,7 +217,8 @@ public class MakeMoveTests {
     public void invalidMakeMovePawnDiagonalNoCapture() {
         var game = new ChessGame();
         Assertions.assertThrows(InvalidMoveException.class,
-                () -> game.makeMove(new ChessMove(new ChessPosition(2, 1), new ChessPosition(3, 2), null)));
+                () -> game.makeMove(new ChessMove(new ChessPosition(2, 1), new ChessPosition(3,
+                        2), null)));
     }
 
     @Test
@@ -224,7 +226,8 @@ public class MakeMoveTests {
     public void invalidMakeMoveOutOfTurn() {
         var game = new ChessGame();
         Assertions.assertThrows(InvalidMoveException.class,
-                () -> game.makeMove(new ChessMove(new ChessPosition(7, 5), new ChessPosition(6, 5), null)));
+                () -> game.makeMove(new ChessMove(new ChessPosition(7, 5), new ChessPosition(6,
+                        5), null)));
     }
 
     @Test
@@ -232,7 +235,8 @@ public class MakeMoveTests {
     public void invalidMakeMoveThroughPiece() {
         var game = new ChessGame();
         Assertions.assertThrows(InvalidMoveException.class,
-                () -> game.makeMove(new ChessMove(new ChessPosition(1, 1), new ChessPosition(4, 1), null)));
+                () -> game.makeMove(new ChessMove(new ChessPosition(1, 1), new ChessPosition(4,
+                        1), null)));
     }
 
     @Test
@@ -241,7 +245,8 @@ public class MakeMoveTests {
         var game = new ChessGame();
         //starting position does not have a piece
         Assertions.assertThrows(InvalidMoveException.class,
-                () -> game.makeMove(new ChessMove(new ChessPosition(4, 4), new ChessPosition(4, 5), null)));
+                () -> game.makeMove(new ChessMove(new ChessPosition(4, 4), new ChessPosition(4,
+                        5), null)));
     }
 
     @Test
@@ -250,7 +255,8 @@ public class MakeMoveTests {
         var game = new ChessGame();
         //not a move the piece can ever take
         Assertions.assertThrows(InvalidMoveException.class,
-                () -> game.makeMove(new ChessMove(new ChessPosition(8, 7), new ChessPosition(5, 5), null)));
+                () -> game.makeMove(new ChessMove(new ChessPosition(8, 7), new ChessPosition(5,
+                        5), null)));
     }
 
     @Test
@@ -258,7 +264,8 @@ public class MakeMoveTests {
     public void invalidMakeMoveTakeOwnPiece() {
         var game = new ChessGame();
         Assertions.assertThrows(InvalidMoveException.class,
-                () -> game.makeMove(new ChessMove(new ChessPosition(1, 3), new ChessPosition(2, 4), null)));
+                () -> game.makeMove(new ChessMove(new ChessPosition(1, 3), new ChessPosition(2,
+                        4), null)));
     }
 
     @Test
@@ -278,7 +285,8 @@ public class MakeMoveTests {
         game.setTeamTurn(ChessGame.TeamColor.WHITE);
         game.makeMove(new ChessMove(new ChessPosition(3, 6), new ChessPosition(5, 5), null));
         Assertions.assertThrows(InvalidMoveException.class,
-                () -> game.makeMove(new ChessMove(new ChessPosition(5, 5), new ChessPosition(4, 5), null)));
+                () -> game.makeMove(new ChessMove(new ChessPosition(5, 5), new ChessPosition(4,
+                        5), null)));
     }
 
     @Test
@@ -296,7 +304,8 @@ public class MakeMoveTests {
                 | | | | |K| | | |
                 """));
         Assertions.assertThrows(InvalidMoveException.class,
-                () -> game.makeMove(new ChessMove(new ChessPosition(5, 1), new ChessPosition(5, 5), null)));
+                () -> game.makeMove(new ChessMove(new ChessPosition(5, 1), new ChessPosition(5,
+                        5), null)));
     }
 
     @Test
@@ -315,7 +324,8 @@ public class MakeMoveTests {
                 """));
         //try to make an otherwise valid move that doesn't remove check
         Assertions.assertThrows(InvalidMoveException.class,
-                () -> game.makeMove(new ChessMove(new ChessPosition(1, 7), new ChessPosition(1, 8), null)));
+                () -> game.makeMove(new ChessMove(new ChessPosition(1, 7), new ChessPosition(1,
+                        8), null)));
     }
 
     @Test
@@ -333,7 +343,8 @@ public class MakeMoveTests {
                 |R|N|B|Q|K|B|N|R|
                 """));
         Assertions.assertThrows(InvalidMoveException.class,
-                () -> game.makeMove(new ChessMove(new ChessPosition(3, 7), new ChessPosition(5, 7), null)));
+                () -> game.makeMove(new ChessMove(new ChessPosition(3, 7), new ChessPosition(5,
+                        7), null)));
     }
 
 
@@ -355,30 +366,32 @@ public class MakeMoveTests {
         game.setTeamTurn(ChessGame.TeamColor.WHITE);
 
         //White promotion
-        ChessMove whitePromotion = new ChessMove(new ChessPosition(7, 3), new ChessPosition(8, 3), promotionType);
+        ChessMove whitePromotion = new ChessMove(new ChessPosition(7, 3), new ChessPosition(8, 3)
+                , promotionType);
         game.makeMove(whitePromotion);
 
-        Assertions.assertNull(game.getBoard().getPiece(whitePromotion.getStartPosition()),
-                "After move, a piece is still present in the start position");
+        Assertions.assertNull(game.getBoard().getPiece(whitePromotion.getStartPosition()), "After" +
+                " move, a piece is still present in the start position");
         ChessPiece whiteEndPiece = game.getBoard().getPiece(whitePromotion.getEndPosition());
         Assertions.assertNotNull(whiteEndPiece, "After move, no piece found at the end position");
-        Assertions.assertEquals(promotionType, whiteEndPiece.getPieceType(),
-                "Found piece at end position is not the correct piece type");
-        Assertions.assertEquals(ChessGame.TeamColor.WHITE, whiteEndPiece.getTeamColor(),
-                "Found piece at end position is the wrong team color");
+        Assertions.assertEquals(promotionType, whiteEndPiece.getPieceType(), "Found piece at end " +
+                "position is not the correct piece type");
+        Assertions.assertEquals(ChessGame.TeamColor.WHITE, whiteEndPiece.getTeamColor(), "Found " +
+                "piece at end position is the wrong team color");
 
 
         //Black take + promotion
-        ChessMove blackPromotion = new ChessMove(new ChessPosition(2, 5), new ChessPosition(1, 6), promotionType);
+        ChessMove blackPromotion = new ChessMove(new ChessPosition(2, 5), new ChessPosition(1, 6)
+                , promotionType);
         game.makeMove(blackPromotion);
 
-        Assertions.assertNull(game.getBoard().getPiece(blackPromotion.getStartPosition()),
-                "After move, a piece is still present in the start position");
+        Assertions.assertNull(game.getBoard().getPiece(blackPromotion.getStartPosition()), "After" +
+                " move, a piece is still present in the start position");
         ChessPiece blackEndPiece = game.getBoard().getPiece(blackPromotion.getEndPosition());
         Assertions.assertNotNull(blackEndPiece, "After move, no piece found at the end position");
-        Assertions.assertEquals(promotionType, blackEndPiece.getPieceType(),
-                "Found piece at end position is not the correct piece type");
-        Assertions.assertEquals(ChessGame.TeamColor.BLACK, blackEndPiece.getTeamColor(),
-                "Found piece at end position is the wrong team color");
+        Assertions.assertEquals(promotionType, blackEndPiece.getPieceType(), "Found piece at end " +
+                "position is not the correct piece type");
+        Assertions.assertEquals(ChessGame.TeamColor.BLACK, blackEndPiece.getTeamColor(), "Found " +
+                "piece at end position is the wrong team color");
     }
 }

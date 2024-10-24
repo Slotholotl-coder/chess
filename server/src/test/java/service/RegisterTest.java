@@ -32,7 +32,8 @@ public class RegisterTest {
 
     @Test
     void registerFailure() {
-        Exception exception = assertThrows(RuntimeException.class, () -> userService.register(new UserData("player1", "password", null)));
+        Exception exception = assertThrows(RuntimeException.class,
+                () -> userService.register(new UserData("player1", "password", null)));
         assertEquals("Error: bad request", exception.getMessage());
     }
 }

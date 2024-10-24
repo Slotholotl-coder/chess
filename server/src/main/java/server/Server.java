@@ -6,6 +6,7 @@ import model.GameData;
 import model.UserData;
 import service.GameService;
 import service.UserService;
+import spark.Response;
 import spark.Spark;
 
 import java.util.Collection;
@@ -15,6 +16,17 @@ public class Server {
     private final UserService userService = new UserService();
     private final GameService gameService = new GameService();
     private final Gson gson = new Gson();
+
+    private static String getError(Response response, RuntimeException e) {
+        if (e.getMessage().contains("unauthorized")) {
+            response.status(401);
+            return "{\"message\": \"Error: unauthorized\"}";
+        } else if (e.getMessage().contains("already taken")) {
+            response.status(403);
+            return "{\"message\": \"Error: already taken\"}";
+        }
+        return null;
+    }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -159,12 +171,9 @@ public class Server {
                 response.status(200);
                 return "{}";
             } catch (RuntimeException e) {
-                if (e.getMessage().contains("unauthorized")) {
-                    response.status(401);
-                    return "{\"message\": \"Error: unauthorized\"}";
-                } else if (e.getMessage().contains("already taken")) {
-                    response.status(403);
-                    return "{\"message\": \"Error: already taken\"}";
+                String x = getError(response, e);
+                if (x != null) {
+                    return x;
                 }
                 response.status(400);
                 return "{\"message\": \"Error: " + e.getMessage() + "\"}";

@@ -30,7 +30,8 @@ public class CreateGameTest {
     @Test
     void testCreateGameSuccess() {
 
-        AuthData authData = userService.register(new UserData("player1", "password", "player1@example.com"));
+        AuthData authData = userService.register(new UserData("player1", "password", "player1" +
+                "@example.com"));
 
 
         int response = gameService.createGame(authData.getAuthToken(), "testGame");

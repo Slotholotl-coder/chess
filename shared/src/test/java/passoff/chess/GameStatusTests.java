@@ -1,7 +1,9 @@
 package passoff.chess;
 
-import chess.*;
-import org.junit.jupiter.api.*;
+import chess.ChessGame;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static passoff.chess.TestUtilities.loadBoard;
 
@@ -30,18 +32,18 @@ public class GameStatusTests {
     public void noGameStatuses() {
         var game = new ChessGame();
 
-        Assertions.assertFalse(game.isInCheck(ChessGame.TeamColor.BLACK),
-                "Black is not in check but isInCheck returned true");
-        Assertions.assertFalse(game.isInCheck(ChessGame.TeamColor.WHITE),
-                "White is not in check but isInCheck returned true");
-        Assertions.assertFalse(game.isInCheckmate(ChessGame.TeamColor.BLACK),
-                "Black is not in checkmate but isInCheckmate returned true");
-        Assertions.assertFalse(game.isInCheckmate(ChessGame.TeamColor.WHITE),
-                "White is not in checkmate but isInCheckmate returned true");
-        Assertions.assertFalse(game.isInStalemate(ChessGame.TeamColor.BLACK),
-                "Black is not in stalemate but isInStalemate returned true");
-        Assertions.assertFalse(game.isInStalemate(ChessGame.TeamColor.WHITE),
-                "White is not in stalemate but isInStalemate returned true");
+        Assertions.assertFalse(game.isInCheck(ChessGame.TeamColor.BLACK), "Black is not in check " +
+                "but isInCheck returned true");
+        Assertions.assertFalse(game.isInCheck(ChessGame.TeamColor.WHITE), "White is not in check " +
+                "but isInCheck returned true");
+        Assertions.assertFalse(game.isInCheckmate(ChessGame.TeamColor.BLACK), "Black is not in " +
+                "checkmate but isInCheckmate returned true");
+        Assertions.assertFalse(game.isInCheckmate(ChessGame.TeamColor.WHITE), "White is not in " +
+                "checkmate but isInCheckmate returned true");
+        Assertions.assertFalse(game.isInStalemate(ChessGame.TeamColor.BLACK), "Black is not in " +
+                "stalemate but isInStalemate returned true");
+        Assertions.assertFalse(game.isInStalemate(ChessGame.TeamColor.WHITE), "White is not in " +
+                "stalemate but isInStalemate returned true");
     }
 
 
@@ -60,10 +62,10 @@ public class GameStatusTests {
                 | | | | | | | | |
                 """));
 
-        Assertions.assertTrue(game.isInCheck(ChessGame.TeamColor.WHITE),
-                "White is in check but isInCheck returned false");
-        Assertions.assertFalse(game.isInCheck(ChessGame.TeamColor.BLACK),
-                "Black is not in check but isInCheck returned true");
+        Assertions.assertTrue(game.isInCheck(ChessGame.TeamColor.WHITE), "White is in check but " +
+                "isInCheck returned false");
+        Assertions.assertFalse(game.isInCheck(ChessGame.TeamColor.BLACK), "Black is not in check " +
+                "but isInCheck returned true");
     }
 
 
@@ -82,10 +84,10 @@ public class GameStatusTests {
                 | | | | | | | | |
                 """));
 
-        Assertions.assertTrue(game.isInCheck(ChessGame.TeamColor.BLACK),
-                "Black is in check but isInCheck returned false");
-        Assertions.assertFalse(game.isInCheck(ChessGame.TeamColor.WHITE),
-                "White is not in check but isInCheck returned true");
+        Assertions.assertTrue(game.isInCheck(ChessGame.TeamColor.BLACK), "Black is in check but " +
+                "isInCheck returned false");
+        Assertions.assertFalse(game.isInCheck(ChessGame.TeamColor.WHITE), "White is not in check " +
+                "but isInCheck returned true");
     }
 
 
@@ -106,10 +108,10 @@ public class GameStatusTests {
                 """));
         game.setTeamTurn(ChessGame.TeamColor.WHITE);
 
-        Assertions.assertTrue(game.isInCheckmate(ChessGame.TeamColor.WHITE),
-                "White is in checkmate but isInCheckmate returned false");
-        Assertions.assertFalse(game.isInCheckmate(ChessGame.TeamColor.BLACK),
-                "Black is not in checkmate but isInCheckmate returned true");
+        Assertions.assertTrue(game.isInCheckmate(ChessGame.TeamColor.WHITE), "White is in " +
+                "checkmate but isInCheckmate returned false");
+        Assertions.assertFalse(game.isInCheckmate(ChessGame.TeamColor.BLACK), "Black is not in " +
+                "checkmate but isInCheckmate returned true");
     }
 
 
@@ -129,10 +131,10 @@ public class GameStatusTests {
                 """));
         game.setTeamTurn(ChessGame.TeamColor.BLACK);
 
-        Assertions.assertTrue(game.isInCheckmate(ChessGame.TeamColor.BLACK),
-                "Black is in checkmate but isInCheckmate returned false");
-        Assertions.assertFalse(game.isInCheckmate(ChessGame.TeamColor.WHITE),
-                "White is not in checkmate but isInCheckmate returned true");
+        Assertions.assertTrue(game.isInCheckmate(ChessGame.TeamColor.BLACK), "Black is in " +
+                "checkmate but isInCheckmate returned false");
+        Assertions.assertFalse(game.isInCheckmate(ChessGame.TeamColor.WHITE), "White is not in " +
+                "checkmate but isInCheckmate returned true");
 
     }
 
@@ -153,10 +155,10 @@ public class GameStatusTests {
                 """));
         game.setTeamTurn(ChessGame.TeamColor.BLACK);
 
-        Assertions.assertFalse(game.isInCheckmate(ChessGame.TeamColor.BLACK),
-                "Black is not in checkmate but isInCheckmate returned true");
-        Assertions.assertFalse(game.isInCheckmate(ChessGame.TeamColor.WHITE),
-                "White is not in checkmate but isInCheckmate returned true");
+        Assertions.assertFalse(game.isInCheckmate(ChessGame.TeamColor.BLACK), "Black is not in " +
+                "checkmate but isInCheckmate returned true");
+        Assertions.assertFalse(game.isInCheckmate(ChessGame.TeamColor.WHITE), "White is not in " +
+                "checkmate but isInCheckmate returned true");
     }
 
 
@@ -177,10 +179,10 @@ public class GameStatusTests {
                 """));
         game.setTeamTurn(ChessGame.TeamColor.BLACK);
 
-        Assertions.assertTrue(game.isInCheckmate(ChessGame.TeamColor.BLACK),
-                "Black is in checkmate but isInCheckmate returned false");
-        Assertions.assertFalse(game.isInCheckmate(ChessGame.TeamColor.WHITE),
-                "White is not in checkmate but isInCheckmate returned true");
+        Assertions.assertTrue(game.isInCheckmate(ChessGame.TeamColor.BLACK), "Black is in " +
+                "checkmate but isInCheckmate returned false");
+        Assertions.assertFalse(game.isInCheckmate(ChessGame.TeamColor.WHITE), "White is not in " +
+                "checkmate but isInCheckmate returned true");
     }
 
 
@@ -201,10 +203,10 @@ public class GameStatusTests {
                 """));
         game.setTeamTurn(ChessGame.TeamColor.BLACK);
 
-        Assertions.assertTrue(game.isInCheckmate(ChessGame.TeamColor.BLACK),
-                "Black is in checkmate but isInCheckmate returned false");
-        Assertions.assertFalse(game.isInCheckmate(ChessGame.TeamColor.WHITE),
-                "White is not in checkmate but isInCheckmate returned true");
+        Assertions.assertTrue(game.isInCheckmate(ChessGame.TeamColor.BLACK), "Black is in " +
+                "checkmate but isInCheckmate returned false");
+        Assertions.assertFalse(game.isInCheckmate(ChessGame.TeamColor.WHITE), "White is not in " +
+                "checkmate but isInCheckmate returned true");
     }
 
 
@@ -224,9 +226,9 @@ public class GameStatusTests {
                 """));
         game.setTeamTurn(ChessGame.TeamColor.WHITE);
 
-        Assertions.assertTrue(game.isInStalemate(ChessGame.TeamColor.WHITE),
-                "White is in a stalemate but isInStalemate returned false");
-        Assertions.assertFalse(game.isInStalemate(ChessGame.TeamColor.BLACK),
-                "Black is not in a stalemate but isInStalemate returned true");
+        Assertions.assertTrue(game.isInStalemate(ChessGame.TeamColor.WHITE), "White is in a " +
+                "stalemate but isInStalemate returned false");
+        Assertions.assertFalse(game.isInStalemate(ChessGame.TeamColor.BLACK), "Black is not in a " +
+                "stalemate but isInStalemate returned true");
     }
 }

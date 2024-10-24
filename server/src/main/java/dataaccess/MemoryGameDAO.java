@@ -7,15 +7,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MemoryGameDAO implements GameDAO {
-    public static MemoryGameDAO Instance;
+    public static MemoryGameDAO instance;
     private final Map<Integer, GameData> games = new HashMap<>();
 
     public static MemoryGameDAO getInstance() {
         // Lazy initialization
-        if (Instance == null) {
-            Instance = new MemoryGameDAO();
+        if (instance == null) {
+            instance = new MemoryGameDAO();
         }
-        return Instance;
+        return instance;
     }
 
     @Override

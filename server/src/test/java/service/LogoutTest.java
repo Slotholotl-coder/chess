@@ -27,7 +27,8 @@ public class LogoutTest {
 
     @Test
     void logoutSuccess() {
-        AuthData authData = userService.register(new UserData("player1", "password", "p1@email.com"));
+        AuthData authData = userService.register(new UserData("player1", "password", "p1@email" +
+                ".com"));
         userService.logout(authData.getAuthToken());
         assertNull(memoryAuthDAO.getAuthToken(authData.getAuthToken()));
     }

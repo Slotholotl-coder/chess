@@ -17,7 +17,8 @@ public class ClearTest {
     @BeforeAll
     static void setUp() {
         userService = new UserService();
-        AuthData authData = userService.register(new UserData("testUser", "testPass", "test@example.com"));
+        AuthData authData = userService.register(new UserData("testUser", "testPass", "test" +
+                "@example.com"));
 
         GameService gameService = new GameService();
         gameService.createGame(authData.getAuthToken(), "testGame");

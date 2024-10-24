@@ -2,18 +2,21 @@ package passoff.chess;
 
 import chess.*;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static passoff.chess.TestUtilities.*;
+import static passoff.chess.TestUtilities.loadBoard;
 
 /**
  * Tests if the ChessGame implementation can handle En Passant moves
- * En Passant is a situational move in chess taken directly after your opponent has double moved a pawn
- * If their pawn moves next to one of your pawns, so it passes where your pawn could have captured it, you
- * may capture their pawn with your pawn as if they had only moved a single space. You may only take this move
- * if you do so the turn directly following the pawns double move. This is as if you had caught their
+ * En Passant is a situational move in chess taken directly after your opponent has double moved
+ * a pawn
+ * If their pawn moves next to one of your pawns, so it passes where your pawn could have
+ * captured it, you
+ * may capture their pawn with your pawn as if they had only moved a single space. You may only
+ * take this move
+ * if you do so the turn directly following the pawns double move. This is as if you had caught
+ * their
  * pawn "in passing", or translated to French: "En Passant".
  */
 public class EnPassantTests {
@@ -43,7 +46,8 @@ public class EnPassantTests {
 		| | | | | | | | |
          */
 
-        ChessMove enPassantMove = new ChessMove(new ChessPosition(5, 2), new ChessPosition(6, 3), null);
+        ChessMove enPassantMove = new ChessMove(new ChessPosition(5, 2), new ChessPosition(6, 3),
+                null);
         ChessBoard endBoard = loadBoard("""
                 | | | | | | | | |
                 | | | | | | | | |
@@ -84,7 +88,8 @@ public class EnPassantTests {
 		| | | | | | | | |
 		| | | | | | | | |
          */
-        ChessMove enPassantMove = new ChessMove(new ChessPosition(5, 4), new ChessPosition(6, 3), null);
+        ChessMove enPassantMove = new ChessMove(new ChessPosition(5, 4), new ChessPosition(6, 3),
+                null);
         ChessBoard endBoard = loadBoard("""
                 | | | | | | | | |
                 | | | | | | | | |
@@ -124,7 +129,8 @@ public class EnPassantTests {
 		| | | | | | | | |
 		| | | | | | | | |
          */
-        ChessMove enPassantMove = new ChessMove(new ChessPosition(4, 6), new ChessPosition(3, 7), null);
+        ChessMove enPassantMove = new ChessMove(new ChessPosition(4, 6), new ChessPosition(3, 7),
+                null);
         ChessBoard endBoard = loadBoard("""
                 | | | | | | | | |
                 | | | | | | | | |
@@ -164,7 +170,8 @@ public class EnPassantTests {
 		| | | | | | | | |
 		| | | | | | | | |
          */
-        ChessMove enPassantMove = new ChessMove(new ChessPosition(4, 8), new ChessPosition(3, 7), null);
+        ChessMove enPassantMove = new ChessMove(new ChessPosition(4, 8), new ChessPosition(3, 7),
+                null);
         ChessBoard endBoard = loadBoard("""
                 | | | | | | | | |
                 | | | | | | | | |
@@ -183,14 +190,14 @@ public class EnPassantTests {
     @DisplayName("Can Only En Passant on Next Turn")
     public void missedEnPassant() throws InvalidMoveException {
         ChessBoard board = loadBoard("""
+                      | | | | | | | | |
+                | | |p| | | | | |
+                | | | | | | | |P|
+                | |P| | | | | | |
                 | | | | | | | | |
-		        | | |p| | | | | |
-		        | | | | | | | |P|
-		        | |P| | | | | | |
-		        | | | | | | | | |
-		        | | | | | | | |p|
-		        | | | | | | | | |
-		        | | | | | | | | |
+                | | | | | | | |p|
+                | | | | | | | | |
+                | | | | | | | | |
                 """);
         ChessGame game = new ChessGame();
         game.setBoard(board);
@@ -230,8 +237,9 @@ public class EnPassantTests {
                 "ChessGame validMoves contained a En Passant move after the move became invalid");
     }
 
-    private void assertValidEnPassant(ChessBoard board, ChessGame.TeamColor turn, ChessMove setupMove,
-                                      ChessMove enPassantMove, ChessBoard endBoard) throws InvalidMoveException {
+    private void assertValidEnPassant(ChessBoard board, ChessGame.TeamColor turn,
+                                      ChessMove setupMove, ChessMove enPassantMove,
+                                      ChessBoard endBoard) throws InvalidMoveException {
         ChessGame game = new ChessGame();
         game.setBoard(board);
         game.setTeamTurn(turn);
@@ -240,8 +248,7 @@ public class EnPassantTests {
         game.makeMove(setupMove);
 
         //make sure pawn has En Passant move
-        Assertions.assertTrue(game.validMoves(enPassantMove.getStartPosition()).contains(enPassantMove),
-                "ChessGame validMoves did not contain a valid En Passant move");
+        Assertions.assertTrue(game.validMoves(enPassantMove.getStartPosition()).contains(enPassantMove), "ChessGame validMoves did not contain a valid En Passant move");
 
         //en passant move works correctly
         Assertions.assertDoesNotThrow(() -> game.makeMove(enPassantMove));
