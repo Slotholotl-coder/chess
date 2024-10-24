@@ -71,13 +71,7 @@ public class ChessPiece {
                            ChessPosition myPosition) {
         int[][] possibleMoves = {{1, 1}, {1, 0}, {1, -1}, {0, 1}, {0, -1}, {-1, 1}, {-1, 0}, {-1,
                 -1}};
-        for (int[] move : possibleMoves) {
-            ChessPosition moveToPosition = new ChessPosition(myPosition.getRow() + move[0],
-                    myPosition.getColumn() + move[1]);
-            if (validMove(chessBoard, moveToPosition)) {
-                moves.add(new ChessMove(myPosition, moveToPosition, null));
-            }
-        }
+        extracted(moves, chessBoard, myPosition, possibleMoves);
     }
 
     private void bishopMoves(Collection<ChessMove> moves, ChessBoard chessBoard,
@@ -196,6 +190,10 @@ public class ChessPiece {
                              ChessPosition myPosition) {
         int[][] possibleMoves = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, -2}, {-1, -2}, {1, 2},
                 {-1, 2}};
+        extracted(moves, chessBoard, myPosition, possibleMoves);
+    }
+
+    private void extracted(Collection<ChessMove> moves, ChessBoard chessBoard, ChessPosition myPosition, int[][] possibleMoves) {
         for (int[] move : possibleMoves) {
             ChessPosition moveToPosition = new ChessPosition(myPosition.getRow() + move[0],
                     myPosition.getColumn() + move[1]);

@@ -171,12 +171,7 @@ public class Server {
                 response.status(200);
                 return "{}";
             } catch (RuntimeException e) {
-                String x = getError(response, e);
-                if (x != null) {
-                    return x;
-                }
-                response.status(400);
-                return "{\"message\": \"Error: " + e.getMessage() + "\"}";
+                return getString(response, e);
             } catch (Exception e) {
                 response.status(500);
                 return "{\"message\": \"Error: " + e.getMessage() + "\"}";
@@ -186,6 +181,15 @@ public class Server {
         Spark.init();
         Spark.awaitInitialization();
         return Spark.port();
+    }
+
+    private static String getString(Response response, RuntimeException e) {
+        String x = getError(response, e);
+        if (x != null) {
+            return x;
+        }
+        response.status(400);
+        return "{\"message\": \"Error: " + e.getMessage() + "\"}";
     }
 
     public void stop() {

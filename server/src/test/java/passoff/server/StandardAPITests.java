@@ -452,7 +452,6 @@ public class StandardAPITests {
         Assertions.assertEquals(0, listResult.getGames().length, "list result did not return 0 " +
                 "games after clear");
     }
-
     @Test
     @Order(14)
     @DisplayName("Multiple Clears")
@@ -466,7 +465,6 @@ public class StandardAPITests {
         //make sure returned good
         assertHttpOk(result);
     }
-
     private void assertHttpOk(TestResult result) {
         Assertions.assertEquals(HttpURLConnection.HTTP_OK, serverFacade.getStatusCode(),
                 "Server response code was not 200 OK (message: %s)".formatted(result.getMessage()));
@@ -474,19 +472,15 @@ public class StandardAPITests {
                         result.getMessage().toLowerCase(Locale.ROOT).contains("error"),
                 "Result returned an error message");
     }
-
     private void assertHttpBadRequest(TestResult result) {
         assertHttpError(result, HttpURLConnection.HTTP_BAD_REQUEST, "Bad Request");
     }
-
     private void assertHttpUnauthorized(TestResult result) {
         assertHttpError(result, HttpURLConnection.HTTP_UNAUTHORIZED, "Unauthorized");
     }
-
     private void assertHttpForbidden(TestResult result) {
         assertHttpError(result, HttpURLConnection.HTTP_FORBIDDEN, "Forbidden");
     }
-
     private void assertHttpError(TestResult result, int statusCode, String message) {
         Assertions.assertEquals(statusCode, serverFacade.getStatusCode(),
                 "Server response code was not %d %s (message: %s)".formatted(statusCode, message,
@@ -495,11 +489,9 @@ public class StandardAPITests {
                         result.getMessage().toLowerCase(Locale.ROOT).contains("error"),
                 "Invalid Request didn't return an error message");
     }
-
     private void assertAuthFieldsMissing(TestAuthResult result) {
         Assertions.assertNull(result.getUsername(), "Response incorrectly returned username");
         Assertions.assertNull(result.getAuthToken(), "Response incorrectly return authentication " +
                 "String");
     }
-
 }
