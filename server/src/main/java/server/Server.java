@@ -35,50 +35,67 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
 
-        //Register
-        Spark.post("/user", (request, response) -> {
+        register();
+
+        login();
+
+        logout();
+
+        clear();
+
+
+        createGame();
+
+        listGames();
+
+        joinGame();
+
+        Spark.init();
+        Spark.awaitInitialization();
+        return Spark.port();
+    }
+
+    private void joinGame() {
+        //Join game
+        Spark.put("/game", (request, response) -> {
+            String authToken = request.headers("authorization");
+            if (authToken == null) {
+                response.status(401);
+                return "{\"message\": \"Error: unauthorized\"}";
+            }
             try {
-                UserData user = gson.fromJson(request.body(), UserData.class);
-                AuthData authData = userService.register(user);
+                JoinGameRequest joinRequest = gson.fromJson(request.body(), JoinGameRequest.class);
+
+                gameService.joinGame(authToken, joinRequest.gameID(), joinRequest.playerColor());
                 response.status(200);
-                return "{ \"username\": \"" + authData.getUsername() + "\", \"authToken\": \"" + authData.getAuthToken() + "\" }";
+                return "{}";
             } catch (RuntimeException e) {
-                if (e.getMessage().contains("Already Taken")) {
-                    response.status(403);
-                    return "{\"message\": \"Error: already taken\"}";
-                } else {
-                    response.status(400);
-                    return "{\"message\": \"Error: bad request\"}";
+                String x = getError(response, e);
+                if (x != null) {
+                    return x;
                 }
+                response.status(400);
+                return "{\"message\": \"Error: " + e.getMessage() + "\"}";
             } catch (Exception e) {
                 response.status(500);
                 return "{\"message\": \"Error: " + e.getMessage() + "\"}";
             }
         });
+    }
 
-        //Login
-        Spark.post("/session", (req, res) -> {
-            try {
-                UserData user = gson.fromJson(req.body(), UserData.class);
-                AuthData authData = userService.login(user);
-                return gson.toJson(authData);
-            } catch (RuntimeException e) {
-                res.status(401);
-                return "{\"message\": \"Error: Unauthorized" + "\"}";
-            } catch (Exception e) {
-                res.status(500);
-                return "{\"message\": \"Error: " + e.getMessage() + "\"}";
-            }
-        });
-
-        //Logout
-        Spark.delete("/session", (request, response) -> {
+    private void listGames() {
+        //List games
+        Spark.get("/game", (request, response) -> {
             try {
                 String authToken = request.headers("authorization");
-                System.out.println(authToken);
-                userService.logout(authToken);
+                if (authToken == null || authToken.isEmpty()) {
+                    response.status(401);
+                    return "{\"message\": \"Error: unauthorized\"}";
+                }
+                Collection<GameData> games = gameService.listGames(authToken);
                 response.status(200);
-                return "{}";
+                System.out.println(gson.toJson(new GameResponse(games)));
+                return gson.toJson(new GameResponse(games));
             } catch (RuntimeException e) {
                 response.status(401);
                 return "{\"message\": \"Error: unauthorized" + "\"}";
@@ -87,20 +104,9 @@ public class Server {
                 return "{\"message\": \"Error: " + e.getMessage() + "\"}";
             }
         });
+    }
 
-        //Clear
-        Spark.delete("/db", ((request, response) -> {
-            try {
-                userService.clear();
-                response.status(200);
-                return "{}";
-            } catch (Exception e) {
-                response.status(500);
-                return "{\"message\": \"Error: " + e.getMessage() + "\"}";
-            }
-        }));
-
-
+    private void createGame() {
         //Create game
         Spark.post("/game", (request, response) -> {
             try {
@@ -135,19 +141,31 @@ public class Server {
                 return "{\"message\": \"Error: " + e.getMessage() + "\"}";
             }
         });
+    }
 
-        //List games
-        Spark.get("/game", (request, response) -> {
+    private void clear() {
+        //Clear
+        Spark.delete("/db", ((request, response) -> {
+            try {
+                userService.clear();
+                response.status(200);
+                return "{}";
+            } catch (Exception e) {
+                response.status(500);
+                return "{\"message\": \"Error: " + e.getMessage() + "\"}";
+            }
+        }));
+    }
+
+    private void logout() {
+        //Logout
+        Spark.delete("/session", (request, response) -> {
             try {
                 String authToken = request.headers("authorization");
-                if (authToken == null || authToken.isEmpty()) {
-                    response.status(401);
-                    return "{\"message\": \"Error: unauthorized\"}";
-                }
-                Collection<GameData> games = gameService.listGames(authToken);
+                System.out.println(authToken);
+                userService.logout(authToken);
                 response.status(200);
-                System.out.println(gson.toJson(new GameResponse(games)));
-                return gson.toJson(new GameResponse(games));
+                return "{}";
             } catch (RuntimeException e) {
                 response.status(401);
                 return "{\"message\": \"Error: unauthorized" + "\"}";
@@ -156,40 +174,46 @@ public class Server {
                 return "{\"message\": \"Error: " + e.getMessage() + "\"}";
             }
         });
+    }
 
-        //Join game
-        Spark.put("/game", (request, response) -> {
-            String authToken = request.headers("authorization");
-            if (authToken == null) {
-                response.status(401);
-                return "{\"message\": \"Error: unauthorized\"}";
-            }
+    private void login() {
+        //Login
+        Spark.post("/session", (req, res) -> {
             try {
-                JoinGameRequest joinRequest = gson.fromJson(request.body(), JoinGameRequest.class);
-
-                gameService.joinGame(authToken, joinRequest.gameID(), joinRequest.playerColor());
-                response.status(200);
-                return "{}";
+                UserData user = gson.fromJson(req.body(), UserData.class);
+                AuthData authData = userService.login(user);
+                return gson.toJson(authData);
             } catch (RuntimeException e) {
-                return getString(response, e);
+                res.status(401);
+                return "{\"message\": \"Error: Unauthorized" + "\"}";
+            } catch (Exception e) {
+                res.status(500);
+                return "{\"message\": \"Error: " + e.getMessage() + "\"}";
+            }
+        });
+    }
+
+    private void register() {
+        //Register
+        Spark.post("/user", (request, response) -> {
+            try {
+                UserData user = gson.fromJson(request.body(), UserData.class);
+                AuthData authData = userService.register(user);
+                response.status(200);
+                return "{ \"username\": \"" + authData.getUsername() + "\", \"authToken\": \"" + authData.getAuthToken() + "\" }";
+            } catch (RuntimeException e) {
+                if (e.getMessage().contains("Already Taken")) {
+                    response.status(403);
+                    return "{\"message\": \"Error: already taken\"}";
+                } else {
+                    response.status(400);
+                    return "{\"message\": \"Error: bad request\"}";
+                }
             } catch (Exception e) {
                 response.status(500);
                 return "{\"message\": \"Error: " + e.getMessage() + "\"}";
             }
         });
-
-        Spark.init();
-        Spark.awaitInitialization();
-        return Spark.port();
-    }
-
-    private static String getString(Response response, RuntimeException e) {
-        String x = getError(response, e);
-        if (x != null) {
-            return x;
-        }
-        response.status(400);
-        return "{\"message\": \"Error: " + e.getMessage() + "\"}";
     }
 
     public void stop() {
