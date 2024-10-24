@@ -3,13 +3,11 @@ package service;
 import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import server.Server;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ServerTest {
+public class ServerLoginTest {
     private static UserService userService;
 
     @BeforeAll

@@ -4,11 +4,11 @@ import model.GameData;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MemoryGameDAO implements GameDAO {
     public static MemoryGameDAO Instance;
+    private final Map<Integer, GameData> games = new HashMap<>();
 
     public static MemoryGameDAO getInstance() {
         // Lazy initialization
@@ -17,8 +17,6 @@ public class MemoryGameDAO implements GameDAO {
         }
         return Instance;
     }
-
-    private Map<Integer, GameData> games = new HashMap<>();
 
     @Override
     public void insertGame(GameData game) {
@@ -33,6 +31,10 @@ public class MemoryGameDAO implements GameDAO {
     @Override
     public Collection<GameData> getAllGames() {
         return games.values();
+    }
+
+    public int getNumberOfGames() {
+        return games.size();
     }
 
     @Override

@@ -1,9 +1,6 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
-import dataaccess.MemoryUserDAO;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -11,16 +8,13 @@ import service.GameService;
 import service.UserService;
 import spark.Spark;
 
-import java.io.Reader;
 import java.util.Collection;
-import java.util.List;
-import java.util.function.Consumer;
 
 
 public class Server {
-    private UserService userService = new UserService();
-    private GameService gameService = new GameService();
-    private Gson gson = new Gson();
+    private final UserService userService = new UserService();
+    private final GameService gameService = new GameService();
+    private final Gson gson = new Gson();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -154,7 +148,7 @@ public class Server {
         //Join game
         Spark.put("/game", (request, response) -> {
             String authToken = request.headers("authorization");
-            if (authToken == null){
+            if (authToken == null) {
                 response.status(401);
                 return "{\"message\": \"Error: unauthorized\"}";
             }
@@ -178,14 +172,14 @@ public class Server {
                 response.status(500);
                 return "{\"message\": \"Error: " + e.getMessage() + "\"}";
             }
-        } );
+        });
 
         Spark.init();
         Spark.awaitInitialization();
         return Spark.port();
     }
 
-    public void stop(){
+    public void stop() {
         Spark.stop();
         Spark.awaitStop();
     }
@@ -203,12 +197,17 @@ public class Server {
         }
     }
 
-    public class GameResponse {
+    public static class GameResponse {
         Collection<GameData> games;
 
         public GameResponse(Collection<GameData> games) {
             this.games = games;
         }
+
+        public Collection<GameData> getGames() {
+            return games;
+        }
+
     }
 
 }

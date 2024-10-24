@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class MemoryAuthDAO implements AuthDAO {
     public static MemoryAuthDAO Instance;
+    private final Map<String, AuthData> authTokens = new HashMap<>();
 
     public static MemoryAuthDAO getInstance() {
         // Lazy initialization
@@ -15,9 +16,6 @@ public class MemoryAuthDAO implements AuthDAO {
         }
         return Instance;
     }
-
-
-    private Map<String, AuthData> authTokens = new HashMap<>();
 
     @Override
     public void insertAuthToken(String authToken, String username) {
@@ -33,6 +31,10 @@ public class MemoryAuthDAO implements AuthDAO {
     @Override
     public void removeAuthToken(String authToken) {
         authTokens.remove(authToken);
+    }
+
+    public int getNumberOfAuthTokens() {
+        return authTokens.size();
     }
 
     @Override

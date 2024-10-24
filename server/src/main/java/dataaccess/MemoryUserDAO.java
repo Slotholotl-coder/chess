@@ -5,7 +5,7 @@ import model.UserData;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MemoryUserDAO implements  UserDAO{
+public class MemoryUserDAO implements UserDAO {
     public static MemoryUserDAO Instance;
 
     private final Map<String, UserData> users = new HashMap<>();
@@ -31,6 +31,10 @@ public class MemoryUserDAO implements  UserDAO{
     @Override
     public void removeUser(String username) {
         users.remove(username);
+    }
+
+    public int getNumberOfUsers() {
+        return users.size();
     }
 
     @Override

@@ -9,14 +9,14 @@ import model.UserData;
 import java.util.UUID;
 
 public class UserService {
-    private MemoryUserDAO userDAO = MemoryUserDAO.getInstance();
-    private MemoryGameDAO memoryGameDAO = MemoryGameDAO.getInstance();
-    private MemoryAuthDAO memoryAuthDAO = MemoryAuthDAO.getInstance();
+    private final MemoryUserDAO userDAO = MemoryUserDAO.getInstance();
+    private final MemoryGameDAO memoryGameDAO = MemoryGameDAO.getInstance();
+    private final MemoryAuthDAO memoryAuthDAO = MemoryAuthDAO.getInstance();
 
-    public AuthData login(UserData user){
+    public AuthData login(UserData user) {
 
         UserData databaseUser = userDAO.getUser(user.getUsername());
-        if (databaseUser != null && databaseUser.getPassword().equals(user.getPassword())){
+        if (databaseUser != null && databaseUser.getPassword().equals(user.getPassword())) {
             String newAuthToken = generateAuthToken();
             memoryAuthDAO.insertAuthToken(newAuthToken, user.getUsername());
             return new AuthData(newAuthToken, user.getUsername());
@@ -25,7 +25,7 @@ public class UserService {
     }
 
     public void logout(String authToken) {
-        if (memoryAuthDAO.getAuthToken(authToken) == null){
+        if (memoryAuthDAO.getAuthToken(authToken) == null) {
             throw new RuntimeException("unauthorized");
         }
         String username = memoryAuthDAO.getAuthToken(authToken).getUsername();
@@ -33,7 +33,7 @@ public class UserService {
         userDAO.removeUser(username);
     }
 
-    public AuthData register(UserData user){
+    public AuthData register(UserData user) {
         if (!userDataIsValid(user))
             throw new RuntimeException("Error: bad request");
 
@@ -46,21 +46,18 @@ public class UserService {
         return authData;
     }
 
-    private String generateAuthToken(){
+    private String generateAuthToken() {
         return UUID.randomUUID().toString();
     }
 
-    private boolean userDataIsValid(UserData user){
-        if (user.getUsername() == null || user.getUsername().isEmpty() ||
-                user.getPassword() == null || user.getPassword().isEmpty() ||
-                user.getEmail() == null || user.getEmail().isEmpty()) {
-            return false;
-        }
-        return true;
+    private boolean userDataIsValid(UserData user) {
+        return user.getUsername() != null && !user.getUsername().isEmpty() &&
+                user.getPassword() != null && !user.getPassword().isEmpty() &&
+                user.getEmail() != null && !user.getEmail().isEmpty();
     }
 
 
-    public void clear(){
+    public void clear() {
         userDAO.clear();
         memoryGameDAO.clear();
         memoryAuthDAO.clear();
