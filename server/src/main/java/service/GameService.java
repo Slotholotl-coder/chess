@@ -3,7 +3,6 @@ package service;
 import chess.ChessGame;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryGameDAO;
-import dataaccess.MemoryUserDAO;
 import model.GameData;
 
 import java.util.Collection;
@@ -11,7 +10,7 @@ import java.util.Objects;
 
 public class GameService {
     int gameIdCounter = 1;
-    private final MemoryUserDAO memoryUserDAO = MemoryUserDAO.getInstance();
+
     private final MemoryAuthDAO memoryAuthDAO = MemoryAuthDAO.getInstance();
     private final MemoryGameDAO memoryGameDAO = MemoryGameDAO.getInstance();
 

@@ -28,7 +28,7 @@ public class CreateGameTest {
     }
 
     @Test
-    void testCreateGameSuccess() throws Exception {
+    void testCreateGameSuccess() {
 
         AuthData authData = userService.register(new UserData("player1", "password", "player1@example.com"));
 
@@ -39,10 +39,10 @@ public class CreateGameTest {
     }
 
     @Test
-    void testCreateGameFailure() throws Exception {
+    void testCreateGameFailure() {
         Exception exception = assertThrows(RuntimeException.class, () -> {
-            AuthData authData = userService.register(new UserData("player2", "password2", "player2@example.com"));
-            int response = gameService.createGame("jaldksf", "testGame");
+            userService.register(new UserData("player2", "password2", "player2@example.com"));
+            gameService.createGame("jaldksf", "testGame");
         });
 
         assertEquals("unauthorized", exception.getMessage());

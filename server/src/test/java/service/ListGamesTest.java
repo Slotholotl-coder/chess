@@ -31,7 +31,7 @@ public class ListGamesTest {
     }
 
     @Test
-    void testListGamesSuccess() throws Exception {
+    void testListGamesSuccess() {
 
         AuthData authData = userService.register(new UserData("player1", "password", "player1@example.com"));
         int gameID = gameService.createGame(authData.getAuthToken(), "testGame");
@@ -44,12 +44,12 @@ public class ListGamesTest {
     }
 
     @Test
-    void testListGamesFailure() throws Exception {
+    void testListGamesFailure() {
         Exception exception = assertThrows(RuntimeException.class, () -> {
             AuthData authData = userService.register(new UserData("player1", "password", "player1@example.com"));
-            int gameID = gameService.createGame(authData.getAuthToken(), "testGame");
+            gameService.createGame(authData.getAuthToken(), "testGame");
 
-            Collection<GameData> games = gameService.listGames(authData.getAuthToken());
+            gameService.listGames(authData.getAuthToken());
         });
 
         assertEquals("Error: Already Taken", exception.getMessage());

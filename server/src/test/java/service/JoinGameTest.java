@@ -42,7 +42,7 @@ public class JoinGameTest {
     @Test
     void testJoinGameFailure() {
         Exception exception = assertThrows(RuntimeException.class, () -> {
-            AuthData authData = userService.login(new UserData("testUser", "testPass", null));
+            userService.login(new UserData("testUser", "testPass", null));
             gameService.createGame("asdlkfj", "testGame");
         });
 

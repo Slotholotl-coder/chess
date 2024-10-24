@@ -25,9 +25,7 @@ public class ServerLoginTest {
 
     @Test
     void testLoginFailure() {
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            userService.login(new UserData("testUser", "wrongPass", null));
-        });
+        Exception exception = assertThrows(RuntimeException.class, () -> userService.login(new UserData("testUser", "wrongPass", null)));
 
         assertEquals("Unauthorized", exception.getMessage());
     }

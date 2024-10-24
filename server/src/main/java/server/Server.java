@@ -155,7 +155,7 @@ public class Server {
             try {
                 JoinGameRequest joinRequest = gson.fromJson(request.body(), JoinGameRequest.class);
 
-                gameService.joinGame(authToken, joinRequest.getGameID(), joinRequest.getPlayerColor());
+                gameService.joinGame(authToken, joinRequest.gameID(), joinRequest.playerColor());
                 response.status(200);
                 return "{}";
             } catch (RuntimeException e) {
@@ -184,17 +184,7 @@ public class Server {
         Spark.awaitStop();
     }
 
-    private static class JoinGameRequest {
-        private String playerColor;
-        private int gameID;
-
-        public String getPlayerColor() {
-            return playerColor;
-        }
-
-        public int getGameID() {
-            return gameID;
-        }
+    private record JoinGameRequest(String playerColor, int gameID) {
     }
 
     public static class GameResponse {
@@ -203,11 +193,6 @@ public class Server {
         public GameResponse(Collection<GameData> games) {
             this.games = games;
         }
-
-        public Collection<GameData> getGames() {
-            return games;
-        }
-
     }
 
 }

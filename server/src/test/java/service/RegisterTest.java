@@ -25,16 +25,14 @@ public class RegisterTest {
     }
 
     @Test
-    void registerSuccess() throws Exception {
+    void registerSuccess() {
         var authData = userService.register(new UserData("player1", "password", "p1@email.com"));
         assertTrue(authData.getAuthToken().length() > 10);
     }
 
     @Test
-    void registerFailure() throws Exception {
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            var authData = userService.register(new UserData("player1", "password", null));
-        });
+    void registerFailure() {
+        Exception exception = assertThrows(RuntimeException.class, () -> userService.register(new UserData("player1", "password", null)));
         assertEquals("Error: bad request", exception.getMessage());
     }
 }

@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 public class ClearTest {
     private static UserService userService;
-    private static GameService gameService;
     MemoryAuthDAO memoryAuthDAO = MemoryAuthDAO.getInstance();
     MemoryGameDAO memoryGameDAO = MemoryGameDAO.getInstance();
     MemoryUserDAO memoryUserDAO = MemoryUserDAO.getInstance();
@@ -20,7 +19,7 @@ public class ClearTest {
         userService = new UserService();
         AuthData authData = userService.register(new UserData("testUser", "testPass", "test@example.com"));
 
-        gameService = new GameService();
+        GameService gameService = new GameService();
         gameService.createGame(authData.getAuthToken(), "testGame");
     }
 
