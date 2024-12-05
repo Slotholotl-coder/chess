@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.BeforeAll;
@@ -11,13 +12,13 @@ public class ServerLoginTest {
     private static UserService userService;
 
     @BeforeAll
-    static void setUp() {
+    static void setUp() throws DataAccessException {
         userService = new UserService();
         userService.register(new UserData("testUser", "testPass", "test@example.com"));
     }
 
     @Test
-    void testLoginSuccess() {
+    void testLoginSuccess() throws DataAccessException {
         AuthData authData = userService.login(new UserData("testUser", "testPass", null));
         assertNotNull(authData.getAuthToken());
         assertEquals("testUser", authData.getUsername());

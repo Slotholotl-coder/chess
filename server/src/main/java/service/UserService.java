@@ -1,19 +1,18 @@
 package service;
 
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 import model.AuthData;
 import model.UserData;
 
 import java.util.UUID;
 
 public class UserService {
-    private final MemoryUserDAO userDAO = MemoryUserDAO.getInstance();
-    private final MemoryGameDAO memoryGameDAO = MemoryGameDAO.getInstance();
-    private final MemoryAuthDAO memoryAuthDAO = MemoryAuthDAO.getInstance();
+    private final UserDAO userDAO = mySQLUserDAO.getInstance();
+    private final GameDAO memoryGameDAO = mySQLGameDAO.getInstance();
+    private final AuthDAO memoryAuthDAO = mySQLAuthDAO.getInstance();
 
-    public AuthData login(UserData user) {
+
+    public AuthData login(UserData user) throws DataAccessException {
 
         UserData databaseUser = userDAO.getUser(user.getUsername());
         if (databaseUser != null && databaseUser.getPassword().equals(user.getPassword())) {
@@ -24,7 +23,7 @@ public class UserService {
         throw new RuntimeException("Unauthorized");
     }
 
-    public void logout(String authToken) {
+    public void logout(String authToken) throws DataAccessException {
         if (memoryAuthDAO.getAuthToken(authToken) == null) {
             throw new RuntimeException("unauthorized");
         }
@@ -33,7 +32,7 @@ public class UserService {
         userDAO.removeUser(username);
     }
 
-    public AuthData register(UserData user) {
+    public AuthData register(UserData user) throws DataAccessException {
         if (!userDataIsValid(user)) {
             throw new RuntimeException("Error: bad request");
         }
@@ -59,7 +58,7 @@ public class UserService {
     }
 
 
-    public void clear() {
+    public void clear() throws DataAccessException {
         userDAO.clear();
         memoryGameDAO.clear();
         memoryAuthDAO.clear();

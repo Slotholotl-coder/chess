@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryGameDAO;
 import dataaccess.MemoryUserDAO;
@@ -19,7 +20,7 @@ public class JoinGameTest {
     private static GameService gameService;
 
     @BeforeAll
-    static void setUp() {
+    static void setUp() throws DataAccessException {
         gameService = new GameService();
         userService = new UserService();
 
@@ -32,7 +33,7 @@ public class JoinGameTest {
     }
 
     @Test
-    void testJoinGameSuccess() {
+    void testJoinGameSuccess() throws DataAccessException {
         AuthData authData = userService.login(new UserData("testUser", "testPass", null));
         gameService.createGame(authData.getAuthToken(), "testGame");
         gameService.joinGame(authData.getAuthToken(), 1, "WHITE");

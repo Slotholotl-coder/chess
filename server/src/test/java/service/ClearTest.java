@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryGameDAO;
 import dataaccess.MemoryUserDAO;
@@ -15,7 +16,7 @@ public class ClearTest {
     MemoryUserDAO memoryUserDAO = MemoryUserDAO.getInstance();
 
     @BeforeAll
-    static void setUp() {
+    static void setUp() throws DataAccessException {
         userService = new UserService();
         AuthData authData = userService.register(new UserData("testUser", "testPass", "test" +
                 "@example.com"));
@@ -25,7 +26,7 @@ public class ClearTest {
     }
 
     @Test
-    void clearTest() {
+    void clearTest() throws DataAccessException {
         userService.clear();
         assert (memoryAuthDAO.getNumberOfAuthTokens() == 0 && memoryUserDAO.getNumberOfUsers() == 0
                 && memoryGameDAO.getNumberOfGames() == 0);

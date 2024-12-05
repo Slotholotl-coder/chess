@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryGameDAO;
 import dataaccess.MemoryUserDAO;
@@ -31,7 +32,7 @@ public class ListGamesTest {
     }
 
     @Test
-    void testListGamesSuccess() {
+    void testListGamesSuccess() throws DataAccessException {
 
         AuthData authData = userService.register(new UserData("player1", "password", "player1" +
                 "@example.com"));

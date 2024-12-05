@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryGameDAO;
 import dataaccess.MemoryUserDAO;
@@ -26,7 +27,7 @@ public class LogoutTest {
     }
 
     @Test
-    void logoutSuccess() {
+    void logoutSuccess() throws DataAccessException {
         AuthData authData = userService.register(new UserData("player1", "password", "p1@email" +
                 ".com"));
         userService.logout(authData.getAuthToken());

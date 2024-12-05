@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryGameDAO;
 import dataaccess.MemoryUserDAO;
@@ -25,7 +26,7 @@ public class RegisterTest {
     }
 
     @Test
-    void registerSuccess() {
+    void registerSuccess() throws DataAccessException {
         var authData = userService.register(new UserData("player1", "password", "p1@email.com"));
         assertTrue(authData.getAuthToken().length() > 10);
     }
