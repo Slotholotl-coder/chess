@@ -8,10 +8,10 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-public class mySQLGameDAO implements GameDAO {
-    public static mySQLGameDAO instance;
+public class MySQLGameDAO implements GameDAO {
+    public static MySQLGameDAO instance;
 
-    public mySQLGameDAO() {
+    public MySQLGameDAO() {
         try { DatabaseManager.createDatabase(); } catch (DataAccessException ex) {
             throw new RuntimeException(ex);
         }
@@ -33,9 +33,9 @@ public class mySQLGameDAO implements GameDAO {
         }
     }
 
-    public static mySQLGameDAO getInstance(){
+    public static MySQLGameDAO getInstance(){
         if (instance == null) {
-            instance = new mySQLGameDAO();
+            instance = new MySQLGameDAO();
         }
         return instance;
     }

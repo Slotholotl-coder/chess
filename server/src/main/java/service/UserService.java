@@ -7,9 +7,9 @@ import model.UserData;
 import java.util.UUID;
 
 public class UserService {
-    private final UserDAO userDAO = mySQLUserDAO.getInstance();
-    private final GameDAO memoryGameDAO = mySQLGameDAO.getInstance();
-    private final AuthDAO memoryAuthDAO = mySQLAuthDAO.getInstance();
+    private final UserDAO userDAO = MySQLUserDAO.getInstance();
+    private final GameDAO memoryGameDAO = MySQLGameDAO.getInstance();
+    private final AuthDAO memoryAuthDAO = MySQLAuthDAO.getInstance();
 
 
     public AuthData login(UserData user) throws DataAccessException {

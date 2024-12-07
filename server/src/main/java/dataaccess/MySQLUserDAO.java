@@ -8,10 +8,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class mySQLUserDAO implements UserDAO {
-    public static mySQLUserDAO instance;
+public class MySQLUserDAO implements UserDAO {
+    public static MySQLUserDAO instance;
 
-    public mySQLUserDAO() {
+    public MySQLUserDAO() {
         try { DatabaseManager.createDatabase(); }
         catch (DataAccessException ex) {
             throw new RuntimeException(ex);
@@ -32,9 +32,9 @@ public class mySQLUserDAO implements UserDAO {
         }
     }
 
-    public static mySQLUserDAO getInstance(){
+    public static MySQLUserDAO getInstance(){
         if (instance == null) {
-            instance = new mySQLUserDAO();
+            instance = new MySQLUserDAO();
         }
         return instance;
     }
@@ -47,7 +47,8 @@ public class mySQLUserDAO implements UserDAO {
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER_SQL)) {
 
             preparedStatement.setString(1, userData.getUsername());
-            preparedStatement.setString(2, userData.getPassword()); // Consider hashing the password
+            preparedStatement.setString(2, hashPassword(userData.getUsername(),
+                    userData.getPassword()));
             preparedStatement.setString(3, userData.getEmail());
 
             preparedStatement.executeUpdate();
@@ -104,18 +105,58 @@ public class mySQLUserDAO implements UserDAO {
         }
     }
 
+    String hashPassword(String username, String password){
+        return BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+
     void storeUserPassword(String username, String clearTextPassword) {
-        String hashedPassword = BCrypt.hashpw(clearTextPassword, BCrypt.gensalt());
+        String hashedPassword = hashPassword(username, clearTextPassword);
 
         // write the hashed password in database along with the user's other information
         writeHashedPasswordToDatabase(username, hashedPassword);
     }
 
-    boolean verifyUser(String username, String providedClearTextPassword) {
-        // read the previously hashed password from the database
-        var hashedPassword = readHashedPasswordFromDatabase(username);
-
-        return BCrypt.checkpw(providedClearTextPassword, hashedPassword);
+    boolean passwordMatches(String username, String password){
+        return BCrypt.checkpw(password, readHashedPasswordFromDatabase(username));
     }
 
+
+    void writeHashedPasswordToDatabase(String username, String hashedPassword){
+        String sql = "INSERT INTO users (username, password_hash) VALUES (?, ?) " +
+                "ON DUPLICATE KEY UPDATE password_hash = ?";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, hashedPassword);
+            preparedStatement.setString(3, hashedPassword);
+
+            preparedStatement.executeUpdate();
+            System.out.println("Password hash stored successfully for user: " + username);
+        } catch (SQLException | DataAccessException e) {
+            System.out.println("Error storing password hash: " + e.getMessage());
+        }
+    }
+
+    public String readHashedPasswordFromDatabase(String username) {
+        String sql = "SELECT password_hash FROM users WHERE username = ?";
+        String hashedPassword = null;
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, username);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    hashedPassword = rs.getString("password_hash");
+                }
+            }
+        } catch (SQLException | DataAccessException e) {
+            System.out.println("Error reading password hash: " + e.getMessage());
+        }
+
+        return hashedPassword;
+    }
 }
