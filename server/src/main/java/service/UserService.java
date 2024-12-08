@@ -13,14 +13,11 @@ public class UserService {
 
 
     public AuthData login(UserData user) throws DataAccessException {
-
-        UserData databaseUser = userDAO.getUser(user.getUsername());
-        if (databaseUser != null && databaseUser.getPassword().equals(user.getPassword())) {
-            String newAuthToken = generateAuthToken();
-            memoryAuthDAO.insertAuthToken(newAuthToken, user.getUsername());
-            return new AuthData(newAuthToken, user.getUsername());
+        try {
+            userDAO.validUser(user.getUsername(), user.getPassword());
+        } catch (DataAccessException e) {
+            throw new DataAccessException(e.toString());
         }
-        throw new RuntimeException("Unauthorized");
     }
 
     public void logout(String authToken) throws DataAccessException {

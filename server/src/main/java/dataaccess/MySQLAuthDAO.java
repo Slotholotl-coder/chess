@@ -47,7 +47,7 @@ public class MySQLAuthDAO implements AuthDAO{
     }
 
     @Override
-    public AuthData getAuthToken(String authToken) {
+    public AuthData getAuthToken(String authToken) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var statement = conn.prepareStatement("SELECT username, authToken FROM auth WHERE authToken=?")) {
                 statement.setString(1, authToken);
@@ -58,11 +58,7 @@ public class MySQLAuthDAO implements AuthDAO{
                 }
             }
         } catch (SQLException | DataAccessException e) {
-            try {
-                throw new DataAccessException("Invalid authToken");
-            } catch (DataAccessException ex) {
-                throw new RuntimeException(ex);
-            }
+            throw new DataAccessException("Invalid authToken");
         }
     }
 

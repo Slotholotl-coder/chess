@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class MySQLUserDAO implements UserDAO {
     public static MySQLUserDAO instance;
@@ -107,6 +108,12 @@ public class MySQLUserDAO implements UserDAO {
 
     String hashPassword(String username, String password){
         return BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+
+    @Override
+    public boolean validUser(String username, String password) throws DataAccessException {
+        UserData userData = getUser(username);
+        return Objects.equals(userData.getPassword(), readHashedPasswordFromDatabase(username));
     }
 
     void storeUserPassword(String username, String clearTextPassword) {

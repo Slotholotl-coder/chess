@@ -1,8 +1,7 @@
 package service;
 
 import chess.ChessGame;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
+import dataaccess.*;
 import model.GameData;
 
 import java.util.Collection;
@@ -11,17 +10,17 @@ import java.util.Objects;
 public class GameService {
     int gameIdCounter = 1;
 
-    private final MemoryAuthDAO memoryAuthDAO = MemoryAuthDAO.getInstance();
-    private final MemoryGameDAO memoryGameDAO = MemoryGameDAO.getInstance();
+    private final AuthDAO memoryAuthDAO = MySQLAuthDAO.getInstance();
+    private final GameDAO memoryGameDAO = MySQLGameDAO.getInstance();
 
-    public Collection<GameData> listGames(String authToken) {
+    public Collection<GameData> listGames(String authToken) throws DataAccessException {
         if (authToken.isEmpty() || memoryAuthDAO.getAuthToken(authToken) == null) {
             throw new RuntimeException("unauthorized");
         }
         return memoryGameDAO.getAllGames();
     }
 
-    public int createGame(String authToken, String gameName) {
+    public int createGame(String authToken, String gameName) throws DataAccessException {
         if (authToken.isEmpty() || memoryAuthDAO.getAuthToken(authToken) == null) {
             throw new RuntimeException("unauthorized");
         }
@@ -32,7 +31,7 @@ public class GameService {
         return newGame.getGameID();
     }
 
-    public void joinGame(String authToken, int gameId, String teamColor) {
+    public void joinGame(String authToken, int gameId, String teamColor) throws DataAccessException {
         if (authToken == null || memoryAuthDAO.getAuthToken(authToken) == null) {
             throw new RuntimeException("unauthorized");
         }

@@ -10,4 +10,6 @@ public interface UserDAO {
     void removeUser(String username) throws DataAccessException;
 
     void clear() throws DataAccessException;
+
+    boolean validUser(String username, String password) throws DataAccessException;
 }
