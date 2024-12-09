@@ -46,12 +46,14 @@ public class GameService {
         if (Objects.equals(teamColor, "BLACK")) {
             if (game.getBlackUsername() == null) {
                 game.setBlackUsername(memoryAuthDAO.getAuthToken(authToken).getUsername());
+                memoryGameDAO.updateGame(game);
             } else {
                 throw new DataAccessException("already taken");
             }
         } else if (Objects.equals(teamColor, "WHITE")) {
             if (game.getWhiteUsername() == null) {
                 game.setWhiteUsername(memoryAuthDAO.getAuthToken(authToken).getUsername());
+                memoryGameDAO.updateGame(game);
             } else {
                 throw new DataAccessException("already taken");
             }

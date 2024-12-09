@@ -33,6 +33,11 @@ public class MemoryGameDAO implements GameDAO {
         return games.values();
     }
 
+    @Override
+    public void updateGame(GameData gameData) throws DataAccessException{
+        return;
+    }
+
     public int getNumberOfGames() {
         return games.size();
     }

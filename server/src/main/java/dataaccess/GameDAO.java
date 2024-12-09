@@ -11,5 +11,7 @@ public interface GameDAO {
 
     Collection<GameData> getAllGames();
 
+    public void updateGame(GameData gameData) throws DataAccessException;
+
     void clear();
 }
