@@ -1,10 +1,6 @@
-package service;
+package dataaccess;
 
-import dataaccess.DataAccessException;
-import dataaccess.MySQLAuthDAO;
-import dataaccess.DatabaseManager;
 import model.AuthData;
-import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
