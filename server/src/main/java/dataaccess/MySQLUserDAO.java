@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Objects;
 
 public class MySQLUserDAO implements UserDAO {
     public static MySQLUserDAO instance;
@@ -42,10 +41,10 @@ public class MySQLUserDAO implements UserDAO {
 
     @Override
     public void insertUser(UserData userData) throws DataAccessException {
-        String inserUserSql = "INSERT INTO users (username, password, email) VALUES (?, ?, ?);";
+        String insertUserSql = "INSERT INTO users (username, password, email) VALUES (?, ?, ?);";
 
         try (Connection connection = DatabaseManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(inserUserSql)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(insertUserSql)) {
 
             preparedStatement.setString(1, userData.getUsername());
             preparedStatement.setString(2, hashPassword(userData.getPassword()));
