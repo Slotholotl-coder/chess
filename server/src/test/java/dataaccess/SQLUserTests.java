@@ -4,70 +4,83 @@ import model.UserData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mindrot.jbcrypt.BCrypt;
-
-import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SQLUserTests {
 
-    UserData testUser;
-    MySQLUserDAO userDAO;
+    private MySQLUserDAO userDAO;
+    private final String testUsername = "testUser";
+    private final String testPassword = "testPassword";
+    private final String testEmail = "test@example.com";
 
     @BeforeEach
-    void init() throws DataAccessException, SQLException {
-        clearUserTable();
-        DatabaseManager.createDatabase();
+    void setUp() throws DataAccessException {
         userDAO = MySQLUserDAO.getInstance();
-        clearUserTable();
-        testUser = new UserData("testUser", "testPass", "test@example.com");
+        userDAO.clear();
     }
 
     @AfterEach
-    public void clearUserTable() throws SQLException {
-        try (var conn = DatabaseManager.getConnection();
-             var stmt = conn.prepareStatement("DELETE FROM user")) {
-            stmt.executeUpdate();
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
-        }
+    void tearDown() throws DataAccessException {
+        userDAO.clear();
     }
 
     @Test
-    void createUserSuccessfully() throws DataAccessException, SQLException {
-        clearUserTable();
-        userDAO.insertUser(new UserData("pablo", "ajefio", "eaklfj"));
-
-        try (var conn = DatabaseManager.getConnection();
-             var stmt = conn.prepareStatement("SELECT * FROM users WHERE username = ?")) {
-            stmt.setString(1, testUser.getUsername());
-            var rs = stmt.executeQuery();
-
-            assertTrue(rs.next());
-            assertEquals(testUser.getUsername(), rs.getString("username"));
-            assertEquals(testUser.getEmail(), rs.getString("email"));
-            assertTrue(passwordMatches("testUser", "testPass"));
-        }
-    }
-
-    boolean passwordMatches(String username, String password) throws DataAccessException {
-        return BCrypt.checkpw(password, userDAO.readHashedPasswordFromDatabase(username));
-    }
-
-    @Test
-    void getUserExistingUser() throws DataAccessException {
-
-        UserData retrievedUser = userDAO.getUser(testUser.getUsername());
-
+    void testInsertUser_Positive() throws DataAccessException {
+        UserData userData = new UserData(testUsername, testPassword, testEmail);
+        userDAO.insertUser(userData);
+        UserData retrievedUser = userDAO.getUser(testUsername);
         assertNotNull(retrievedUser);
-        assertEquals(testUser.getUsername(), retrievedUser.getUsername());
-        assertEquals(testUser.getEmail(), retrievedUser.getEmail());
+        assertEquals(testUsername, retrievedUser.getUsername());
+        assertEquals(testEmail, retrievedUser.getEmail());
     }
 
     @Test
-    void getUserNonExistentUser() throws DataAccessException {
-        assertNull(userDAO.getUser("nonexistentUser"));
+    void testInsertUser_Negative() {
+        UserData userData = new UserData(testUsername, testPassword, testEmail);
+        assertDoesNotThrow(() -> userDAO.insertUser(userData));
+        assertThrows(DataAccessException.class, () -> userDAO.insertUser(userData));
+    }
+
+    @Test
+    void testGetUser_Positive() throws DataAccessException {
+        UserData userData = new UserData(testUsername, testPassword, testEmail);
+        userDAO.insertUser(userData);
+        UserData retrievedUser = userDAO.getUser(testUsername);
+        assertNotNull(retrievedUser);
+        assertEquals(testUsername, retrievedUser.getUsername());
+        assertEquals(testEmail, retrievedUser.getEmail());
+    }
+
+    @Test
+    void testGetUser_Negative() throws DataAccessException {
+        UserData retrievedUser = userDAO.getUser("nonexistentUser");
+        assertNull(retrievedUser);
+    }
+
+    @Test
+    void testRemoveUser_Positive() throws DataAccessException {
+        UserData userData = new UserData(testUsername, testPassword, testEmail);
+        userDAO.insertUser(userData);
+        userDAO.removeUser(testUsername);
+        UserData retrievedUser = userDAO.getUser(testUsername);
+        assertNull(retrievedUser);
+    }
+
+    @Test
+    void testRemoveUser_Negative() {
+        assertDoesNotThrow(() -> userDAO.removeUser("nonexistentUser"));
+    }
+
+    @Test
+    void testClear_Positive() throws DataAccessException {
+        UserData userData1 = new UserData("user1", "password1", "user1@example.com");
+        UserData userData2 = new UserData("user2", "password2", "user2@example.com");
+        userDAO.insertUser(userData1);
+        userDAO.insertUser(userData2);
+        userDAO.clear();
+        assertNull(userDAO.getUser("user1"));
+        assertNull(userDAO.getUser("user2"));
     }
 
 }
