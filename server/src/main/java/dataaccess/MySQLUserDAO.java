@@ -93,10 +93,10 @@ public class MySQLUserDAO implements UserDAO {
     }
 
     public void clear() throws DataAccessException {
-        String CLEAR_USERS_SQL = "DELETE FROM users;";
+        String clearUsersSql = "DELETE FROM users;";
 
         try (Connection connection = DatabaseManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(CLEAR_USERS_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(clearUsersSql)) {
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
