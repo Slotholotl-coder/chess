@@ -129,7 +129,7 @@ public class MySQLGameDAO implements GameDAO {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-        } catch (SQLException | DataAccessException e) {
+        } catch (SQLException | DataAccessException ignored) {
         }
     }
 }
