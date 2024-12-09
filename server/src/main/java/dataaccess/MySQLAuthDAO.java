@@ -35,7 +35,7 @@ public class MySQLAuthDAO implements AuthDAO{
     }
 
     @Override
-    public void insertAuthToken(String authToken, String username) {
+    public void insertAuthToken(String authToken, String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var statement = conn.prepareStatement("INSERT INTO auth (username, authToken) VALUES(?, ?)")) {
                 statement.setString(1, username);
@@ -43,6 +43,7 @@ public class MySQLAuthDAO implements AuthDAO{
                 statement.executeUpdate();
             }
         } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException("Error with authtoken");
         }
     }
 
@@ -63,13 +64,14 @@ public class MySQLAuthDAO implements AuthDAO{
     }
 
     @Override
-    public void removeAuthToken(String authToken) {
+    public void removeAuthToken(String authToken) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection() ) {
             try (var statement = conn.prepareStatement("DELETE FROM auth WHERE authToken=?")) {
                 statement.setString(1, authToken);
                 statement.executeUpdate();
             }
         } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException("Could not find authtoken to remove");
         }
     }
 
@@ -81,7 +83,7 @@ public class MySQLAuthDAO implements AuthDAO{
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-        } catch (SQLException | DataAccessException e) {
+        } catch (SQLException | DataAccessException ignored) {
         }
     }
 }
