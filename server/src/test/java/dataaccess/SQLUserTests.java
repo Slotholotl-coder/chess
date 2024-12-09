@@ -4,6 +4,7 @@ import model.UserData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +27,7 @@ public class SQLUserTests {
     }
 
     @Test
-    void testInsertUser_Positive() throws DataAccessException {
+    void testInsertUserPositive() throws DataAccessException {
         UserData userData = new UserData(testUsername, testPassword, testEmail);
         userDAO.insertUser(userData);
         UserData retrievedUser = userDAO.getUser(testUsername);
@@ -36,30 +37,33 @@ public class SQLUserTests {
     }
 
     @Test
-    void testInsertUser_Negative() {
+    void testInsertUserNegative() {
         UserData userData = new UserData(testUsername, testPassword, testEmail);
         assertDoesNotThrow(() -> userDAO.insertUser(userData));
         assertThrows(DataAccessException.class, () -> userDAO.insertUser(userData));
     }
 
     @Test
-    void testGetUser_Positive() throws DataAccessException {
-        UserData userData = new UserData(testUsername, testPassword, testEmail);
-        userDAO.insertUser(userData);
-        UserData retrievedUser = userDAO.getUser(testUsername);
-        assertNotNull(retrievedUser);
-        assertEquals(testUsername, retrievedUser.getUsername());
-        assertEquals(testEmail, retrievedUser.getEmail());
+    void testGetUserPositive() throws DataAccessException {
+        UserData userData1 = new UserData(testUsername, testPassword, testEmail);
+
+        userDAO.insertUser(userData1);
+
+        UserData retrievedUser1 = userDAO.getUser(testUsername);
+        assertNotNull(retrievedUser1);
+        assertEquals(testUsername, retrievedUser1.getUsername());
+        assertEquals(testEmail, retrievedUser1.getEmail());
+        assertTrue(BCrypt.checkpw(testPassword, retrievedUser1.getPassword()));
     }
 
     @Test
-    void testGetUser_Negative() throws DataAccessException {
+    void testGetUserNegative() throws DataAccessException {
         UserData retrievedUser = userDAO.getUser("nonexistentUser");
         assertNull(retrievedUser);
     }
 
     @Test
-    void testRemoveUser_Positive() throws DataAccessException {
+    void testRemoveUserPositive() throws DataAccessException {
         UserData userData = new UserData(testUsername, testPassword, testEmail);
         userDAO.insertUser(userData);
         userDAO.removeUser(testUsername);
@@ -68,12 +72,12 @@ public class SQLUserTests {
     }
 
     @Test
-    void testRemoveUser_Negative() {
+    void testRemoveUserNegative() {
         assertDoesNotThrow(() -> userDAO.removeUser("nonexistentUser"));
     }
 
     @Test
-    void testClear_Positive() throws DataAccessException {
+    void testClearPositive() throws DataAccessException {
         UserData userData1 = new UserData("user1", "password1", "user1@example.com");
         UserData userData2 = new UserData("user2", "password2", "user2@example.com");
         userDAO.insertUser(userData1);
