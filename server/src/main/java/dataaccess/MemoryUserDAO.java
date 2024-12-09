@@ -4,6 +4,7 @@ import model.UserData;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class MemoryUserDAO implements UserDAO {
     public static MemoryUserDAO instance;
@@ -40,5 +41,15 @@ public class MemoryUserDAO implements UserDAO {
     @Override
     public void clear() {
         users.clear();
+    }
+
+    @Override
+    public boolean validUser(String username, String password) throws DataAccessException {
+        if (users.get(username) != null){
+            return Objects.equals(users.get(username).getPassword(), password);
+        }
+        else{
+            throw new DataAccessException("Nonexistent user : " + username);
+        }
     }
 }

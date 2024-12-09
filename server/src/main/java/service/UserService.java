@@ -15,6 +15,10 @@ public class UserService {
     public AuthData login(UserData user) throws DataAccessException {
         try {
             userDAO.validUser(user.getUsername(), user.getPassword());
+            String authToken = UUID.randomUUID().toString();
+            AuthData authData = new AuthData(authToken, user.getUsername());
+            memoryAuthDAO.insertAuthToken(authToken, user.getUsername());
+            return authData;
         } catch (DataAccessException e) {
             throw new DataAccessException(e.toString());
         }
@@ -22,7 +26,7 @@ public class UserService {
 
     public void logout(String authToken) throws DataAccessException {
         if (memoryAuthDAO.getAuthToken(authToken) == null) {
-            throw new RuntimeException("unauthorized");
+            throw new DataAccessException("Unauthorized");
         }
         String username = memoryAuthDAO.getAuthToken(authToken).getUsername();
         memoryAuthDAO.removeAuthToken(authToken);
@@ -31,11 +35,13 @@ public class UserService {
 
     public AuthData register(UserData user) throws DataAccessException {
         if (!userDataIsValid(user)) {
-            throw new RuntimeException("Error: bad request");
+            throw new DataAccessException("Error: bad request");
         }
 
-        if (userDAO.getUser(user.getUsername()) != null) {
-            throw new RuntimeException("Error: Already Taken");
+        UserData userData = userDAO.getUser(user.getUsername());
+
+        if (userData != null) {
+            throw new DataAccessException("Error: Already Taken");
         }
 
         userDAO.insertUser(user);

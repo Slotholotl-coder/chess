@@ -48,8 +48,7 @@ public class MySQLUserDAO implements UserDAO {
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER_SQL)) {
 
             preparedStatement.setString(1, userData.getUsername());
-            preparedStatement.setString(2, hashPassword(userData.getUsername(),
-                    userData.getPassword()));
+            preparedStatement.setString(2, hashPassword(userData.getPassword()));
             preparedStatement.setString(3, userData.getEmail());
 
             preparedStatement.executeUpdate();
@@ -106,48 +105,43 @@ public class MySQLUserDAO implements UserDAO {
         }
     }
 
-    String hashPassword(String username, String password){
+    String hashPassword(String password){
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
-    @Override
-    public boolean validUser(String username, String password) throws DataAccessException {
-        UserData userData = getUser(username);
-        return Objects.equals(userData.getPassword(), readHashedPasswordFromDatabase(username));
-    }
+//    @Override
+    //public boolean validUser(String username, String password) throws DataAccessException {
+//        UserData userData = getUser(username);
+//        try {
+//            String hashedPW = readHashedPasswordFromDatabase(username);
+//            if (Objects.equals(hashPassword(password), hashedPW)){
+//                return true;
+//            }
+//            else{
+//                throw new DataAccessException("Unauthorized");
+//            }
+//        }
+//        catch (DataAccessException e){
+//            throw new DataAccessException(e.getMessage());
+//        }
+//    }
 
-    void storeUserPassword(String username, String clearTextPassword) {
-        String hashedPassword = hashPassword(username, clearTextPassword);
+        @Override
+        public boolean validUser(String username, String providedClearTextPassword) throws DataAccessException {
+            // read the previously hashed password from the database
+            var hashedPassword = readHashedPasswordFromDatabase(username);
 
-        // write the hashed password in database along with the user's other information
-        writeHashedPasswordToDatabase(username, hashedPassword);
-    }
-
-    boolean passwordMatches(String username, String password){
-        return BCrypt.checkpw(password, readHashedPasswordFromDatabase(username));
-    }
-
-
-    void writeHashedPasswordToDatabase(String username, String hashedPassword){
-        String sql = "INSERT INTO users (username, password_hash) VALUES (?, ?) " +
-                "ON DUPLICATE KEY UPDATE password_hash = ?";
-
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
-
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, hashedPassword);
-            preparedStatement.setString(3, hashedPassword);
-
-            preparedStatement.executeUpdate();
-            System.out.println("Password hash stored successfully for user: " + username);
-        } catch (SQLException | DataAccessException e) {
-            System.out.println("Error storing password hash: " + e.getMessage());
+            if(hashedPassword != null && BCrypt.checkpw(providedClearTextPassword, hashedPassword)){
+                return true;
+            }
+            else{
+                throw new DataAccessException("Invalid Password");
+            }
         }
-    }
 
-    public String readHashedPasswordFromDatabase(String username) {
-        String sql = "SELECT password_hash FROM users WHERE username = ?";
+
+    public String readHashedPasswordFromDatabase(String username) throws DataAccessException {
+        String sql = "SELECT password FROM users WHERE username = ?";
         String hashedPassword = null;
 
         try (Connection conn = DatabaseManager.getConnection();
@@ -157,11 +151,11 @@ public class MySQLUserDAO implements UserDAO {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    hashedPassword = rs.getString("password_hash");
+                    hashedPassword = rs.getString("password");
                 }
             }
         } catch (SQLException | DataAccessException e) {
-            System.out.println("Error reading password hash: " + e.getMessage());
+            throw new DataAccessException("Error reading hashed passwords : " + e.getMessage());
         }
 
         return hashedPassword;

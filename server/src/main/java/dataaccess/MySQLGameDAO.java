@@ -97,6 +97,21 @@ public class MySQLGameDAO implements GameDAO {
         return games;
     }
 
+    public void updateGame(GameData game) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("UPDATE game SET whiteUsername=?, blackUsername=?, gameName=?, chessGame=? WHERE gameID=?")) {
+                statement.setString(1, game.getWhiteUsername());
+                statement.setString(2, game.getBlackUsername());
+                statement.setString(3, game.getGameName());
+                statement.setString(4, serializeGame(game.getGame()));
+                statement.setInt(5, game.getGameID());
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
     private String serializeGame(ChessGame game) {
         return new Gson().toJson(game);
     }

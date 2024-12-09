@@ -22,7 +22,7 @@ public class GameService {
 
     public int createGame(String authToken, String gameName) throws DataAccessException {
         if (authToken.isEmpty() || memoryAuthDAO.getAuthToken(authToken) == null) {
-            throw new RuntimeException("unauthorized");
+            throw new DataAccessException("unauthorized");
         }
         int gameID = gameIdCounter;
         gameIdCounter++;
@@ -41,22 +41,22 @@ public class GameService {
         }
         String username = memoryAuthDAO.getAuthToken(authToken).getUsername();
         if (username == null) {
-            throw new RuntimeException("unauthorized");
+            throw new DataAccessException("unauthorized");
         }
         if (Objects.equals(teamColor, "BLACK")) {
             if (game.getBlackUsername() == null) {
                 game.setBlackUsername(memoryAuthDAO.getAuthToken(authToken).getUsername());
             } else {
-                throw new RuntimeException("already taken");
+                throw new DataAccessException("already taken");
             }
         } else if (Objects.equals(teamColor, "WHITE")) {
             if (game.getWhiteUsername() == null) {
                 game.setWhiteUsername(memoryAuthDAO.getAuthToken(authToken).getUsername());
             } else {
-                throw new RuntimeException("already taken");
+                throw new DataAccessException("already taken");
             }
         } else {
-            throw new RuntimeException("invalid team color");
+            throw new DataAccessException("Bad Request");
         }
     }
 

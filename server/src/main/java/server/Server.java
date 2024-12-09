@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -17,7 +18,7 @@ public class Server {
     private final GameService gameService = new GameService();
     private final Gson gson = new Gson();
 
-    private static String getError(Response response, RuntimeException e) {
+    private static String getError(Response response, DataAccessException e) {
         if (e.getMessage().contains("unauthorized")) {
             response.status(401);
             return "{\"message\": \"Error: unauthorized\"}";
@@ -69,7 +70,7 @@ public class Server {
                 gameService.joinGame(authToken, joinRequest.gameID(), joinRequest.playerColor());
                 response.status(200);
                 return "{}";
-            } catch (RuntimeException e) {
+            } catch (DataAccessException e) {
                 String x = getError(response, e);
                 if (x != null) {
                     return x;
@@ -96,7 +97,7 @@ public class Server {
                 response.status(200);
                 System.out.println(gson.toJson(new GameResponse(games)));
                 return gson.toJson(new GameResponse(games));
-            } catch (RuntimeException e) {
+            } catch (DataAccessException e) {
                 response.status(401);
                 return "{\"message\": \"Error: unauthorized" + "\"}";
             } catch (Exception e) {
@@ -128,7 +129,7 @@ public class Server {
                 response.status(200);
                 System.out.println(gameId);
                 return "{ \"gameID\": \"" + gameId + "\"}";
-            } catch (RuntimeException e) {
+            } catch (DataAccessException e) {
                 if (e.getMessage().contains("unauthorized")) {
                     response.status(401);
                     return "{\"message\": \"Error: unauthorized\"}";
@@ -166,7 +167,7 @@ public class Server {
                 userService.logout(authToken);
                 response.status(200);
                 return "{}";
-            } catch (RuntimeException e) {
+            } catch (DataAccessException e) {
                 response.status(401);
                 return "{\"message\": \"Error: unauthorized" + "\"}";
             } catch (Exception e) {
@@ -183,7 +184,7 @@ public class Server {
                 UserData user = gson.fromJson(req.body(), UserData.class);
                 AuthData authData = userService.login(user);
                 return gson.toJson(authData);
-            } catch (RuntimeException e) {
+            } catch (DataAccessException e) {
                 res.status(401);
                 return "{\"message\": \"Error: Unauthorized" + "\"}";
             } catch (Exception e) {
@@ -201,7 +202,7 @@ public class Server {
                 AuthData authData = userService.register(user);
                 response.status(200);
                 return "{ \"username\": \"" + authData.getUsername() + "\", \"authToken\": \"" + authData.getAuthToken() + "\" }";
-            } catch (RuntimeException e) {
+            } catch (DataAccessException e) {
                 if (e.getMessage().contains("Already Taken")) {
                     response.status(403);
                     return "{\"message\": \"Error: already taken\"}";

@@ -53,7 +53,7 @@ public class SQLUserTests {
         }
     }
 
-    boolean passwordMatches(String username, String password){
+    boolean passwordMatches(String username, String password) throws DataAccessException {
         return BCrypt.checkpw(password, userDAO.readHashedPasswordFromDatabase(username));
     }
 

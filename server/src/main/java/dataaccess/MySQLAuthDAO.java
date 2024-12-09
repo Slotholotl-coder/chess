@@ -54,11 +54,11 @@ public class MySQLAuthDAO implements AuthDAO{
                 try (var results = statement.executeQuery()) {
                     results.next();
                     var username = results.getString("username");
-                    return new AuthData(username, authToken);
+                    return new AuthData(authToken, username);
                 }
             }
         } catch (SQLException | DataAccessException e) {
-            throw new DataAccessException("Invalid authToken");
+            throw new DataAccessException("unauthorized");
         }
     }
 
