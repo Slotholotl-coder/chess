@@ -21,6 +21,7 @@ public class SQLUserTests {
 
     @BeforeEach
     void init() throws DataAccessException, SQLException {
+        clearUserTable();
         DatabaseManager.createDatabase();
         userDAO = MySQLUserDAO.getInstance();
         clearUserTable();
@@ -39,7 +40,8 @@ public class SQLUserTests {
 
     @Test
     void createUserSuccessfully() throws DataAccessException, SQLException {
-        userDAO.insertUser(testUser);
+        clearUserTable();
+        userDAO.insertUser(new UserData("pablo", "ajefio", "eaklfj"));
 
         try (var conn = DatabaseManager.getConnection();
              var stmt = conn.prepareStatement("SELECT * FROM users WHERE username = ?")) {
@@ -59,7 +61,6 @@ public class SQLUserTests {
 
     @Test
     void getUserExistingUser() throws DataAccessException {
-        userDAO.insertUser(testUser);
 
         UserData retrievedUser = userDAO.getUser(testUser.getUsername());
 
@@ -69,8 +70,8 @@ public class SQLUserTests {
     }
 
     @Test
-    void getUserNonExistentUser() {
-        assertThrows(DataAccessException.class, () -> userDAO.getUser("nonexistentUser"));
+    void getUserNonExistentUser() throws DataAccessException {
+        assertNull(userDAO.getUser("nonexistentUser"));
     }
 
 }

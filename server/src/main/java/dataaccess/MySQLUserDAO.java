@@ -42,10 +42,10 @@ public class MySQLUserDAO implements UserDAO {
 
     @Override
     public void insertUser(UserData userData) throws DataAccessException {
-        String INSERT_USER_SQL = "INSERT INTO users (username, password, email) VALUES (?, ?, ?);";
+        String inserUserSql = "INSERT INTO users (username, password, email) VALUES (?, ?, ?);";
 
         try (Connection connection = DatabaseManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(inserUserSql)) {
 
             preparedStatement.setString(1, userData.getUsername());
             preparedStatement.setString(2, hashPassword(userData.getPassword()));
@@ -59,11 +59,11 @@ public class MySQLUserDAO implements UserDAO {
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
-        String SELECT_USER_SQL = "SELECT * FROM users WHERE username = ?;";
+        String selectUserSql = "SELECT * FROM users WHERE username = ?;";
         UserData userData = null;
 
         try (Connection connection = DatabaseManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_USER_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(selectUserSql)) {
 
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -81,10 +81,10 @@ public class MySQLUserDAO implements UserDAO {
 
     @Override
     public void removeUser(String username) throws DataAccessException {
-        String DELETE_USER_SQL = "DELETE FROM users WHERE username = ?;";
+        String deleteUserSql = "DELETE FROM users WHERE username = ?;";
 
         try (Connection connection = DatabaseManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(deleteUserSql)) {
 
             preparedStatement.setString(1, username);
             preparedStatement.executeUpdate();
@@ -109,25 +109,9 @@ public class MySQLUserDAO implements UserDAO {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
-//    @Override
-    //public boolean validUser(String username, String password) throws DataAccessException {
-//        UserData userData = getUser(username);
-//        try {
-//            String hashedPW = readHashedPasswordFromDatabase(username);
-//            if (Objects.equals(hashPassword(password), hashedPW)){
-//                return true;
-//            }
-//            else{
-//                throw new DataAccessException("Unauthorized");
-//            }
-//        }
-//        catch (DataAccessException e){
-//            throw new DataAccessException(e.getMessage());
-//        }
-//    }
-
         @Override
-        public boolean validUser(String username, String providedClearTextPassword) throws DataAccessException {
+        public boolean validUser(String username, String providedClearTextPassword)
+                throws DataAccessException {
             // read the previously hashed password from the database
             var hashedPassword = readHashedPasswordFromDatabase(username);
 

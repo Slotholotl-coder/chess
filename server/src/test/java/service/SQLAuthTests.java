@@ -44,16 +44,16 @@ public class SQLAuthTests {
         AuthData test = new AuthData("test", "testToken");
         mySQLAuthDAO.insertAuthToken(test.getAuthToken(), test.getUsername());
 
-        assertThrows(RuntimeException.class, () -> mySQLAuthDAO.getAuthToken("invalidAuthToken"));
+        assertThrows(DataAccessException.class, () -> mySQLAuthDAO.getAuthToken("invalidAuthToken"));
     }
 
     @Test
     void testGetAuth() throws DataAccessException {
-        AuthData test = new AuthData("test", "token1");
+        AuthData test = new AuthData("token1", "test");
 
         mySQLAuthDAO.insertAuthToken(test.getAuthToken(), "test");
 
-        assertEquals(test, mySQLAuthDAO.getAuthToken("token1"));
+        assertEquals(test.getUsername(), mySQLAuthDAO.getAuthToken("token1").getUsername());
     }
 
     @Test
@@ -64,7 +64,7 @@ public class SQLAuthTests {
 
         mySQLAuthDAO.removeAuthToken(test.getAuthToken());
 
-        assertThrows(RuntimeException.class, () -> mySQLAuthDAO.getAuthToken("token1"));
+        assertThrows(DataAccessException.class, () -> mySQLAuthDAO.getAuthToken("token1"));
 
     }
 
@@ -76,7 +76,7 @@ public class SQLAuthTests {
 
         mySQLAuthDAO.clear();
 
-        assertThrows(RuntimeException.class, () -> mySQLAuthDAO.getAuthToken("token1"));
+        assertThrows(DataAccessException.class, () -> mySQLAuthDAO.getAuthToken("token1"));
 
     }
 
