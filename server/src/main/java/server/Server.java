@@ -144,7 +144,7 @@ public class Server {
         });
     }
 
-    private void clear() {
+    public void clear() {
         //Clear
         Spark.delete("/db", ((request, response) -> {
             try {
@@ -194,7 +194,7 @@ public class Server {
         });
     }
 
-    private void register() {
+    public void register() {
         //Register
         Spark.post("/user", (request, response) -> {
             try {
