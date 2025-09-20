@@ -66,6 +66,7 @@ public class ChessPiece {
 
                 break;
             case PAWN:
+                pawnMoves(board, myPosition, moves);
 
                 break;
             case ROOK:
@@ -85,11 +86,15 @@ public class ChessPiece {
         return moves;
     }
 
+    private void pawnMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves){
+        int direction = board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE ? 1 : -1;
+    }
+
     private void knightMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves){
         int[][] possibleMoves = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {-1, 2}, {-1, -2}, {1, 2}, {1, -2}};
         for (int[] possibleMove : possibleMoves){
             ChessPosition moveToPosition = new ChessPosition(myPosition.getRow() + possibleMove[0], myPosition.getColumn() + possibleMove [1]);
-            if (isInBounds(moveToPosition) && !isBlocked(board, myPosition, moveToPosition)){
+            if (isInBounds(moveToPosition) && (!isBlocked(board, moveToPosition) || canCapture(board, myPosition, moveToPosition))){
                 moves.add(new ChessMove(myPosition, moveToPosition, null));
             }
         }
@@ -99,7 +104,7 @@ public class ChessPiece {
         int[][] possibleMoves = {{1,0}, {1,-1}, {1,1}, {0, -1}, {0,1}, {-1, 0}, {-1, -1}, {-1, 1,}};
         for (int[] possibleMove : possibleMoves){
             ChessPosition moveToPosition = new ChessPosition(myPosition.getRow() + possibleMove[0], myPosition.getColumn() + possibleMove [1]);
-            if (isInBounds(moveToPosition) && !isBlocked(board, myPosition, moveToPosition)){
+            if (isInBounds(moveToPosition) && (!isBlocked(board, moveToPosition) || canCapture(board, myPosition, moveToPosition))){
                 moves.add(new ChessMove(myPosition, moveToPosition, null));
             }
         }
@@ -109,8 +114,24 @@ public class ChessPiece {
         //Up Right
         for (int i = 1; i <= 8; i++){
             ChessPosition moveToPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + i);
-            if (isInBounds(moveToPosition) && !isBlocked(board, myPosition, moveToPosition)){
+            if (isInBounds(moveToPosition) && (!isBlocked(board, moveToPosition) || canCapture(board, myPosition, moveToPosition))){
                 moves.add(new ChessMove(myPosition, moveToPosition, null));
+                if (canCapture(board, myPosition, moveToPosition)) {
+                    break;
+                }
+            }
+            else {
+                break;
+            }
+        }
+        //Up Right
+        for (int i = 1; i <= 8; i++){
+            ChessPosition moveToPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() - i);
+            if (isInBounds(moveToPosition) && (!isBlocked(board, moveToPosition) || canCapture(board, myPosition, moveToPosition))){
+                moves.add(new ChessMove(myPosition, moveToPosition, null));
+                if (canCapture(board, myPosition, moveToPosition)) {
+                    break;
+                }
             }
             else {
                 break;
@@ -119,18 +140,11 @@ public class ChessPiece {
         //Down Right
         for (int i = 1; i <= 8; i++){
             ChessPosition moveToPosition = new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() + i);
-            if (isInBounds(moveToPosition) && !isBlocked(board, myPosition, moveToPosition)){
+            if (isInBounds(moveToPosition) && (!isBlocked(board, moveToPosition) || canCapture(board, myPosition, moveToPosition))){
                 moves.add(new ChessMove(myPosition, moveToPosition, null));
-            }
-            else {
-                break;
-            }
-        }
-        //Down Right
-        for (int i = 1; i <= 8; i++){
-            ChessPosition moveToPosition = new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() + i);
-            if (isInBounds(moveToPosition) && !isBlocked(board, myPosition, moveToPosition)){
-                moves.add(new ChessMove(myPosition, moveToPosition, null));
+                if (canCapture(board, myPosition, moveToPosition)) {
+                    break;
+                }
             }
             else {
                 break;
@@ -139,8 +153,11 @@ public class ChessPiece {
         //Down Left
         for (int i = 1; i <= 8; i++){
             ChessPosition moveToPosition = new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() - i);
-            if (isInBounds(moveToPosition) && !isBlocked(board, myPosition, moveToPosition)){
+            if (isInBounds(moveToPosition) && (!isBlocked(board, moveToPosition) || canCapture(board, myPosition, moveToPosition))){
                 moves.add(new ChessMove(myPosition, moveToPosition, null));
+                if (canCapture(board, myPosition, moveToPosition)) {
+                    break;
+                }
             }
             else {
                 break;
@@ -152,8 +169,11 @@ public class ChessPiece {
         //Up
         for (int i = 1; i <= 8; i++){
             ChessPosition moveToPosition = new ChessPosition(myPosition.getRow() + i, myPosition.getColumn());
-            if (isInBounds(moveToPosition) && !isBlocked(board, myPosition, moveToPosition)){
+            if (isInBounds(moveToPosition) && (!isBlocked(board, moveToPosition) || canCapture(board, myPosition, moveToPosition))){
                 moves.add(new ChessMove(myPosition, moveToPosition, null));
+                if (canCapture(board, myPosition, moveToPosition)) {
+                    break;
+                }
             }
             else {
                 break;
@@ -162,8 +182,11 @@ public class ChessPiece {
         //Down
         for (int i = 1; i <= 8; i++){
             ChessPosition moveToPosition = new ChessPosition(myPosition.getRow() - i, myPosition.getColumn());
-            if (isInBounds(moveToPosition) && !isBlocked(board, myPosition, moveToPosition)){
-                moves.add(new ChessMove(myPosition, moveToPosition, null));
+            if (isInBounds(moveToPosition) && (!isBlocked(board, moveToPosition) || canCapture(board, myPosition, moveToPosition))){
+                    moves.add(new ChessMove(myPosition, moveToPosition, null));
+                if (canCapture(board, myPosition, moveToPosition)) {
+                    break;
+                }
             }
             else {
                 break;
@@ -172,8 +195,11 @@ public class ChessPiece {
         //Right
         for (int i = 1; i <= 8; i++){
             ChessPosition moveToPosition = new ChessPosition(myPosition.getRow(), myPosition.getColumn() + i);
-            if (isInBounds(moveToPosition) && !isBlocked(board, myPosition, moveToPosition)){
+            if (isInBounds(moveToPosition) && (!isBlocked(board, moveToPosition) || canCapture(board, myPosition, moveToPosition))){
                 moves.add(new ChessMove(myPosition, moveToPosition, null));
+                if (canCapture(board, myPosition, moveToPosition)) {
+                    break;
+                }
             }
             else {
                 break;
@@ -182,8 +208,11 @@ public class ChessPiece {
         //Left
         for (int i = 1; i <= 8; i++){
             ChessPosition moveToPosition = new ChessPosition(myPosition.getRow(), myPosition.getColumn() - i);
-            if (isInBounds(moveToPosition) && !isBlocked(board, myPosition, moveToPosition)){
+            if (isInBounds(moveToPosition) && (!isBlocked(board, moveToPosition) || canCapture(board, myPosition, moveToPosition))){
                 moves.add(new ChessMove(myPosition, moveToPosition, null));
+                if (canCapture(board, myPosition, moveToPosition)) {
+                    break;
+                }
             }
             else {
                 break;
@@ -195,11 +224,15 @@ public class ChessPiece {
         return 1 <= position.getRow() && position.getRow() <= 8 && 1 <= position.getColumn() && position.getColumn() <=8;
     }
 
-    private boolean isBlocked(ChessBoard board, ChessPosition myPosition, ChessPosition position){
-        if (board.getPiece(position) != null)
-            return board.getPiece(position).getTeamColor() == board.getPiece(myPosition).getTeamColor();
-        else
-            return false;
+    private boolean isBlocked(ChessBoard board, ChessPosition moveToPosition){
+        return board.getPiece(moveToPosition) != null;
+    }
+
+    private boolean canCapture(ChessBoard board, ChessPosition myPosition, ChessPosition moveToPosition){
+        if (isBlocked(board, moveToPosition)) {
+            return board.getPiece(myPosition).getTeamColor() != board.getPiece(moveToPosition).getTeamColor();
+        }
+        return false;
     }
 
 
