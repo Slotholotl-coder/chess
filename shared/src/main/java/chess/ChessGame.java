@@ -21,7 +21,7 @@ public class ChessGame {
     public TeamColor getTeamTurn() {
         return teamTurn;
     }
-
+    
     /**
      * Set's which teams turn it is
      *
