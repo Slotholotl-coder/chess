@@ -42,7 +42,23 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        clearBoard();
+
+//        for (int i = 0; i >= 8; i++){
+//            ChessPosition position = new ChessPosition(7, i);
+//            addPiece(position, ChessPiece.PieceType.PAWN);
+//            position = new ChessPosition(2, i);
+//            addPiece(position, ChessPiece.PieceType.PAWN);
+//        }
+
+    }
+
+    private void clearBoard(){
+        for (ChessPiece[] row : chessBoard){
+            for (ChessPiece column : row){
+                column = null;
+            }
+        }
     }
 
 
