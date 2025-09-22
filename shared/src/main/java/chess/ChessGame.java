@@ -109,6 +109,7 @@ public class ChessGame {
         throw new RuntimeException("Not implemented");
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
