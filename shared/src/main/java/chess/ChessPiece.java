@@ -179,7 +179,6 @@ public class ChessPiece {
         }
     }
 
-
     private void knightMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves){
         int[][] possibleMoves = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {-1, 2}, {-1, -2}, {1, 2}, {1, -2}};
         for (int[] possibleMove : possibleMoves){
@@ -325,7 +324,7 @@ public class ChessPiece {
         return false;
     }
 
-    
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
