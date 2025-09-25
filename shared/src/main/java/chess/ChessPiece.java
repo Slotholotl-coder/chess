@@ -93,49 +93,61 @@ public class ChessPiece {
         ChessPosition moveToPosition;
 
         if (myPosition.getRow() != promotionNextRow){
-            moveToPosition = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn());
-            attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, null, false);
-
-            moveToPosition = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + 1);
-            if (isInBounds(moveToPosition) && isBlocked(chessBoard, moveToPosition)){
-                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, null, true);
-            }
-            moveToPosition = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() - 1);
-            if (isInBounds(moveToPosition) && isBlocked(chessBoard, moveToPosition)) {
-                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, null, true);
-            }
+            pawnBasicMoves(chessBoard, myPosition, moves, direction);
         }
         else {
-            moveToPosition = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn());
-            attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.QUEEN, false);
-            attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.ROOK, false);
-            attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.BISHOP, false);
-            attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.KNIGHT, false);
-
-
-            moveToPosition = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + 1);
-            if (isInBounds(moveToPosition) && isBlocked(chessBoard, moveToPosition)) {
-                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.QUEEN, true);
-                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.ROOK, true);
-                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.BISHOP, true);
-                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.KNIGHT, true);
-            }
-            moveToPosition = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() - 1);
-            if (isInBounds(moveToPosition) && isBlocked(chessBoard, moveToPosition)){
-                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.QUEEN, true);
-                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.ROOK, true);
-                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.BISHOP, true);
-                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.KNIGHT, true);
-            }
+            pawnPromotionalMoves(chessBoard, myPosition, moves, direction);
         }
 
         if (myPosition.getRow() == firstRow){
-            if (!isBlocked(chessBoard, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()))) {
-                moveToPosition = new ChessPosition(myPosition.getRow() + 2 * direction, myPosition.getColumn());
-                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, null, false);
-            }
+            pawnDoubleMove(chessBoard, myPosition, moves, direction);
         }
 
+    }
+
+    private void pawnDoubleMove(ChessBoard chessBoard, ChessPosition myPosition, Collection<ChessMove> moves, int direction) {
+        ChessPosition moveToPosition;
+        if (!isBlocked(chessBoard, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()))) {
+            moveToPosition = new ChessPosition(myPosition.getRow() + 2 * direction, myPosition.getColumn());
+            attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, null, false);
+        }
+    }
+
+    private void pawnPromotionalMoves(ChessBoard chessBoard, ChessPosition myPosition, Collection<ChessMove> moves, int direction) {
+        ChessPiece.PieceType[] promotionalPieceTypes = {PieceType.QUEEN, PieceType.ROOK, PieceType.BISHOP, PieceType.KNIGHT};
+        ChessPosition moveToPosition;
+
+        moveToPosition = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn());
+        for (PieceType type : promotionalPieceTypes){
+            attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, type, false);
+        }
+
+        moveToPosition = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + 1);
+        if (isInBounds(moveToPosition) && isBlocked(chessBoard, moveToPosition)) {
+            for (PieceType type : promotionalPieceTypes){
+                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, type, true);
+            }
+        }
+        moveToPosition = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() - 1);
+        if (isInBounds(moveToPosition) && isBlocked(chessBoard, moveToPosition)){
+            for (PieceType type : promotionalPieceTypes){
+                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, type, true);
+            }
+        }
+    }
+
+    private void pawnBasicMoves(ChessBoard chessBoard, ChessPosition myPosition, Collection<ChessMove> moves, int direction){
+        ChessPosition moveToPosition = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn());
+        attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, null, false);
+
+        moveToPosition = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + 1);
+        if (isInBounds(moveToPosition) && isBlocked(chessBoard, moveToPosition)){
+            attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, null, true);
+        }
+        moveToPosition = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() - 1);
+        if (isInBounds(moveToPosition) && isBlocked(chessBoard, moveToPosition)) {
+            attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, null, true);
+        }
     }
 
     private void bishopMoves(ChessBoard chessBoard, ChessPosition myPosition, Collection<ChessMove> moves){
