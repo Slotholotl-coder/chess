@@ -23,7 +23,7 @@ public class ChessMove {
      * @return ChessPosition of starting location
      */
     public ChessPosition getStartPosition() {
-        return  startPosition;
+        return startPosition;
     }
 
     /**
@@ -41,15 +41,6 @@ public class ChessMove {
      */
     public ChessPiece.PieceType getPromotionPiece() {
         return promotionPiece;
-    }
-
-
-    @Override
-    public String toString() {
-        return "ChessMove{" +
-                "from: " + startPosition +
-                " to : " + endPosition +
-                '}';
     }
 
     @Override
