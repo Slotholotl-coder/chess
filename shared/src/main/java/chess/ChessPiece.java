@@ -88,13 +88,22 @@ public class ChessPiece {
     private void pawnMoves(ChessBoard chessBoard, ChessPosition myPosition, Collection<ChessMove> moves){
         int direction = pieceColor == ChessGame.TeamColor.WHITE ? 1 : -1;
         int firstRow = pieceColor == ChessGame.TeamColor.WHITE ? 2 : 7;
-        int promotionNextRow = pieceColor == ChessGame.TeamColor.WHITE ? 2 : 7;
+        int promotionNextRow = pieceColor == ChessGame.TeamColor.WHITE ? 7 : 2;
 
-        ChessPosition moveToPosition = new ChessPosition(0, 0);
+        ChessPosition moveToPosition;
 
         if (myPosition.getRow() != promotionNextRow){
             moveToPosition = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn());
             attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, null, false);
+
+            moveToPosition = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + 1);
+            if (isInBounds(moveToPosition) && isBlocked(chessBoard, moveToPosition)){
+                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, null, true);
+            }
+            moveToPosition = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() - 1);
+            if (isInBounds(moveToPosition) && isBlocked(chessBoard, moveToPosition)) {
+                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, null, true);
+            }
         }
         else {
             moveToPosition = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn());
@@ -103,12 +112,29 @@ public class ChessPiece {
             attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.BISHOP, false);
             attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.KNIGHT, false);
 
-        }
-        if (myPosition.getRow() == firstRow){
-            moveToPosition = new ChessPosition(myPosition.getRow() + 2*direction, myPosition.getColumn());
-            attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, null, false);
+
+            moveToPosition = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + 1);
+            if (isInBounds(moveToPosition) && isBlocked(chessBoard, moveToPosition)) {
+                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.QUEEN, true);
+                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.ROOK, true);
+                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.BISHOP, true);
+                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.KNIGHT, true);
+            }
+            moveToPosition = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() - 1);
+            if (isInBounds(moveToPosition) && isBlocked(chessBoard, moveToPosition)){
+                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.QUEEN, true);
+                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.ROOK, true);
+                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.BISHOP, true);
+                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, PieceType.KNIGHT, true);
+            }
         }
 
+        if (myPosition.getRow() == firstRow){
+            if (!isBlocked(chessBoard, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()))) {
+                moveToPosition = new ChessPosition(myPosition.getRow() + 2 * direction, myPosition.getColumn());
+                attemptToAddMove(chessBoard, myPosition, moveToPosition, moves, null, false);
+            }
+        }
 
     }
 
