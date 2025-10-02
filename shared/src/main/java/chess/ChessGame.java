@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 public class ChessGame {
     TeamColor teamTurn = TeamColor.WHITE;
-
+    
     public ChessGame() {
     }
 
