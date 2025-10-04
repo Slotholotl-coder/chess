@@ -11,6 +11,8 @@ import java.util.Objects;
  */
 public class ChessGame {
     TeamColor teamTurn = TeamColor.WHITE;
+    ChessBoard chessBoard = new ChessBoard();
+
     
     public ChessGame() {
     }
@@ -44,7 +46,7 @@ public class ChessGame {
      *
      * @param startPosition the piece to get valid moves for
      * @return Set of valid moves for requested piece, or null if no piece at
-     * startPosition
+     * startPositionr
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         throw new RuntimeException("Not implemented");
