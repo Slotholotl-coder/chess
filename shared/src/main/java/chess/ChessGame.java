@@ -46,7 +46,7 @@ public class ChessGame {
      *
      * @param startPosition the piece to get valid moves for
      * @return Set of valid moves for requested piece, or null if no piece at
-     * startPositionr
+     * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece chessPiece = chessBoard.getPiece(startPosition);
@@ -82,6 +82,10 @@ public class ChessGame {
         temp.addPiece(move.getEndPosition(), temp.getPiece(move.getStartPosition()));
         temp.addPiece(move.getStartPosition(), null);
 
+        if (isInCheck(teamTurn)){
+            throw new InvalidMoveException("Illegal move - King in check");
+        }
+
     }
 
     /**
@@ -101,7 +105,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        return isInCheck(teamColor) && teamTurn == teamColor;
     }
 
     /**
