@@ -16,6 +16,23 @@ public class ChessBoard {
         resetBoard();
     }
 
+    public ChessBoard deepCopy() {
+        ChessBoard copy = new ChessBoard();
+        copy.chessBoard = new ChessPiece[8][8];
+
+        for (int i = 0; i < chessBoard.length; i++) {
+            for (int x = 0; x < chessBoard[i].length; x++) {
+                if (this.chessBoard[i][x] != null) {
+                    copy.chessBoard[i][x] = new ChessPiece(this.chessBoard[i][x].getTeamColor(),
+                            this.chessBoard[i][x].getPieceType());
+                }
+            }
+        }
+
+        return copy;
+    }
+
+
     /**
      * Adds a chess piece to the chessboard
      *

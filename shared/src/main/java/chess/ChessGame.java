@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -13,7 +14,7 @@ public class ChessGame {
     TeamColor teamTurn = TeamColor.WHITE;
     ChessBoard chessBoard = new ChessBoard();
 
-    
+
     public ChessGame() {
     }
 
@@ -54,15 +55,17 @@ public class ChessGame {
             return null;
         }
 
-        Collection<ChessMove> validMoves = chessPiece.pieceMoves(chessBoard, startPosition);
+        Collection<ChessMove> potentialMoves = chessPiece.pieceMoves(chessBoard, startPosition);
+        Collection<ChessMove> validMoves = new ArrayList<>();
 
 
-        for (ChessMove move : validMoves){
-            ChessBoard temp = chessBoard;
+        for (ChessMove move : potentialMoves){
+            ChessBoard temp = chessBoard.deepCopy();
             try {
-                performMove(temp, move);
+                executeMove(temp, move);
+                validMoves.add(move);
             } catch (InvalidMoveException e) {
-                validMoves.remove(move);
+
             }
 
         }
@@ -71,13 +74,15 @@ public class ChessGame {
 
     }
 
-    private void performMove(ChessBoard board, ChessMove move) throws InvalidMoveException{
+    private void executeMove(ChessBoard board, ChessMove move) throws InvalidMoveException{
         board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
         board.addPiece(move.getStartPosition(), null);
 
-        if (isInCheck(teamTurn)){
+
+        if (isInCheck(board, teamTurn)){
             throw new InvalidMoveException("Illegal move - King in check");
         }
+
     }
 
     /**
@@ -87,11 +92,20 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        if (chessBoard.getPiece(move.getStartPosition()) == null){
+            throw new InvalidMoveException("There's not a piece there");
+        }
+
         if (chessBoard.getPiece(move.getStartPosition()).getTeamColor() != teamTurn){
             throw new InvalidMoveException("It's not your turn");
         }
 
-        performMove(chessBoard, move);
+        if (!validMoves(move.getStartPosition()).contains(move)){
+            throw new InvalidMoveException("Not a valid move");
+        }
+
+        executeMove(chessBoard, move);
+        setTeamTurn(teamTurn == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE);
 
     }
 
@@ -113,6 +127,29 @@ public class ChessGame {
 
     }
 
+
+    public boolean isInCheck(ChessBoard temp, TeamColor teamColor) {
+        for (int y = 1; y <= 8; y++){
+            for (int x = 1; x <= 8; x++){
+                ChessPosition chessPosition = new ChessPosition(y, x);
+                ChessPiece chessPiece = temp.getPiece(chessPosition);
+                if (chessPiece != null && chessPiece.getTeamColor() != teamColor){
+                    Collection<ChessMove> pieceMoves = chessPiece.pieceMoves(temp, chessPosition);
+                    for (ChessMove move : pieceMoves){
+                        ChessPiece capturedPiece = temp.getPiece(move.getEndPosition());
+                        if (capturedPiece == null){
+                            continue;
+                        }
+                        if (capturedPiece.getPieceType() == ChessPiece.PieceType.KING){
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * Determines if the given team is in check
      *
@@ -120,7 +157,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        return isInCheck(chessBoard, teamColor);
     }
 
     /**
