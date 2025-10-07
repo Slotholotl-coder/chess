@@ -15,7 +15,7 @@ public class ChessGame {
     ChessBoard chessBoard = new ChessBoard();
 
     public ChessGame() {
-
+        chessBoard.resetBoard();
     }
 
     /**
@@ -63,8 +63,6 @@ public class ChessGame {
             ChessBoard tempBoard = chessBoard.deepCopy();
 
             executeMove(tempBoard, move);
-
-            System.out.println(tempBoard.toString());
 
             if (!isInCheck(tempBoard, pieceColor)){
                 validMoves.add(move);
@@ -123,7 +121,17 @@ public class ChessGame {
 
     private boolean hasValidMoves(TeamColor teamColor){
         Collection<Collection<ChessMove>> teamsMoves = parseTeamMoves(chessBoard, teamColor);
-        return !teamsMoves.isEmpty();
+        Collection<ChessMove> validTeamsMoves = new ArrayList<>();
+        for (Collection<ChessMove> piecesMoves : teamsMoves){
+            for (ChessMove move : piecesMoves){
+                ChessBoard tempBoard = chessBoard.deepCopy();
+                executeMove(tempBoard, move);
+                if (!isInCheck(tempBoard, teamColor)){
+                    validTeamsMoves.add(move);
+                }
+            }
+        }
+        return !validTeamsMoves.isEmpty();
     }
 
     private boolean isInCheck(ChessBoard board, TeamColor teamColor) {
@@ -198,11 +206,11 @@ public class ChessGame {
             return false;
         }
         ChessGame chessGame = (ChessGame) o;
-        return teamTurn == chessGame.teamTurn && Objects.equals(chessBoard, chessGame.chessBoard);
+        return getTeamTurn() == chessGame.getTeamTurn() && Objects.equals(chessBoard, chessGame.chessBoard);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(teamTurn, chessBoard);
+        return Objects.hash(getTeamTurn(), chessBoard);
     }
 }
