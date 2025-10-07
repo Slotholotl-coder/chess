@@ -54,6 +54,7 @@ public class ChessGame {
         if (piece == null){
             return null;
         }
+        TeamColor pieceColor = piece.getTeamColor();
 
         Collection<ChessMove> potentialMoves = piece.pieceMoves(chessBoard, startPosition);
         Collection<ChessMove> validMoves = new ArrayList<>();
@@ -62,7 +63,10 @@ public class ChessGame {
             ChessBoard tempBoard = chessBoard.deepCopy();
 
             executeMove(tempBoard, move);
-            if (!isInCheck(tempBoard, tempBoard.getPiece(move.getEndPosition()).getTeamColor())) {
+
+            System.out.println(tempBoard.toString());
+
+            if (!isInCheck(tempBoard, pieceColor)){
                 validMoves.add(move);
             }
 
@@ -71,7 +75,9 @@ public class ChessGame {
     }
 
     private void executeMove(ChessBoard board, ChessMove move) {
-        board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
+        ChessPiece movingPiece = board.getPiece(move.getStartPosition());
+        ChessPiece.PieceType promotionPiece = move.getPromotionPiece();
+        board.addPiece(move.getEndPosition(), promotionPiece == null ? movingPiece : new ChessPiece(movingPiece.getTeamColor(), promotionPiece));
         board.addPiece(move.getStartPosition(), null);
     }
 
@@ -92,8 +98,7 @@ public class ChessGame {
             throw new InvalidMoveException("Not a valid move");
         }
 
-        chessBoard.addPiece(move.getEndPosition(), chessBoard.getPiece(move.getStartPosition()));
-        chessBoard.addPiece(move.getStartPosition(), null);
+        executeMove(chessBoard, move);
 
         TeamColor nextTeam = teamTurn == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
 

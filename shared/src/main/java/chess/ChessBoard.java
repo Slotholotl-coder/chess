@@ -12,9 +12,7 @@ import java.util.Objects;
 public class ChessBoard {
     ChessPiece[][] chessBoard = new ChessPiece[8][8];
 
-    public ChessBoard() {
-        resetBoard();
-    }
+    public ChessBoard() {}
 
     public ChessBoard deepCopy() {
         ChessBoard copy = new ChessBoard();
@@ -91,6 +89,18 @@ public class ChessBoard {
 
     }
 
+    @Override
+    public String toString() {
+        for (int y = 1; y <= 8; y++) {
+            for (int x = 1; x <= 8; x++) {
+                if (getPiece(new ChessPosition(y, x)) != null) {
+                    System.out.print(getPiece(new ChessPosition(y, x)).getPieceType() + ((getPiece(new ChessPosition(y, x)).getTeamColor() == ChessGame.TeamColor.WHITE) ? "W " : "B "));
+                } else System.out.print("  |  ");
+            }
+            System.out.println();
+        }
+        return null;
+    }
 
     @Override
     public boolean equals(Object o) {
