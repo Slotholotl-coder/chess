@@ -44,6 +44,14 @@ public class ChessMove {
     }
 
     @Override
+    public String toString() {
+        return "ChessMove{" +
+                "startPosition=" + startPosition.getRow() + startPosition.getColumn() +
+                ", endPosition=" + endPosition.getRow() + endPosition.getColumn() +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
             return false;

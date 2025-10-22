@@ -15,7 +15,7 @@ public class ChessGame {
     ChessBoard chessBoard = new ChessBoard();
 
     public ChessGame() {
-
+        chessBoard.resetBoard();
     }
 
     /**
@@ -54,6 +54,7 @@ public class ChessGame {
         if (piece == null){
             return null;
         }
+        TeamColor pieceColor = piece.getTeamColor();
 
         Collection<ChessMove> potentialMoves = piece.pieceMoves(chessBoard, startPosition);
         Collection<ChessMove> validMoves = new ArrayList<>();
@@ -62,7 +63,8 @@ public class ChessGame {
             ChessBoard tempBoard = chessBoard.deepCopy();
 
             executeMove(tempBoard, move);
-            if (!isInCheck(tempBoard, tempBoard.getPiece(move.getEndPosition()).getTeamColor())) {
+
+            if (!isInCheck(tempBoard, pieceColor)){
                 validMoves.add(move);
             }
 
@@ -71,7 +73,9 @@ public class ChessGame {
     }
 
     private void executeMove(ChessBoard board, ChessMove move) {
-        board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
+        ChessPiece movingPiece = board.getPiece(move.getStartPosition());
+        ChessPiece.PieceType promotionPiece = move.getPromotionPiece();
+        board.addPiece(move.getEndPosition(), promotionPiece == null ? movingPiece : new ChessPiece(movingPiece.getTeamColor(), promotionPiece));
         board.addPiece(move.getStartPosition(), null);
     }
 
@@ -92,8 +96,7 @@ public class ChessGame {
             throw new InvalidMoveException("Not a valid move");
         }
 
-        chessBoard.addPiece(move.getEndPosition(), chessBoard.getPiece(move.getStartPosition()));
-        chessBoard.addPiece(move.getStartPosition(), null);
+        executeMove(chessBoard, move);
 
         TeamColor nextTeam = teamTurn == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE;
 
@@ -118,7 +121,17 @@ public class ChessGame {
 
     private boolean hasValidMoves(TeamColor teamColor){
         Collection<Collection<ChessMove>> teamsMoves = parseTeamMoves(chessBoard, teamColor);
-        return !teamsMoves.isEmpty();
+        Collection<ChessMove> validTeamsMoves = new ArrayList<>();
+        for (Collection<ChessMove> piecesMoves : teamsMoves){
+            for (ChessMove move : piecesMoves){
+                ChessBoard tempBoard = chessBoard.deepCopy();
+                executeMove(tempBoard, move);
+                if (!isInCheck(tempBoard, teamColor)){
+                    validTeamsMoves.add(move);
+                }
+            }
+        }
+        return !validTeamsMoves.isEmpty();
     }
 
     private boolean isInCheck(ChessBoard board, TeamColor teamColor) {
@@ -193,11 +206,11 @@ public class ChessGame {
             return false;
         }
         ChessGame chessGame = (ChessGame) o;
-        return teamTurn == chessGame.teamTurn && Objects.equals(chessBoard, chessGame.chessBoard);
+        return getTeamTurn() == chessGame.getTeamTurn() && Objects.equals(chessBoard, chessGame.chessBoard);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(teamTurn, chessBoard);
+        return Objects.hash(getTeamTurn(), chessBoard);
     }
 }
