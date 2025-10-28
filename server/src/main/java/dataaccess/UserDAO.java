@@ -1,9 +1,10 @@
 package dataaccess;
 
 import model.UserData;
+import service.RegisterRequest;
 
 public interface UserDAO {
-    void insertUser(UserData userData) throws DataAccessException;
+    void registerUser(RegisterRequest registerRequest) throws DataAccessException;
 
     UserData getUser(String username) throws DataAccessException;
 
