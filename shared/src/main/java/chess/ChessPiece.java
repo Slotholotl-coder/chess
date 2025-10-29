@@ -215,24 +215,27 @@ public class ChessPiece {
     private void kingMoves(ChessBoard chessBoard, ChessPosition myPosition, Collection<ChessMove> moves){
         int[][] possibleMoves = {{1, 1}, {1, 0}, {1, -1,}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {0, 1}};
 
-        for (int[] move : possibleMoves){
-            ChessPosition moveToPositon = new ChessPosition(myPosition.getRow() + move[0], myPosition.getColumn() + move[1]);
-            attemptToAddMove(chessBoard, myPosition, moveToPositon, moves, null, true);
-        }
+        kingAndKnightMoves(chessBoard, myPosition, moves, possibleMoves);
 
     }
 
     private void knightMoves(ChessBoard chessBoard, ChessPosition myPosition, Collection<ChessMove> moves){
         int[][] possibleMoves = {{2, 1}, {2, -1,}, {-2, 1}, {-2, -1}, {1, -2}, {1, 2}, {-1, -2}, {-1, 2}};
 
+        kingAndKnightMoves(chessBoard, myPosition, moves, possibleMoves);
+
+    }
+
+    private void kingAndKnightMoves(ChessBoard chessBoard, ChessPosition myPosition, Collection<ChessMove> moves, int[][] possibleMoves) {
         for (int[] move : possibleMoves){
             ChessPosition moveToPositon = new ChessPosition(myPosition.getRow() + move[0], myPosition.getColumn() + move[1]);
             attemptToAddMove(chessBoard, myPosition, moveToPositon, moves, null, true);
         }
-
     }
 
-    private void attemptToAddMove(ChessBoard chessBoard, ChessPosition myPosition, ChessPosition moveToPosition, Collection<ChessMove> moves, ChessPiece.PieceType promotionPiece, boolean checkCanCapture){
+    private void attemptToAddMove(ChessBoard chessBoard, ChessPosition myPosition,
+                                  ChessPosition moveToPosition, Collection<ChessMove> moves,
+                                  ChessPiece.PieceType promotionPiece, boolean checkCanCapture){
         if (checkCanCapture){
             if (isInBounds(moveToPosition) && (!isBlocked(chessBoard, moveToPosition) || canCapture(chessBoard, myPosition, moveToPosition))){
                 moves.add(new ChessMove(myPosition, moveToPosition, promotionPiece));
