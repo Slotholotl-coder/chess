@@ -2,8 +2,8 @@ package service;
 
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
-import dataaccess.MemoryUserDAO;
 import dataaccess.UserDAO;
+import model.*;
 
 import java.util.UUID;
 
@@ -27,6 +27,21 @@ public class UserService {
         RegisterResult registerResult = new RegisterResult(registerRequest.username(), authToken);
 
         return registerResult;
+    }
+
+    public LoginResult login(LoginRequest loginRequest) throws DataAccessException {
+
+        if (userDAO.getUser(loginRequest.username()) != null){
+
+            if (userDAO.getUser(loginRequest.username()).password() != loginRequest.password()){
+                throw new DataAccessException("Incorrect password");
+            }
+
+            String authToken = generateToken();
+            authDAO.insertAuthData(authToken, loginRequest.username());
+            return new LoginResult(loginRequest.username(), authDAO.getAuthToken(authToken).authToken());
+        }
+        return null;
     }
 
 

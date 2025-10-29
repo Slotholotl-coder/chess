@@ -1,7 +1,7 @@
 package dataaccess;
 
 import model.UserData;
-import service.RegisterRequest;
+import model.RegisterRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,12 @@ public class MemoryUserDAO implements  UserDAO{
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
-        return null;
+        for (UserData userData : users){
+            if (userData.username().equals(username)){
+                return userData;
+            }
+        }
+        throw new DataAccessException("Wrong username");
     }
 
     @Override

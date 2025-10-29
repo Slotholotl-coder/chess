@@ -5,8 +5,10 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import io.javalin.http.Context;
-import service.RegisterRequest;
-import service.RegisterResult;
+import model.LoginRequest;
+import model.LoginResult;
+import model.RegisterRequest;
+import model.RegisterResult;
 import service.UserService;
 
 public class UserHandler {
@@ -44,4 +46,26 @@ public class UserHandler {
         }
 
     }
+
+    public void login(Context context){
+        LoginRequest loginRequest = serializer.fromJson(context.body(), LoginRequest.class);
+
+        if(loginRequest.username() == null || loginRequest.password() == null){
+            context.status(400);
+            context.json("{\"message\": \"bad request" + "\"}");
+            return;
+        }
+
+        LoginResult loginResult = null;
+
+        try {
+            loginResult = userService.login(loginRequest);
+            context.result(serializer.toJson(loginResult));
+        } catch (DataAccessException e) {
+            context.status(401);
+            context.json("{\"message\": \" unauthorized" + "\"}");
+        }
+
+    }
+
 }

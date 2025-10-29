@@ -1,12 +1,11 @@
-package java.service;
+package service;
 
 import dataaccess.AuthDAO;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryUserDAO;
 import dataaccess.UserDAO;
-import service.UserService;
 
-public abstract class ServiceTest {
+public class ServiceTest {
 
     UserDAO userDAO = new MemoryUserDAO();
     AuthDAO authDAO = new MemoryAuthDAO();

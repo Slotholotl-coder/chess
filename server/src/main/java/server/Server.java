@@ -22,6 +22,7 @@ public class Server {
         // Register your endpoints and exception handlers here.
 
         javalin.post("/user", context -> userHandler.register(context));
+        javalin.post("/session", context -> userHandler.login(context));
 
     }
 

@@ -4,6 +4,7 @@ import model.AuthData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MemoryAuthDAO implements AuthDAO{
 
@@ -17,7 +18,7 @@ public class MemoryAuthDAO implements AuthDAO{
     @Override
     public AuthData getAuthToken(String authToken) throws DataAccessException {
         for (AuthData authData : authDataList){
-            if (authData.authToken() == authToken){
+            if (Objects.equals(authData.authToken(), authToken)){
                 return authData;
             }
         }
