@@ -5,10 +5,7 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import io.javalin.http.Context;
-import model.LoginRequest;
-import model.LoginResult;
-import model.RegisterRequest;
-import model.RegisterResult;
+import model.*;
 import service.UserService;
 
 public class UserHandler {
@@ -61,6 +58,20 @@ public class UserHandler {
         try {
             loginResult = userService.login(loginRequest);
             context.result(serializer.toJson(loginResult));
+        } catch (DataAccessException e) {
+            context.status(401);
+            context.json("{\"message\": \"Error: unauthorized" + "\"}");
+        }
+
+    }
+
+    public void logout(Context context){
+        String authToken = context.header("authorization");
+
+        LogoutRequest logoutRequest = new LogoutRequest(authToken);
+
+        try {
+            userService.logout(logoutRequest);
         } catch (DataAccessException e) {
             context.status(401);
             context.json("{\"message\": \"Error: unauthorized" + "\"}");

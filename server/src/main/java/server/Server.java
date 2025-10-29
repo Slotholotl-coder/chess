@@ -24,6 +24,8 @@ public class Server {
 
         javalin.post("/user", context -> userHandler.register(context));
         javalin.post("/session", context -> userHandler.login(context));
+        javalin.delete("/session", context -> userHandler.logout(context));
+
         javalin.delete("/db", context -> {
            clearAllDataHandler.clear(context);
         });

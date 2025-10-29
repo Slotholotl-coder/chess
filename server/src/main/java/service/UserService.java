@@ -45,6 +45,10 @@ public class UserService {
         return null;
     }
 
+    public void logout(LogoutRequest logoutRequest) throws DataAccessException {
+        authDAO.getAuthToken(logoutRequest.authToken());
+        authDAO.removeAuthToken(logoutRequest.authToken());
+    }
 
     public static String generateToken() {
         return UUID.randomUUID().toString();
