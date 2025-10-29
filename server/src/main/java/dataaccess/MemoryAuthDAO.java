@@ -22,7 +22,7 @@ public class MemoryAuthDAO implements AuthDAO{
                 return authData;
             }
         }
-        return null;
+        throw new DataAccessException("Error: unauthorized");
     }
 
     @Override
