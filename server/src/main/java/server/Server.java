@@ -14,17 +14,23 @@ public class Server {
 
     ClearAllDataHandler clearAllDataHandler;
 
+    private GameHandler gameHandler;
+
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
         userHandler = new UserHandler(userDAO, authDAO);
         clearAllDataHandler = new ClearAllDataHandler(userDAO, authDAO, gameDAO);
+        gameHandler = new GameHandler(userDAO, authDAO, gameDAO);
 
         // Register your endpoints and exception handlers here.
 
         javalin.post("/user", context -> userHandler.register(context));
         javalin.post("/session", context -> userHandler.login(context));
         javalin.delete("/session", context -> userHandler.logout(context));
+
+        javalin.get("/game", context -> gameHandler.listGames(context));
+        javalin.post("/game", context -> gameHandler)
 
         javalin.delete("/db", context -> {
            clearAllDataHandler.clear(context);

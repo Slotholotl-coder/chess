@@ -22,7 +22,7 @@ public class MemoryGameDAO implements GameDAO{
 
     @Override
     public Collection<GameData> getAllGames() {
-        return List.of();
+        return gameDataList;
     }
 
     @Override
