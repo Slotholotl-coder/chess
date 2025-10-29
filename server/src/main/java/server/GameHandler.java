@@ -6,6 +6,8 @@ import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import io.javalin.http.Context;
+import model.CreateGameRequest;
+import model.CreateGameResult;
 import model.GameData;
 import model.ListGamesRequest;
 import service.GameService;
@@ -33,7 +35,26 @@ public class GameHandler {
     public void createGame(Context context){
         String authToken = context.header("authorization");
 
+        CreateGameRequest createGameRequest = serializer.fromJson(context.body(), CreateGameRequest.class);
 
+        if (authToken.isEmpty() || createGameRequest.gameName().isEmpty()){
+            context.status(400);
+            context.json("{\"message\": \"Error: bad request" + "\"}");
+        }
+
+        try {
+            CreateGameResult createGameResult = gameService.createGame(authToken, createGameRequest);
+            context.result(serializer.toJson(createGameResult));
+        } catch (DataAccessException e) {
+            if (e.getMessage().contains("unauthorized")){
+                context.status(401);
+                context.json("{\"message\": \"Error: unauthorized" + "\"}");
+            }
+            else {
+                context.status(500);
+                context.json("{\"message\": \"" + e.getMessage() + "\"}");
+            }
+        }
 
     }
 

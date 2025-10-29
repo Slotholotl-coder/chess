@@ -30,7 +30,7 @@ public class Server {
         javalin.delete("/session", context -> userHandler.logout(context));
 
         javalin.get("/game", context -> gameHandler.listGames(context));
-        javalin.post("/game", context -> gameHandler)
+        javalin.post("/game", context -> gameHandler.createGame(context));
 
         javalin.delete("/db", context -> {
            clearAllDataHandler.clear(context);
