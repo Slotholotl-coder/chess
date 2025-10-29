@@ -5,12 +5,10 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
-import model.CreateGameRequest;
-import model.CreateGameResult;
-import model.GameData;
-import model.ListGamesRequest;
+import model.*;
 
 import java.util.Collection;
+import java.util.Objects;
 
 public class GameService {
 
@@ -18,7 +16,7 @@ public class GameService {
     AuthDAO authDAO;
     GameDAO gameDAO;
 
-    int gameIDCounter = 1;
+    int gameIDCounter = 0;
 
     public GameService(UserDAO userDAO, AuthDAO authDAO, GameDAO gameDAO){
         this.userDAO = userDAO;
@@ -29,19 +27,45 @@ public class GameService {
     public CreateGameResult createGame(String authToken, CreateGameRequest createGameRequest) throws DataAccessException {
         authDAO.getAuthToken(authToken);
 
-        GameData gameData = new GameData(gameIDCounter++, null, null, createGameRequest.gameName(), new ChessGame());
+        gameIDCounter++;
+        GameData gameData = new GameData(gameIDCounter, null, null, createGameRequest.gameName(), new ChessGame());
         gameDAO.insertGame(gameData);
 
         return new CreateGameResult(gameIDCounter);
 
     }
 
+    public void joinGame(String authToken, JoinGameRequest joinGameRequest) throws DataAccessException {
+        AuthData authData = authDAO.getAuthToken(authToken);
 
-    public Collection<GameData> listGames(ListGamesRequest listGamesRequest) throws DataAccessException {
+        GameData game = gameDAO.getGame(joinGameRequest.gameID());
+
+        String blackUsername =game.blackUsername();
+        String whiteUsername = game.whiteUsername();
+
+        if (Objects.equals(joinGameRequest.playerColor(), "WHITE")){
+            if (whiteUsername != null && !whiteUsername.isEmpty()) {
+                throw new DataAccessException("Error: already taken");
+            }
+            GameData updatedGame = new GameData(joinGameRequest.gameID(), authData.username(), blackUsername, game.gameName(), game.game());
+            gameDAO.updateGame(updatedGame);
+        }
+        if ( Objects.equals(joinGameRequest.playerColor(), "BLACK")){
+            if (blackUsername != null && !blackUsername.isEmpty()) {
+                throw new DataAccessException("Error: already taken");
+            }
+            GameData updatedGame = new GameData(joinGameRequest.gameID(), whiteUsername, authData.username(), game.gameName(), game.game());
+            gameDAO.updateGame(updatedGame);
+        }
+
+
+    }
+
+    public ListGamesResult listGames(ListGamesRequest listGamesRequest) throws DataAccessException {
 
         authDAO.getAuthToken(listGamesRequest.authToken());
 
-        return gameDAO.getAllGames();
+        return new ListGamesResult(gameDAO.getAllGames());
     }
 
 }

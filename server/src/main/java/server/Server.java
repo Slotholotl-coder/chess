@@ -31,6 +31,7 @@ public class Server {
 
         javalin.get("/game", context -> gameHandler.listGames(context));
         javalin.post("/game", context -> gameHandler.createGame(context));
+        javalin.put("/game", context -> gameHandler.joinGame(context));
 
         javalin.delete("/db", context -> {
            clearAllDataHandler.clear(context);

@@ -16,9 +16,9 @@ public class ListGamesTests extends ServiceTest{
         RegisterResult registerResult = userService.register(new RegisterRequest("player1", "password", "email"));
         gameService.createGame(registerResult.authToken(), new CreateGameRequest("asldkfj"));
 
-        Collection<GameData> games = gameService.listGames(new ListGamesRequest(registerResult.authToken()));
+        ListGamesResult games = gameService.listGames(new ListGamesRequest(registerResult.authToken()));
 
-        assertEquals(1, games.size());
+        assertEquals(1, games.games().size());
     }
 
     @Test
@@ -27,7 +27,7 @@ public class ListGamesTests extends ServiceTest{
             RegisterResult registerResult = userService.register(new RegisterRequest("player1", "password", "email"));
             gameService.createGame(registerResult.authToken(), new CreateGameRequest("asldkfj"));
 
-            Collection<GameData> games = gameService.listGames(new ListGamesRequest("alsdkjf"));
+            ListGamesResult games = gameService.listGames(new ListGamesRequest("alsdkjf"));
         });
     }
 

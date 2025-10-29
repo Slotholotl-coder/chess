@@ -27,13 +27,28 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
+    public GameData getGame(int gameID) throws DataAccessException {
+        for (GameData gameData : gameDataList){
+            if (gameData.gameID() == gameID){
+                return gameData;
+            }
+        }
+        throw new DataAccessException("Error: wrong game number");
+    }
+
+    @Override
     public Collection<GameData> getAllGames() {
         return gameDataList;
     }
 
     @Override
     public void updateGame(GameData gameData) throws DataAccessException {
-
+        for (GameData game : gameDataList){
+            if (game.gameID() == gameData.gameID()){
+                gameDataList.remove(game);
+                gameDataList.add(gameData);
+            }
+        }
     }
 
     @Override

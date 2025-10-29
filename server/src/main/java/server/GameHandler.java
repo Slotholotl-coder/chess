@@ -6,10 +6,7 @@ import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import io.javalin.http.Context;
-import model.CreateGameRequest;
-import model.CreateGameResult;
-import model.GameData;
-import model.ListGamesRequest;
+import model.*;
 import service.GameService;
 
 import java.util.Collection;
@@ -37,9 +34,10 @@ public class GameHandler {
 
         CreateGameRequest createGameRequest = serializer.fromJson(context.body(), CreateGameRequest.class);
 
-        if (authToken.isEmpty() || createGameRequest.gameName().isEmpty()){
+        if (authToken == null || authToken.isEmpty() || createGameRequest.gameName() == null || createGameRequest.gameName().isEmpty()){
             context.status(400);
             context.json("{\"message\": \"Error: bad request" + "\"}");
+            return;
         }
 
         try {
@@ -58,6 +56,34 @@ public class GameHandler {
 
     }
 
+    public void joinGame(Context context) {
+        String authToken = context.header("authorization");
+
+        JoinGameRequest joinGameRequest = serializer.fromJson(context.body(), JoinGameRequest.class);
+
+        if (authToken == null || authToken.isEmpty() || joinGameRequest.playerColor() == null ||
+                !joinGameRequest.playerColor().equals("BLACK") && !joinGameRequest.playerColor().equals("WHITE")){
+            context.status(400);
+            context.json("{\"message\": \"Error: bad request" + "\"}");
+            return;
+        }
+
+        try {
+            gameService.joinGame(authToken, joinGameRequest);
+        } catch (DataAccessException e) {
+            if (e.getMessage().contains("unauthorized")){
+                context.status(401);
+                context.json("{\"message\": \"Error: unauthorized" + "\"}");
+            } else if (e.getMessage().contains("taken")) {
+                context.status(403);
+                context.json("{\"message\": \"Error: already taken" + "\"}");
+            } else {
+                context.status(400);
+                context.json("{\"message\": \"" + e.getMessage() + "\"}");
+            }
+        }
+
+    }
 
     public void listGames(Context context){
         String authToken = context.header("authorization");
@@ -65,8 +91,8 @@ public class GameHandler {
         ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
 
         try {
-            Collection<GameData> listGames = gameService.listGames(listGamesRequest);
-            context.result(serializer.toJson(listGames.toString()));
+            ListGamesResult listGames = gameService.listGames(listGamesRequest);
+            context.result(serializer.toJson(listGames));
         } catch (DataAccessException e) {
             context.status(401);
             context.json("{\"message\": \"Error: unauthorized" + "\"}");
