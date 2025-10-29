@@ -66,7 +66,7 @@ public class GameHandler {
 
         try {
             Collection<GameData> listGames = gameService.listGames(listGamesRequest);
-            context.result(serializer.toJson(listGames));
+            context.result(serializer.toJson(listGames.toString()));
         } catch (DataAccessException e) {
             context.status(401);
             context.json("{\"message\": \"Error: unauthorized" + "\"}");
