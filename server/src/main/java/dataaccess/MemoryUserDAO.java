@@ -3,11 +3,12 @@ package dataaccess;
 import model.UserData;
 import service.RegisterRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MemoryUserDAO implements  UserDAO{
 
-    private List<UserData> users;
+    private List<UserData> users = new ArrayList<>();
 
     @Override
     public void registerUser(RegisterRequest registerRequest) throws DataAccessException {
@@ -33,7 +34,7 @@ public class MemoryUserDAO implements  UserDAO{
 
     @Override
     public void clear() throws DataAccessException {
-
+        users.clear();
     }
 
     @Override

@@ -2,16 +2,25 @@ package dataaccess;
 
 import model.AuthData;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MemoryAuthDAO implements AuthDAO{
 
+    List<AuthData> authDataList = new ArrayList<>();
+
     @Override
-    public void insertAuthToken(String authToken, String username) throws DataAccessException {
-        System.out.println("Not implemented");
+    public void insertAuthData(String authToken, String username) throws DataAccessException {
+        authDataList.add(new AuthData(authToken, username));
     }
 
     @Override
     public AuthData getAuthToken(String authToken) throws DataAccessException {
-        System.out.println("Not implemented");
+        for (AuthData authData : authDataList){
+            if (authData.authToken() == authToken){
+                return authData;
+            }
+        }
         return null;
     }
 

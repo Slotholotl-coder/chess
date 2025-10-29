@@ -1,24 +1,27 @@
 package server;
 
-import com.google.gson.Gson;
+import dataaccess.AuthDAO;
+import dataaccess.MemoryAuthDAO;
+import dataaccess.MemoryUserDAO;
+import dataaccess.UserDAO;
 import io.javalin.*;
-import io.javalin.http.Context;
-import service.RegisterRequest;
-import service.UserService;
 
 public class Server {
 
     private final Javalin javalin;
 
     private UserHandler userHandler;
+    UserDAO userDAO = new MemoryUserDAO();
+    AuthDAO authDAO = new MemoryAuthDAO();
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
+        userHandler = new UserHandler(userDAO, authDAO);
+
         // Register your endpoints and exception handlers here.
 
-        Javalin.create()
-                .post("/user{username}{password}{email}", context -> userHandler.register(context));
+        javalin.post("/user", context -> userHandler.register(context));
 
     }
 
