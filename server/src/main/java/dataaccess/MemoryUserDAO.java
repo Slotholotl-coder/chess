@@ -32,18 +32,10 @@ public class MemoryUserDAO implements  UserDAO{
         throw new DataAccessException("Wrong username");
     }
 
-    @Override
-    public void removeUser(String username) throws DataAccessException {
-
-    }
 
     @Override
     public void clear() throws DataAccessException {
         users.clear();
     }
 
-    @Override
-    public boolean validUser(String username, String password) throws DataAccessException {
-        return false;
-    }
 }
