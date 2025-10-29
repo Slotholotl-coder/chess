@@ -25,7 +25,7 @@ public class UserHandler {
 
         if(registerRequest.username() == null || registerRequest.password() == null || registerRequest.email() == null){
             context.status(400);
-            context.json("{\"message\": \"bad request" + "\"}");
+            context.json("{\"message\": \"Error: bad request" + "\"}");
             return;
         }
 
@@ -52,7 +52,7 @@ public class UserHandler {
 
         if(loginRequest.username() == null || loginRequest.password() == null){
             context.status(400);
-            context.json("{\"message\": \"bad request" + "\"}");
+            context.json("{\"message\": \"Error: bad request" + "\"}");
             return;
         }
 
@@ -63,7 +63,7 @@ public class UserHandler {
             context.result(serializer.toJson(loginResult));
         } catch (DataAccessException e) {
             context.status(401);
-            context.json("{\"message\": \" unauthorized" + "\"}");
+            context.json("{\"message\": \"Error: unauthorized" + "\"}");
         }
 
     }

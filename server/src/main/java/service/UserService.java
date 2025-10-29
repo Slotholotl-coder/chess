@@ -5,6 +5,7 @@ import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import model.*;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class UserService {
@@ -33,7 +34,7 @@ public class UserService {
 
         if (userDAO.getUser(loginRequest.username()) != null){
 
-            if (userDAO.getUser(loginRequest.username()).password() != loginRequest.password()){
+            if (!Objects.equals(userDAO.getUser(loginRequest.username()).password(), loginRequest.password())){
                 throw new DataAccessException("Incorrect password");
             }
 
