@@ -1,0 +1,55 @@
+package dataaccess;
+
+import model.AuthData;
+
+import java.sql.SQLException;
+
+public class SQLAuthDAO implements AuthDAO {
+
+    public SQLAuthDAO (){
+        try { DatabaseManager.createDatabase(); } catch (DataAccessException ex) {
+            throw new RuntimeException(ex);
+        }
+        try (var conn = DatabaseManager.getConnection()) {
+            var createTestTable = """            
+                    CREATE TABLE if NOT EXISTS auth (
+                                    username VARCHAR(255) NOT NULL,
+                                    authToken VARCHAR(255) NOT NULL,
+                                    PRIMARY KEY (authToken)
+                                    )""";
+            try (var createTableStatement = conn.prepareStatement(createTestTable)) {
+                createTableStatement.executeUpdate();
+            }
+        } catch (DataAccessException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void insertAuthData(String authToken, String username) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var insertAuthStatement = conn.prepareStatement("INSERT INTO auth (username, authToken) VALUES(?, ?)")) {
+                insertAuthStatement.setString(1, username);
+                insertAuthStatement.setString(2, authToken);
+                insertAuthStatement.executeQuery();
+            }
+        } catch (DataAccessException | SQLException e) {
+            throw new DataAccessException("Authorization database error");
+        }
+    }
+
+    @Override
+    public AuthData getAuthToken(String authToken) throws DataAccessException {
+        return null;
+    }
+
+    @Override
+    public void removeAuthToken(String authToken) throws DataAccessException {
+
+    }
+
+    @Override
+    public void clear() {
+
+    }
+}
