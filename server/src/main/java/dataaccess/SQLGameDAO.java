@@ -1,10 +1,13 @@
 package dataaccess;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -40,7 +43,7 @@ public class SQLGameDAO implements GameDAO {
                 insertAuthStatement.setString(2, game.whiteUsername());
                 insertAuthStatement.setString(3, game.blackUsername());
                 insertAuthStatement.setString(4, game.gameName());
-                insertAuthStatement.setString(5, game.game());
+                insertAuthStatement.setString(5, serializeGame(game.game()));
                 insertAuthStatement.executeUpdate();
             }
         } catch (DataAccessException | SQLException e) {
@@ -74,14 +77,52 @@ public class SQLGameDAO implements GameDAO {
         throw new DataAccessException("Error : Game Not Found");
     }
 
+    private String serializeGame(ChessGame game) {
+        return new Gson().toJson(game);
+    }
+
+    private ChessGame deserializeGame(String serializedGame) {
+        return new Gson().fromJson(serializedGame, ChessGame.class);
+    }
+
     @Override
     public Collection<GameData> getAllGames() {
-        return List.of();
+        Collection<GameData> games = new ArrayList<>();
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("SELECT gameID, " +
+                    "whiteUsername, blackUsername, gameName, chessGame FROM games")) {
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        var gameID = resultSet.getInt("gameID");
+                        var whiteUsername = resultSet.getString("whiteUsername");
+                        var blackUsername = resultSet.getString("blackUsername");
+                        var gameName = resultSet.getString("gameName");
+                        var chessGame = deserializeGame(resultSet.getString("chessGame"));
+                        games.add(new GameData(gameID, whiteUsername, blackUsername, gameName, chessGame));
+                    }
+                }
+            }
+        } catch (SQLException | DataAccessException e) {
+            return null;
+        }
+        return games;
     }
 
     @Override
     public void updateGame(GameData gameData) throws DataAccessException {
-
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var statement = conn.prepareStatement("UPDATE game SET whiteUsername=?," +
+                    " blackUsername=?, gameName=?, chessGame=? WHERE gameID=?")) {
+                statement.setString(1, gameData.whiteUsername());
+                statement.setString(2, gameData.blackUsername());
+                statement.setString(3, gameData.gameName());
+                statement.setString(4, serializeGame(gameData.game()));
+                statement.setInt(5, gameData.gameID());
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
