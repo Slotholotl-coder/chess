@@ -76,7 +76,7 @@ public class SQLAuthDAO implements AuthDAO {
     public void clear() {
         UserData userData = null;
         try (var conn = DatabaseManager.getConnection()) {
-            try (var clearAuthDatabase = conn.prepareStatement("DELETE * FROM auth")) {
+            try (var clearAuthDatabase = conn.prepareStatement("DELETE FROM auth")) {
                 clearAuthDatabase.executeUpdate();
             }
         } catch (DataAccessException | SQLException e) {

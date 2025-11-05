@@ -41,7 +41,7 @@ public class UserService {
 
             String hashedPassword = userDAO.getUser(loginRequest.username()).password();
 
-            if (verifyUser(hashedPassword, loginRequest.password())){
+            if (!verifyUser(hashedPassword, loginRequest.password())){
                 throw new DataAccessException("Incorrect password");
             }
 
