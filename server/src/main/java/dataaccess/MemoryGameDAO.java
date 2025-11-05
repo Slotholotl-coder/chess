@@ -17,16 +17,6 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public GameData getGame(String gameName) throws DataAccessException {
-        for (GameData gameData : gameDataList){
-            if (Objects.equals(gameData.gameName(), gameName)){
-                return gameData;
-            }
-        }
-        throw new DataAccessException("Error: Wrong game name");
-    }
-
-    @Override
     public GameData getGame(int gameID) throws DataAccessException {
         for (GameData gameData : gameDataList){
             if (gameData.gameID() == gameID){

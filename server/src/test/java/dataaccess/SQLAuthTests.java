@@ -32,9 +32,22 @@ public class SQLAuthTests {
     }
 
     @Test
+    public void registerAuthPositive1() throws DataAccessException {
+        authDAO.insertAuthData(authToken, username);
+        AuthData authData = authDAO.getAuthToken(authToken);
+        assert Objects.equals(authData.authToken(), authToken);
+    }
+
+    @Test
     public void registerAuthNegative() throws DataAccessException {
         authDAO.insertAuthData(authToken, username);
         assertThrows(DataAccessException.class, () -> authDAO.insertAuthData(authToken, username));
+    }
+
+    @Test
+    public void registerAuthNegative1() throws DataAccessException {
+        authDAO.insertAuthData(authToken, username);
+        assertThrows(DataAccessException.class, () -> authDAO.insertAuthData(null, null));
     }
 
     @Test

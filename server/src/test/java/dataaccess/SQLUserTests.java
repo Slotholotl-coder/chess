@@ -31,9 +31,21 @@ public class SQLUserTests {
     }
 
     @Test
+    public void registerUserPositive1() throws DataAccessException {
+        userDAO.registerUser(new RegisterRequest(username, password, email));
+        UserData userData = userDAO.getUser(username);
+        assert Objects.equals(userData.username(), username);
+    }
+
+    @Test
     public void registerUserNegative() throws DataAccessException {
         userDAO.registerUser(new RegisterRequest(username, password, email));
         assertThrows(DataAccessException.class, () -> userDAO.registerUser(new RegisterRequest(username, password, email)));
+    }
+
+    @Test
+    public void registerUserNegative1() throws DataAccessException {
+        assertThrows(DataAccessException.class, () -> userDAO.registerUser(new RegisterRequest(username, null, email)));
     }
 
     @Test

@@ -32,10 +32,24 @@ public class SQLGameTests {
     }
 
     @Test
+    public void registerGamePositive1() throws DataAccessException {
+        gameDAO.insertGame(new GameData(1, username, username, username, new ChessGame()));
+        GameData gameData = gameDAO.getGame(1);
+        assert Objects.equals(gameData.gameName(), username);
+    }
+
+    @Test
     public void registerGameNegative() throws DataAccessException {
         gameDAO.insertGame(new GameData(1, username, username, username, new ChessGame()));
         assertThrows(DataAccessException.class, () ->
                 gameDAO.insertGame(new GameData(1, username, username, username, new ChessGame())));
+    }
+
+    @Test
+    public void registerGameNegative1() throws DataAccessException {
+        gameDAO.insertGame(new GameData(4, username, username, username, new ChessGame()));
+        assertThrows(DataAccessException.class, () ->
+                gameDAO.insertGame(new GameData(4, username, username, username, new ChessGame())));
     }
 
     @Test

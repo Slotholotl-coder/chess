@@ -52,10 +52,6 @@ public class SQLGameDAO implements GameDAO {
         }
     }
 
-    @Override
-    public GameData getGame(String gameName) throws DataAccessException {
-        return null;
-    }
 
     @Override
     public GameData getGame(int gameID) throws DataAccessException {
