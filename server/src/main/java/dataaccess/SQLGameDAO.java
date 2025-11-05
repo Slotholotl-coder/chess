@@ -38,7 +38,8 @@ public class SQLGameDAO implements GameDAO {
     @Override
     public void insertGame(GameData game) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            try (var insertAuthStatement = conn.prepareStatement("INSERT INTO games (gameID, whiteUsername, blackUsername, gameName, chessGame) VALUES(?, ?, ?, ?, ?)")) {
+            try (var insertAuthStatement = conn.prepareStatement("INSERT INTO games" +
+                    " (gameID, whiteUsername, blackUsername, gameName, chessGame) VALUES(?, ?, ?, ?, ?)")) {
                 insertAuthStatement.setString(1, String.valueOf(game.gameID()));
                 insertAuthStatement.setString(2, game.whiteUsername());
                 insertAuthStatement.setString(3, game.blackUsername());

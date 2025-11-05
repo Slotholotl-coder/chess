@@ -80,12 +80,12 @@ public class UserHandler {
             userService.logout(logoutRequest);
         } catch (DataAccessException e) {
             if (e.getMessage().contains("unauthorized")) {
-                context.status(401);
                 context.json("{\"message\": \"Error: unauthorized" + e.getMessage() + "\"}");
+                context.status(401);
             }
             else {
-                context.status(500);
                 context.json("{\"message\": \"" + e.getMessage() + "\"}");
+                context.status(500);
             }
         }
 
