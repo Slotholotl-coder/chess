@@ -94,13 +94,13 @@ public class GameHandler {
             ListGamesResult listGames = gameService.listGames(listGamesRequest);
             context.result(serializer.toJson(listGames));
         } catch (DataAccessException e) {
+            context.status(500);
             if (e.getMessage().contains("unauthorized")) {
                 context.json("{\"message\": \"Error: unauthorized" + e.getMessage() + "\"}");
                 context.status(401);
             }
             else {
                 context.json("{\"message\": \"" + e.getMessage() + "\"}");
-                context.status(500);
             }
         }
 
