@@ -46,14 +46,14 @@ public class SQLAuthTests {
 
     @Test
     public void getAuthNegative() throws DataAccessException {
-        assertNull(authDAO.getAuthToken(authToken));
+        assertThrows(DataAccessException.class, () -> authDAO.getAuthToken(authToken));
     }
 
     @Test
     public void clearDatabase() throws DataAccessException {
         authDAO.insertAuthData(authToken, username);
         authDAO.clear();
-        assertNull(authDAO.getAuthToken(authToken));
+        assertThrows(DataAccessException.class, () -> authDAO.getAuthToken(authToken));
     }
 
 }

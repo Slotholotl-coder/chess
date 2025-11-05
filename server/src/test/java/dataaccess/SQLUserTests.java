@@ -45,14 +45,14 @@ public class SQLUserTests {
 
     @Test
     public void getUserNegative() throws DataAccessException {
-        assertNull(userDAO.getUser(username));
+        assertThrows(DataAccessException.class, () -> userDAO.getUser(username));
     }
 
     @Test
     public void clearDatabase() throws DataAccessException {
         userDAO.registerUser(new RegisterRequest(username, password, email));
         userDAO.clear();
-        assertNull(userDAO.getUser(username));
+        assertThrows(DataAccessException.class, () -> userDAO.getUser(username));
     }
 
 }

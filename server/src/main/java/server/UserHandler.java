@@ -33,7 +33,7 @@ public class UserHandler {
             context.result(serializer.toJson(registerResult));
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
-            if (e.getMessage().contains("Taken")){
+            if (e.getMessage().contains("Taken") || e.getMessage().contains("Duplicate")){
                 context.status(403);
             }
             else {
