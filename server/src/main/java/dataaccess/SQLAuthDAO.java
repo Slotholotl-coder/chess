@@ -56,6 +56,9 @@ public class SQLAuthDAO implements AuthDAO {
         } catch (DataAccessException | SQLException e) {
             throw new DataAccessException("Error : Not Authorized");
         }
+        if (authData == null){
+            throw new DataAccessException("unauthorized");
+        }
         return authData;
     }
 

@@ -62,8 +62,10 @@ public class UserHandler {
             if (e.getMessage().contains("unauthorized")) {
                 context.status(401);
                 context.json("{\"message\": \"Error: unauthorized" + e.getMessage() + "\"}");
-            }
-            else {
+            } else if (e.getMessage().contains("password")) {
+                context.status(403);
+                context.json("{\"message\": \"Error : " + e.getMessage() + "\"}");
+            } else {
                 context.status(500);
                 context.json("{\"message\": \"" + e.getMessage() + "\"}");
             }

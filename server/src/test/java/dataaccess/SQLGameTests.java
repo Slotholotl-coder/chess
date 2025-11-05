@@ -47,14 +47,14 @@ public class SQLGameTests {
 
     @Test
     public void getGameNegative() throws DataAccessException {
-        assertNull(gameDAO.getGame(1));
+        assertThrows(DataAccessException.class, () -> gameDAO.getGame(1));
     }
 
     @Test
     public void clearDatabase() throws DataAccessException {
         gameDAO.insertGame(new GameData(1, username, username, username, new ChessGame()));
         gameDAO.clear();
-        assertNull(gameDAO.getGame(1));
+        assertThrows(DataAccessException.class, () -> gameDAO.getGame(1));
     }
 
 }

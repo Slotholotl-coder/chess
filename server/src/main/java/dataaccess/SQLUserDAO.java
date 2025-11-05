@@ -48,7 +48,7 @@ public class SQLUserDAO implements UserDAO {
                 insertUserStatement.executeUpdate();
             }
         } catch (DataAccessException | SQLException e) {
-            throw new DataAccessException("User database error : " + e.getMessage());
+            throw new DataAccessException("User database error : Already Taken " + e.getMessage());
         }
     }
 
@@ -67,7 +67,10 @@ public class SQLUserDAO implements UserDAO {
                 }
             }
         } catch (DataAccessException | SQLException e) {
-            throw new DataAccessException("User Database Error : " + e.getMessage());
+            throw new DataAccessException("User Database Error : Wrong Username" + e.getMessage());
+        }
+        if (userData == null){
+            throw new DataAccessException("unauthorized");
         }
         return userData;
     }

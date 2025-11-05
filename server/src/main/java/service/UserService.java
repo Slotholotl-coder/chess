@@ -42,7 +42,7 @@ public class UserService {
             String hashedPassword = userDAO.getUser(loginRequest.username()).password();
 
             if (!verifyUser(hashedPassword, loginRequest.password())){
-                throw new DataAccessException("Incorrect password");
+                throw new DataAccessException("unauthorized");
             }
 
             String authToken = generateToken();
@@ -53,7 +53,6 @@ public class UserService {
     }
 
     private boolean verifyUser(String hashedPassword, String providedClearTextPassword) {
-
         return BCrypt.checkpw(providedClearTextPassword, hashedPassword);
     }
 

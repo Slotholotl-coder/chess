@@ -62,7 +62,7 @@ public class GameHandler {
         JoinGameRequest joinGameRequest = serializer.fromJson(context.body(), JoinGameRequest.class);
 
         if (authToken == null || authToken.isEmpty() || joinGameRequest.playerColor() == null ||
-                !joinGameRequest.playerColor().equals("BLACK") && !joinGameRequest.playerColor().equals("WHITE")){
+                !joinGameRequest.playerColor().equals("BLACK") && !joinGameRequest.playerColor().equals("WHITE") ){
             context.status(400);
             context.json("{\"message\": \"Error: bad request" + "\"}");
             return;
@@ -77,6 +77,9 @@ public class GameHandler {
             } else if (e.getMessage().contains("taken")) {
                 context.status(403);
                 context.json("{\"message\": \"Error: already taken" + "\"}");
+            } else if (e.getMessage().contains("Not Found")) {
+                context.status(400);
+                context.json("{\"message\": \"Error: bad request" + "\"}");
             } else {
                 context.status(500);
                 context.json("{\"message\": \"" + e.getMessage() + "\"}");
