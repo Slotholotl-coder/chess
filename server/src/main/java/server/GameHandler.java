@@ -78,7 +78,7 @@ public class GameHandler {
                 context.status(403);
                 context.json("{\"message\": \"Error: already taken" + "\"}");
             } else {
-                context.status(400);
+                context.status(500);
                 context.json("{\"message\": \"" + e.getMessage() + "\"}");
             }
         }
@@ -94,9 +94,14 @@ public class GameHandler {
             ListGamesResult listGames = gameService.listGames(listGamesRequest);
             context.result(serializer.toJson(listGames));
         } catch (DataAccessException e) {
-            context.status(401);
-            context.json("{\"message\": \"Error: unauthorized" + "\"}");
-
+            if (e.getMessage().contains("unauthorized")) {
+                context.status(401);
+                context.json("{\"message\": \"Error: unauthorized" + e.getMessage() + "\"}");
+            }
+            else {
+                context.status(500);
+                context.json("{\"message\": \"" + e.getMessage() + "\"}");
+            }
         }
 
     }

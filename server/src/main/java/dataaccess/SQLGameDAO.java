@@ -111,7 +111,7 @@ public class SQLGameDAO implements GameDAO {
     @Override
     public void updateGame(GameData gameData) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            try (var statement = conn.prepareStatement("UPDATE game SET whiteUsername=?," +
+            try (var statement = conn.prepareStatement("UPDATE games SET whiteUsername=?," +
                     " blackUsername=?, gameName=?, chessGame=? WHERE gameID=?")) {
                 statement.setString(1, gameData.whiteUsername());
                 statement.setString(2, gameData.blackUsername());

@@ -10,7 +10,7 @@ public class Server {
     private UserHandler userHandler;
     UserDAO userDAO = new SQLUserDAO();
     AuthDAO authDAO = new SQLAuthDAO();
-    GameDAO gameDAO = new MemoryGameDAO();
+    GameDAO gameDAO = new SQLGameDAO();
 
     ClearAllDataHandler clearAllDataHandler;
 
