@@ -4,6 +4,7 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import model.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -19,13 +20,17 @@ public class UserService {
     }
 
     public RegisterResult register(RegisterRequest registerRequest) throws DataAccessException {
-        userDAO.registerUser(registerRequest);
+
+        String hashedPassword = BCrypt.hashpw(registerRequest.password(), BCrypt.gensalt());
+        RegisterRequest hashPWRegisterRequest = new RegisterRequest(registerRequest.username(), hashedPassword, registerRequest.email());
+
+        userDAO.registerUser(hashPWRegisterRequest);
 
         String authToken = generateToken();
 
-        authDAO.insertAuthData(authToken, registerRequest.username());
+        authDAO.insertAuthData(authToken, hashPWRegisterRequest.username());
 
-        RegisterResult registerResult = new RegisterResult(registerRequest.username(), authToken);
+        RegisterResult registerResult = new RegisterResult(hashPWRegisterRequest.username(), authToken);
 
         return registerResult;
     }
@@ -34,7 +39,9 @@ public class UserService {
 
         if (userDAO.getUser(loginRequest.username()) != null){
 
-            if (!Objects.equals(userDAO.getUser(loginRequest.username()).password(), loginRequest.password())){
+            String hashedPassword = userDAO.getUser(loginRequest.username()).password();
+
+            if (verifyUser(hashedPassword, loginRequest.password())){
                 throw new DataAccessException("Incorrect password");
             }
 
@@ -43,6 +50,11 @@ public class UserService {
             return new LoginResult(loginRequest.username(), authDAO.getAuthToken(authToken).authToken());
         }
         return null;
+    }
+
+    private boolean verifyUser(String hashedPassword, String providedClearTextPassword) {
+
+        return BCrypt.checkpw(providedClearTextPassword, hashedPassword);
     }
 
     public void logout(LogoutRequest logoutRequest) throws DataAccessException {
