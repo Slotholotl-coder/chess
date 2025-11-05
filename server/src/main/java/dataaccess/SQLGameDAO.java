@@ -5,7 +5,7 @@ import model.AuthData;
 public class SQLGameDAO implements AuthDAO {
     @Override
     public void insertAuthData(String authToken, String username) throws DataAccessException {
-        
+
     }
 
     @Override

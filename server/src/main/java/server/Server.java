@@ -8,7 +8,7 @@ public class Server {
     private final Javalin javalin;
 
     private UserHandler userHandler;
-    UserDAO userDAO = new MemoryUserDAO();
+    UserDAO userDAO = new SQLUserDAO();
     AuthDAO authDAO = new SQLAuthDAO();
     GameDAO gameDAO = new MemoryGameDAO();
 

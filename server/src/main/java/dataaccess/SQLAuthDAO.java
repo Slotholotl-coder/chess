@@ -1,7 +1,9 @@
 package dataaccess;
 
 import model.AuthData;
+import model.UserData;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class SQLAuthDAO implements AuthDAO {
@@ -31,25 +33,54 @@ public class SQLAuthDAO implements AuthDAO {
             try (var insertAuthStatement = conn.prepareStatement("INSERT INTO auth (username, authToken) VALUES(?, ?)")) {
                 insertAuthStatement.setString(1, username);
                 insertAuthStatement.setString(2, authToken);
-                insertAuthStatement.executeQuery();
+                insertAuthStatement.executeUpdate();
             }
         } catch (DataAccessException | SQLException e) {
-            throw new DataAccessException("Authorization database error");
+            throw new DataAccessException("Authorization database error : " + e.getMessage());
         }
     }
 
     @Override
     public AuthData getAuthToken(String authToken) throws DataAccessException {
-        return null;
+        AuthData authData = null;
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var getAuthStatement = conn.prepareStatement("SELECT * FROM auth WHERE authToken = ?")) {
+                getAuthStatement.setString(1, authToken);
+                try(ResultSet resultSet = getAuthStatement.executeQuery()){
+                    if (resultSet.next()) {
+                        String username = resultSet.getString("username");
+                        authData = new AuthData(authToken, username);
+                    }
+                }
+            }
+        } catch (DataAccessException | SQLException e) {
+            throw new DataAccessException("Error : Not Authorized");
+        }
+        return authData;
     }
 
     @Override
     public void removeAuthToken(String authToken) throws DataAccessException {
-
+        UserData userData = null;
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var clearAuthDatabase = conn.prepareStatement("DELETE FROM auth WHERE authToken = ?")) {
+                clearAuthDatabase.setString(1, authToken);
+                clearAuthDatabase.executeUpdate();
+            }
+        } catch (DataAccessException | SQLException e) {
+            throw new DataAccessException("Authorization database error : " + e.getMessage());
+        }
     }
 
     @Override
     public void clear() {
-
+        UserData userData = null;
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var clearAuthDatabase = conn.prepareStatement("DELETE * FROM auth")) {
+                clearAuthDatabase.executeUpdate();
+            }
+        } catch (DataAccessException | SQLException e) {
+            throw new RuntimeException();
+        }
     }
 }

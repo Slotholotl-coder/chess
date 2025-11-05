@@ -60,7 +60,7 @@ public class UserHandler {
             context.result(serializer.toJson(loginResult));
         } catch (DataAccessException e) {
             context.status(401);
-            context.json("{\"message\": \"Error: unauthorized" + "\"}");
+            context.json("{\"message\": \"Error: unauthorized" + e.getMessage() + "\"}");
         }
 
     }
@@ -74,7 +74,7 @@ public class UserHandler {
             userService.logout(logoutRequest);
         } catch (DataAccessException e) {
             context.status(401);
-            context.json("{\"message\": \"Error: unauthorized" + "\"}");
+            context.json("{\"message\": \"Error: unauthorized" + e.getMessage() + "\"}");
         }
 
     }
