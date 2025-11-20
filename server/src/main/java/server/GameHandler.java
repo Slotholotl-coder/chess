@@ -30,9 +30,9 @@ public class GameHandler {
     }
 
     public void createGame(Context context){
-        CreateGameRequest createGameRequest = serializer.fromJson(context.body(), CreateGameRequest.class);
+        String authToken = context.header("authorization");
 
-        String authToken = createGameRequest.authToken();
+        CreateGameRequest createGameRequest = serializer.fromJson(context.body(), CreateGameRequest.class);
 
         if (authToken == null || authToken.isEmpty() || createGameRequest.gameName() == null || createGameRequest.gameName().isEmpty()){
             context.status(400);
