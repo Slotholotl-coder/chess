@@ -61,15 +61,18 @@ public class ServerFacade {
         try{
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         }catch (Exception e){
-            HandleErrors(e.getMessage());
+            handleErrors(e.getMessage());
         }
-        if (response == null || !validResponse(response.statusCode())){
-            HandleErrors("Server Error");
+        if (response == null){
+            handleErrors("Server Error");
+        } else if (!validResponse(response.statusCode())){
+            handleErrors("Server Status Error" + response.statusCode());
         }
+
         return response;
     }
 
-    private void HandleErrors(String error){
+    private void handleErrors(String error){
         System.out.println(error);
     }
 
