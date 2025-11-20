@@ -40,7 +40,7 @@ public class PostLoginUi {
                     createGame();
                     break;
                 case "join":
-                    joinGmae();
+                    joinGame();
                     break;
                 case "quit":
                     running = false;
@@ -73,10 +73,10 @@ public class PostLoginUi {
         System.out.println("Enter Game Name:");
         String gameName = scanner.nextLine();
 
-        serverFacade.createGame(new CreateGameRequest(gameName));
+        serverFacade.createGame(new CreateGameRequest(null, gameName));
     }
 
-    private void joinGmae(){
+    private void joinGame(){
         System.out.println("Game Number:");
         int gameID = Integer.parseInt(scanner.nextLine());
         System.out.println("Join Which Side? black/white");
