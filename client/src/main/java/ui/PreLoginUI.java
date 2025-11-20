@@ -54,7 +54,7 @@ public class PreLoginUI {
     private void register(){
         System.out.println("Create Username:");
         String username = scanner.nextLine();
-        System.out.println("Cerate Password:");
+        System.out.println("Create Password:");
         String password = scanner.nextLine();
         System.out.println("Enter email:");
         String email = scanner.nextLine();

@@ -77,7 +77,7 @@ public class ServerFacade {
     }
 
     private boolean validResponse(int serverStatus){
-        return serverStatus % 100 == 2;
+        return serverStatus / 100 == 2;
     }
 
 }
