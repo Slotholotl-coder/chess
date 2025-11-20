@@ -1,9 +1,6 @@
 package ui;
 
-import model.CreateGameRequest;
-import model.JoinGameRequest;
-import model.ListGamesRequest;
-import model.LogoutRequest;
+import model.*;
 import serverFacade.ServerFacade;
 
 import java.util.Scanner;
@@ -66,7 +63,8 @@ public class PostLoginUi {
     }
 
     private void listGames(){
-        serverFacade.listGames(null);
+       ListGamesResult listGamesResult = serverFacade.listGames(null);
+       System.out.println(listGamesResult);
     }
 
     private void createGame(){
