@@ -41,7 +41,7 @@ public class ServerFacade {
     public ListGamesResult listGames(ListGamesRequest listGamesRequest){
         ListGamesRequest listGamesRequestAuthorized = new ListGamesRequest(authToken);
         HttpRequest request = buildRequest("GET", "/game", listGamesRequestAuthorized);
-        ListGamesResult response = serializer.fromJson(sendRequest(request).toString(), ListGamesResult.class);
+        ListGamesResult response = serializer.fromJson(sendRequest(request).body().toString(), ListGamesResult.class);
         return response;
     }
 
