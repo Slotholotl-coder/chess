@@ -43,6 +43,8 @@ public class Server {
     public int run(int desiredPort) {
         javalin.start(desiredPort);
 
+        System.out.println("Server Running");
+
         return javalin.port();
     }
 
