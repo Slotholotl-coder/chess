@@ -56,7 +56,9 @@ public class ServerFacade {
 
     private HttpRequest buildRequest(String method, String path, Object body){
         var request = HttpRequest.newBuilder().uri(URI.create(serverUrl + path)).setHeader("Content-Type", "application/json");
-        request.header("authorization", authToken);
+        if (authToken != null){
+            request.header("authorization", authToken);
+        }
         if (body != null) {
             String jsonBody = serializer.toJson(body);
             request.method(method, HttpRequest.BodyPublishers.ofString(jsonBody));
