@@ -48,7 +48,7 @@ public class PreLoginUI {
                 "help - Display this help menu\n" +
                 "register - Register an account\n" +
                 "login - Login user\n" +
-                "exit - Exit");
+                "quit - Exit");
     }
 
     private void register(){

@@ -13,6 +13,8 @@ public class ServerFacade {
     private String serverUrl;
     private Gson serializer;
 
+    private String authToken;
+
     public ServerFacade (String serverUrl){
         this.serverUrl = serverUrl;
         serializer = new Gson();
@@ -25,24 +27,32 @@ public class ServerFacade {
 
     public void login(LoginRequest loginRequest){
         HttpRequest request = buildRequest("POST", "/session", loginRequest);
+        model.LoginResult loginResult = serializer.fromJson(sendRequest(request).body().toString(), LoginResult.class);
+
+        authToken =loginResult.authToken();
+    }
+
+    public void logout(LogoutRequest logoutRequest){
+        LogoutRequest logoutRequestAuthorized = new LogoutRequest(authToken);
+        HttpRequest request = buildRequest("DELETE", "/session", logoutRequestAuthorized);
         var response = sendRequest(request);
     }
-//
-//    public void logout(LogoutRequest logoutRequest){
-//
-//    }
-//
-//    public ListGamesResult listGames(ListGamesRequest listGamesRequest){
-//
-//    }
-//
-//    public CreateGameResult createGame(CreateGameRequest createGameRequest){
-//
-//    }
-//
-//    public void joinGame(JoinGameRequest joinGameRequest){
-//
-//    }
+
+    public void listGames(ListGamesRequest listGamesRequest){
+        ListGamesRequest listGamesRequestAuthorized = new ListGamesRequest(authToken);
+        HttpRequest request = buildRequest("GET", "/game", listGamesRequestAuthorized);
+        var response = sendRequest(request);
+    }
+
+    public void createGame(CreateGameRequest createGameRequest){
+        HttpRequest request = buildRequest("POST", "/game", createGameRequest);
+        var response = sendRequest(request);
+    }
+
+    public void joinGame(JoinGameRequest joinGameRequest){
+        HttpRequest request = buildRequest("PUT", "/game", joinGameRequest);
+        var response = sendRequest(request);
+    }
 
     private HttpRequest buildRequest(String method, String path, Object body){
         var request = HttpRequest.newBuilder().uri(URI.create(serverUrl + path)).setHeader("Content-Type", "application/json");
