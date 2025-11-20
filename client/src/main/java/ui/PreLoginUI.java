@@ -71,7 +71,7 @@ public class PreLoginUI {
     private void login(){
         System.out.println("Enter username:");
         String username = scanner.nextLine();
-        System.out.println("Enter password");
+        System.out.println("Enter password:");
         String password = scanner.nextLine();
 
         if (username.isEmpty() || password.isEmpty()){
