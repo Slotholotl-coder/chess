@@ -37,8 +37,10 @@ public class PostLoginUi {
                     listGames();
                     break;
                 case "create":
+                    createGame();
                     break;
                 case "join":
+                    joinGmae();
                     break;
                 case "quit":
                     running = false;
