@@ -23,7 +23,7 @@ public class PostLoginUi {
         boolean running = true;
 
         while (running){
-            System.out.println("Prelogin\n Enter a command please:\n");
+            System.out.println("Postlogin\n Enter a command please:\n");
             String command = scanner.nextLine();
 
             switch (command){
