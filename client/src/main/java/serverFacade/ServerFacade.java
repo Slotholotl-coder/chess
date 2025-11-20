@@ -38,10 +38,11 @@ public class ServerFacade {
         var response = sendRequest(request);
     }
 
-    public void listGames(ListGamesRequest listGamesRequest){
+    public ListGamesResult listGames(ListGamesRequest listGamesRequest){
         ListGamesRequest listGamesRequestAuthorized = new ListGamesRequest(authToken);
         HttpRequest request = buildRequest("GET", "/game", listGamesRequestAuthorized);
-        var response = sendRequest(request);
+        ListGamesResult response = serializer.fromJson(sendRequest(request).toString(), ListGamesResult.class);
+        return response;
     }
 
     public void createGame(CreateGameRequest createGameRequest){
