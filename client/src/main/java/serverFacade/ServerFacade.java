@@ -23,7 +23,10 @@ public class ServerFacade {
         var response = sendRequest(request);
     }
 
-//    public LoginResult login(LoginRequest loginRequest){}
+    public void login(LoginRequest loginRequest){
+        HttpRequest request = buildRequest("SESSION", "/user", loginRequest);
+        var response = sendRequest(request);
+    }
 //
 //    public void logout(LogoutRequest logoutRequest){
 //

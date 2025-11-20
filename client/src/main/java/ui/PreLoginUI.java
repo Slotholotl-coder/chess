@@ -1,5 +1,6 @@
 package ui;
 
+import model.LoginRequest;
 import model.RegisterRequest;
 import serverFacade.ServerFacade;
 
@@ -31,6 +32,7 @@ public class PreLoginUI {
                     register();
                     break;
                 case "login":
+                    login();
                     break;
                 case "quit":
                     running = false;
@@ -52,7 +54,7 @@ public class PreLoginUI {
     private void register(){
         System.out.println("Create Username:");
         String username = scanner.nextLine();
-        System.out.println("Crate Password:");
+        System.out.println("Cerate Password:");
         String password = scanner.nextLine();
         System.out.println("Enter email:");
         String email = scanner.nextLine();
@@ -63,6 +65,21 @@ public class PreLoginUI {
         }
 
         serverFacade.register(new RegisterRequest(username, password, email));
+
+    }
+
+    private void login(){
+        System.out.println("Enter username:");
+        String username = scanner.nextLine();
+        System.out.println("Enter password");
+        String password = scanner.nextLine();
+
+        if (username.isEmpty() || password.isEmpty()){
+            System.out.println("Invalid username or password");
+            return;
+        }
+
+        serverFacade.login(new LoginRequest(username, password));
 
     }
 
