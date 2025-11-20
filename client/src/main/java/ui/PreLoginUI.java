@@ -12,9 +12,12 @@ public class PreLoginUI {
 
     Scanner scanner;
 
+    PostLoginUi postLoginUi;
+
     public PreLoginUI(ServerFacade serverFacade){
         this.serverFacade = serverFacade;
         scanner = new Scanner(System.in);
+        postLoginUi = new PostLoginUi(serverFacade);
     }
 
     public void run(){
@@ -80,6 +83,8 @@ public class PreLoginUI {
         }
 
         serverFacade.login(new LoginRequest(username, password));
+
+        postLoginUi.run();
 
     }
 
