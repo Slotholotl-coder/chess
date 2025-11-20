@@ -66,7 +66,7 @@ public class ServerFacade {
         if (response == null){
             handleErrors("Server Error");
         } else if (!validResponse(response.statusCode())){
-            handleErrors("Server Status Error" + response.statusCode() + serializer.fromJson((String) response.body(), String.class));
+            handleErrors("Server Status Error" + response.statusCode() + response.body());
         }
 
         return response;
