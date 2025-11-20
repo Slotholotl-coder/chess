@@ -45,7 +45,8 @@ public class ServerFacade {
     }
 
     public void createGame(CreateGameRequest createGameRequest){
-        HttpRequest request = buildRequest("POST", "/game", createGameRequest);
+        CreateGameRequest createGameRequestAuthorized = new CreateGameRequest(authToken, createGameRequest.gameName());
+        HttpRequest request = buildRequest("POST", "/game", createGameRequestAuthorized);
         var response = sendRequest(request);
     }
 
