@@ -57,6 +57,11 @@ public class PreLoginUI {
         System.out.println("Enter email:");
         String email = scanner.nextLine();
 
+        if (username.isEmpty() || password.isEmpty() || email.isEmpty()){
+            System.out.println("Invalid credentials");
+            return;
+        }
+
         serverFacade.register(new RegisterRequest(username, password, email));
 
     }
