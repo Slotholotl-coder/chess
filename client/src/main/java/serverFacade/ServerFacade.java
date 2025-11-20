@@ -24,7 +24,7 @@ public class ServerFacade {
     }
 
     public void login(LoginRequest loginRequest){
-        HttpRequest request = buildRequest("SESSION", "/user", loginRequest);
+        HttpRequest request = buildRequest("POST", "/session", loginRequest);
         var response = sendRequest(request);
     }
 //
