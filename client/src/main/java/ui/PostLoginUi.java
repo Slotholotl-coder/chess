@@ -11,13 +11,18 @@ public class PostLoginUi {
 
     Scanner scanner;
 
-    public PostLoginUi(ServerFacade serverFacade){
+    PreLoginUI preLoginUI;
+
+    boolean running;
+
+    public PostLoginUi(ServerFacade serverFacade, PreLoginUI preLoginUI){
         this.serverFacade = serverFacade;
         scanner = new Scanner(System.in);
+        this.preLoginUI = preLoginUI;
     }
 
     public void run(){
-        boolean running = true;
+        running = true;
 
         while (running){
             System.out.println("Postlogin\n Enter a command please:\n");
@@ -60,11 +65,12 @@ public class PostLoginUi {
 
     private void logout(){
         serverFacade.logout(new LogoutRequest(null));
+        running = false;
     }
 
     private void listGames(){
        ListGamesResult listGamesResult = serverFacade.listGames(null);
-       System.out.println(listGamesResult);
+       System.out.println(listGamesResult.toString());
     }
 
     private void createGame(){
