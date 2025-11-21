@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessGame;
 import model.*;
 import serverFacade.ServerFacade;
 
@@ -11,13 +12,18 @@ public class PostLoginUi {
 
     Scanner scanner;
 
-    public PostLoginUi(ServerFacade serverFacade){
+    PreLoginUI preLoginUI;
+
+    boolean running;
+
+    public PostLoginUi(ServerFacade serverFacade, PreLoginUI preLoginUI){
         this.serverFacade = serverFacade;
         scanner = new Scanner(System.in);
+        this.preLoginUI = preLoginUI;
     }
 
     public void run(){
-        boolean running = true;
+        running = true;
 
         while (running){
             System.out.println("Postlogin\n Enter a command please:\n");
@@ -30,14 +36,16 @@ public class PostLoginUi {
                 case "logout":
                     logout();
                     break;
-                case "list":
+                case "list games":
                     listGames();
                     break;
-                case "create":
+                case "create game":
                     createGame();
                     break;
-                case "join":
+                case "play game":
                     joinGame();
+                    break;
+                case "observe game":
                     break;
                 case "quit":
                     running = false;
@@ -60,27 +68,45 @@ public class PostLoginUi {
 
     private void logout(){
         serverFacade.logout(new LogoutRequest(null));
+        running = false;
     }
 
     private void listGames(){
        ListGamesResult listGamesResult = serverFacade.listGames(null);
-       System.out.println(listGamesResult);
+       System.out.println(listGamesResult.toString());
     }
 
     private void createGame(){
         System.out.println("Enter Game Name:");
         String gameName = scanner.nextLine();
 
-        serverFacade.createGame(new CreateGameRequest(null, gameName));
+        CreateGameResult createGameResult = serverFacade.createGame(new CreateGameRequest(null, gameName));
     }
 
     private void joinGame(){
         System.out.println("Game Number:");
         int gameID = Integer.parseInt(scanner.nextLine());
         System.out.println("Join Which Side? black/white");
-        String teamColor = scanner.nextLine();
+        String teamColor = scanner.nextLine().toUpperCase();
 
-        serverFacade.joinGame(new JoinGameRequest(teamColor, gameID));
+        ChessGame.TeamColor joinedColor = teamColor.equals("BlACK") ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
+
+        JoinGameResult joinGameResult = serverFacade.joinGame(new JoinGameRequest(teamColor, gameID));
+
+        GameUI gameUI = new GameUI();
+        gameUI.updateBoard(joinGameResult.game().game(), joinedColor);
+
+    }
+
+    private void observeGame(){
+        System.out.println("Enter Game Number:");
+        int gameNumber = Integer.parseInt(scanner.nextLine());
+
+        ChessGame chessGame = serverFacade.getGame(gameNumber);
+
+        GameUI gameUI = new GameUI();
+        gameUI.updateBoard(chessGame, ChessGame.TeamColor.WHITE);
+
     }
 
 }

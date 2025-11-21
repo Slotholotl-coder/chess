@@ -17,7 +17,7 @@ public class PreLoginUI {
     public PreLoginUI(ServerFacade serverFacade){
         this.serverFacade = serverFacade;
         scanner = new Scanner(System.in);
-        postLoginUi = new PostLoginUi(serverFacade);
+        postLoginUi = new PostLoginUi(serverFacade, this);
     }
 
     public void run(){
@@ -25,7 +25,7 @@ public class PreLoginUI {
 
         while (running){
             System.out.println("Prelogin\n Enter a command please:\n");
-            String command = scanner.nextLine();
+            String command = scanner.nextLine().toLowerCase();
 
             switch (command){
                 case "help":

@@ -1,5 +1,6 @@
 import chess.*;
 import serverFacade.ServerFacade;
+import ui.BoardPrinter;
 import ui.PreLoginUI;
 import server.Server;
 

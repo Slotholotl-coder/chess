@@ -69,7 +69,8 @@ public class GameHandler {
         }
 
         try {
-            gameService.joinGame(authToken, joinGameRequest);
+             JoinGameResult joinGameResult = gameService.joinGame(authToken, joinGameRequest);
+             context.result(serializer.toJson(joinGameResult));
         } catch (DataAccessException e) {
             if (e.getMessage().contains("unauthorized")){
                 context.status(401);
