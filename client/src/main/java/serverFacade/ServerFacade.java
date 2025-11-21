@@ -1,5 +1,6 @@
 package serverFacade;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.*;
 
@@ -7,6 +8,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
 
 public class ServerFacade {
     private HttpClient client = HttpClient.newHttpClient();
@@ -15,9 +17,12 @@ public class ServerFacade {
 
     private String authToken;
 
+    private HashMap<Integer, GameData> displayedGameList;
+
     public ServerFacade (String serverUrl){
         this.serverUrl = serverUrl;
         serializer = new Gson();
+        displayedGameList = new HashMap<>();
     }
 
     public void register(RegisterRequest registerRequest){
@@ -42,17 +47,42 @@ public class ServerFacade {
         ListGamesRequest listGamesRequestAuthorized = new ListGamesRequest(authToken);
         HttpRequest request = buildRequest("GET", "/game", listGamesRequestAuthorized);
         ListGamesResult response = serializer.fromJson(sendRequest(request).body().toString(), ListGamesResult.class);
+
+        displayGameList(response);
+
         return response;
     }
 
-    public void createGame(CreateGameRequest createGameRequest){
-        HttpRequest request = buildRequest("POST", "/game", createGameRequest);
-        var response = sendRequest(request);
+    private void displayGameList(ListGamesResult listGamesResult){
+        int x = 0;
+        displayedGameList.clear();
+        for (GameData chessGame : listGamesResult.games()){
+            x++;
+            displayedGameList.put(x, chessGame);
+            System.out.println(x  + chessGame.toString());
+        }
     }
 
-    public void joinGame(JoinGameRequest joinGameRequest){
-        HttpRequest request = buildRequest("PUT", "/game", joinGameRequest);
+    public CreateGameResult createGame(CreateGameRequest createGameRequest){
+        HttpRequest request = buildRequest("POST", "/game", createGameRequest);
         var response = sendRequest(request);
+        return serializer.fromJson(response.body().toString(), CreateGameResult.class);
+    }
+
+    public JoinGameResult joinGame(JoinGameRequest joinGameRequest){
+        int displayedID = displayedGameList.get(joinGameRequest.gameID()).gameID();
+
+        JoinGameRequest joinGameRequestUpdated = new JoinGameRequest(joinGameRequest.playerColor(), displayedID);
+
+        HttpRequest request = buildRequest("PUT", "/game", joinGameRequestUpdated);
+        JoinGameResult response = serializer.fromJson(sendRequest(request).body().toString(), JoinGameResult.class);
+
+        return response;
+
+    }
+
+    public ChessGame getGame(int displayedGameNumber){
+        return displayedGameList.get(displayedGameNumber).game();
     }
 
     private HttpRequest buildRequest(String method, String path, Object body){

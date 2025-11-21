@@ -39,7 +39,7 @@ public class BoardPrinter {
 
 
 
-    public static void printBoard(ChessGame game, ChessGame.TeamColor teamColor){
+    public void printBoard(ChessGame game, ChessGame.TeamColor teamColor){
         int direction = teamColor == ChessGame.TeamColor.BLACK ? 1 : -8;
 
         int top = teamColor == ChessGame.TeamColor.BLACK ? 8 : -1;
