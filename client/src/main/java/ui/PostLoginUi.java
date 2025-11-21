@@ -60,9 +60,9 @@ public class PostLoginUi {
         System.out.println("Available Commands:\n" +
                 "help - Display this help menu\n" +
                 "logout - Logout and return to login menu\n" +
-                "list - List Games\n" +
-                "create - Create game\n" +
-                "join - Join game" +
+                "list games- List Games\n" +
+                "create game - Create game\n" +
+                "play game - Join game\n" +
                 "quit - Exit");
     }
 
