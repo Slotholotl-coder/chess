@@ -113,7 +113,7 @@ public class ServerFacade {
             handleErrors(e.getMessage());
         }
         if (response == null || !validResponse(response.statusCode())){
-            handleErrors("Server Error, please try again" + response.body());
+            handleErrors(response.body().toString());
         }
 
         return response;
@@ -124,7 +124,7 @@ public class ServerFacade {
             throw new Exception("Invalid authorization");
         }
         else {
-            throw new Exception(error);
+            throw new Exception("Server Error, please try again");
         }
     }
 
