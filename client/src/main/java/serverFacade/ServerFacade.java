@@ -28,6 +28,8 @@ public class ServerFacade {
     public void register(RegisterRequest registerRequest) throws Exception {
         HttpRequest request = buildRequest("POST", "/user", registerRequest);
         var response = sendRequest(request);
+
+        login(new LoginRequest(registerRequest.username(), registerRequest.username()));
     }
 
     public void login(LoginRequest loginRequest) throws Exception {
@@ -59,7 +61,7 @@ public class ServerFacade {
         for (GameData chessGame : listGamesResult.games()){
             x++;
             displayedGameList.put(x, chessGame);
-            System.out.println(x  + chessGame.toString());
+            System.out.println(x + " : " + chessGame.toString());
         }
     }
 
@@ -122,8 +124,9 @@ public class ServerFacade {
     private void handleErrors(String error) throws Exception{
         if (error.contains("author")){
             throw new Exception("Invalid authorization");
-        }
-        else {
+        } else if (error.contains("Invalid game number")) {
+            throw new Exception("Invalid game number");
+        } else {
             throw new Exception("Server Error, please try again");
         }
     }
