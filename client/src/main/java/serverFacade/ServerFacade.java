@@ -98,7 +98,7 @@ public class ServerFacade {
         return null;
     }
 
-    private HttpRequest buildRequest(String method, String path, Object body){
+    public HttpRequest buildRequest(String method, String path, Object body){
         var request = HttpRequest.newBuilder().uri(URI.create(serverUrl + path)).setHeader("Content-Type", "application/json");
         if (authToken != null){
             request.header("authorization", authToken);
@@ -113,7 +113,7 @@ public class ServerFacade {
         return request.build();
     }
 
-    private HttpResponse sendRequest(HttpRequest request) throws Exception {
+    public HttpResponse sendRequest(HttpRequest request) throws Exception {
         HttpResponse response = null;
         try{
             response = client.send(request, HttpResponse.BodyHandlers.ofString());

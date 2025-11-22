@@ -9,6 +9,8 @@ import serverFacade.ServerFacade;
 import ui.PostLoginUi;
 import ui.PreLoginUI;
 
+import java.net.http.HttpRequest;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -27,6 +29,12 @@ public class ServerFacadeTests {
         facade = new ServerFacade(port);
         preLoginUI = new PreLoginUI(facade);
         postLoginUi = new PostLoginUi(facade, preLoginUI);
+        HttpRequest request = facade.buildRequest("DELETE", "/db", "");
+        try {
+            facade.sendRequest(request);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @AfterAll
@@ -50,7 +58,7 @@ public class ServerFacadeTests {
     void loginPositive() throws Exception {
         facade.register(new RegisterRequest("player1", "password", "p1@email.com"));
         facade.logout();
-        assertDoesNotThrow(() -> facade.login(new LoginRequest("player1", "lsadkfj")));
+        assertDoesNotThrow(() -> facade.login(new LoginRequest("player1", "password")));
     }
 
     @Test
