@@ -22,6 +22,8 @@ public class PreLoginUI {
 
     public void run(){
         boolean running = true;
+        System.out.println("Enter help for help menu");
+
 
         while (running){
             System.out.println("Prelogin\n Enter a command please:\n");

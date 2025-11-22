@@ -24,6 +24,7 @@ public class PostLoginUi {
 
     public void run(){
         running = true;
+        System.out.println("Enter help for help menu");
 
         while (running){
             System.out.println("Postlogin\n Enter a command please:\n");
@@ -64,6 +65,7 @@ public class PostLoginUi {
                 "list games- List Games\n" +
                 "create game - Create game\n" +
                 "play game - Join game\n" +
+                "observe game - watch a game\n" +
                 "quit - Exit");
     }
 
