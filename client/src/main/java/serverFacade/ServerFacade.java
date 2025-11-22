@@ -26,7 +26,7 @@ public class ServerFacade {
     }
 
     public ServerFacade (int port){
-        this.serverUrl = serverUrl;
+        this.serverUrl = "http://localhost:" + port;
         serializer = new Gson();
         displayedGameList = new HashMap<>();
     }
