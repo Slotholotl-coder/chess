@@ -25,25 +25,25 @@ public class ServerFacade {
         displayedGameList = new HashMap<>();
     }
 
-    public void register(RegisterRequest registerRequest){
+    public void register(RegisterRequest registerRequest) throws Exception {
         HttpRequest request = buildRequest("POST", "/user", registerRequest);
         var response = sendRequest(request);
     }
 
-    public void login(LoginRequest loginRequest){
+    public void login(LoginRequest loginRequest) throws Exception {
         HttpRequest request = buildRequest("POST", "/session", loginRequest);
         model.LoginResult loginResult = serializer.fromJson(sendRequest(request).body().toString(), LoginResult.class);
 
         authToken =loginResult.authToken();
     }
 
-    public void logout(LogoutRequest logoutRequest){
+    public void logout(LogoutRequest logoutRequest) throws Exception {
         LogoutRequest logoutRequestAuthorized = new LogoutRequest(authToken);
         HttpRequest request = buildRequest("DELETE", "/session", logoutRequestAuthorized);
         var response = sendRequest(request);
     }
 
-    public ListGamesResult listGames(ListGamesRequest listGamesRequest){
+    public ListGamesResult listGames(ListGamesRequest listGamesRequest) throws Exception {
         ListGamesRequest listGamesRequestAuthorized = new ListGamesRequest(authToken);
         HttpRequest request = buildRequest("GET", "/game", listGamesRequestAuthorized);
         ListGamesResult response = serializer.fromJson(sendRequest(request).body().toString(), ListGamesResult.class);
@@ -63,13 +63,13 @@ public class ServerFacade {
         }
     }
 
-    public CreateGameResult createGame(CreateGameRequest createGameRequest){
+    public CreateGameResult createGame(CreateGameRequest createGameRequest) throws Exception {
         HttpRequest request = buildRequest("POST", "/game", createGameRequest);
         var response = sendRequest(request);
         return serializer.fromJson(response.body().toString(), CreateGameResult.class);
     }
 
-    public JoinGameResult joinGame(JoinGameRequest joinGameRequest){
+    public JoinGameResult joinGame(JoinGameRequest joinGameRequest) throws Exception {
         int displayedID = displayedGameList.get(joinGameRequest.gameID()).gameID();
 
         JoinGameRequest joinGameRequestUpdated = new JoinGameRequest(joinGameRequest.playerColor(), displayedID);
@@ -100,24 +100,27 @@ public class ServerFacade {
         return request.build();
     }
 
-    private HttpResponse sendRequest(HttpRequest request){
+    private HttpResponse sendRequest(HttpRequest request) throws Exception {
         HttpResponse response = null;
         try{
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
         }catch (Exception e){
             handleErrors(e.getMessage());
         }
-        if (response == null){
-            handleErrors("Server Error");
-        } else if (!validResponse(response.statusCode())){
+        if (response == null || !validResponse(response.statusCode())){
             handleErrors("Server Status Error" + response.statusCode() + response.body());
         }
 
         return response;
     }
 
-    private void handleErrors(String error){
-        System.out.println(error);
+    private void handleErrors(String error) throws Exception{
+        if (error.contains("author")){
+            throw new Exception("Invalid authorization");
+        }
+        else {
+            throw new Exception(error);
+        }
     }
 
     private boolean validResponse(int serverStatus){

@@ -46,6 +46,7 @@ public class PostLoginUi {
                     joinGame();
                     break;
                 case "observe game":
+                    observeGame();
                     break;
                 case "quit":
                     running = false;
@@ -67,20 +68,33 @@ public class PostLoginUi {
     }
 
     private void logout(){
-        serverFacade.logout(new LogoutRequest(null));
-        running = false;
+        try {
+            serverFacade.logout(new LogoutRequest(null));
+            running = false;
+        } catch (Exception e) {
+            printError(e);
+        }
     }
 
     private void listGames(){
-       ListGamesResult listGamesResult = serverFacade.listGames(null);
-       System.out.println(listGamesResult.toString());
+        try {
+            ListGamesResult listGamesResult = serverFacade.listGames(null);
+            System.out.println(listGamesResult.toString());
+        } catch (Exception e) {
+            printError(e);
+        }
     }
 
     private void createGame(){
         System.out.println("Enter Game Name:");
         String gameName = scanner.nextLine();
 
-        CreateGameResult createGameResult = serverFacade.createGame(new CreateGameRequest(null, gameName));
+        try {
+            CreateGameResult createGameResult = serverFacade.createGame(new CreateGameRequest(null, gameName));
+            System.out.println("Game Created");
+        } catch (Exception e) {
+            printError(e);
+        }
     }
 
     private void joinGame(){
@@ -91,10 +105,14 @@ public class PostLoginUi {
 
         ChessGame.TeamColor joinedColor = teamColor.equals("BlACK") ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
 
-        JoinGameResult joinGameResult = serverFacade.joinGame(new JoinGameRequest(teamColor, gameID));
+        try {
+            JoinGameResult joinGameResult = serverFacade.joinGame(new JoinGameRequest(teamColor, gameID));
 
-        GameUI gameUI = new GameUI();
-        gameUI.updateBoard(joinGameResult.game().game(), joinedColor);
+            GameUI gameUI = new GameUI();
+            gameUI.updateBoard(joinGameResult.game().game(), joinedColor);
+        } catch (Exception e) {
+            printError(e);
+        }
 
     }
 
@@ -108,5 +126,10 @@ public class PostLoginUi {
         gameUI.updateBoard(chessGame, ChessGame.TeamColor.WHITE);
 
     }
+
+    private void printError(Exception e){
+        System.out.println(e.getMessage());
+    }
+
 
 }
