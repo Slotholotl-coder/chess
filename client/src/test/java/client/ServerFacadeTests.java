@@ -29,12 +29,8 @@ public class ServerFacadeTests {
         facade = new ServerFacade(port);
         preLoginUI = new PreLoginUI(facade);
         postLoginUi = new PostLoginUi(facade, preLoginUI);
-        HttpRequest request = facade.buildRequest("DELETE", "/db", "");
-        try {
-            facade.sendRequest(request);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+
+        facade.clear();
     }
 
     @AfterAll
