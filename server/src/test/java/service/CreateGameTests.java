@@ -16,7 +16,7 @@ public class CreateGameTests extends ServiceTest {
 
         RegisterResult registerResult = userService.register(new RegisterRequest("playeraksjdfh", "ajls;djkf", "asdlfkj"));
 
-        CreateGameResult createGameResult = gameService.createGame(registerResult.authToken(), new CreateGameRequest("asldfj"));
+        CreateGameResult createGameResult = gameService.createGame(registerResult.authToken(), new CreateGameRequest("asldfj", ";aslkdjf"));
 
         assertNotNull(gameDAO.getAllGames());
     }
@@ -26,7 +26,7 @@ public class CreateGameTests extends ServiceTest {
         Exception exception = assertThrows(DataAccessException.class, () -> {
             RegisterResult registerResult = userService.register(new RegisterRequest("playeraksjdfh", "ajls;djkf", "asdlfkj"));
 
-            CreateGameResult createGameResult = gameService.createGame("a;lwkejflkw", new CreateGameRequest("a;lwjefns"));
+            CreateGameResult createGameResult = gameService.createGame("a;lwkejflkw", new CreateGameRequest("a;lwjefns", "alsdjkf"));
         });
 
         assertEquals("Error: unauthorized", exception.getMessage());

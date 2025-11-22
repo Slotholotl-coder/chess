@@ -15,7 +15,7 @@ public class JoinGameTests extends ServiceTest {
     void joinGameSuccess() throws DataAccessException {
         userService.register(new RegisterRequest("player1", "password", "email"));
         String authToken = userService.login(new LoginRequest("player1", "password")).authToken();
-        gameService.createGame(authToken, new CreateGameRequest("alsdkjf"));
+        gameService.createGame(authToken, new CreateGameRequest("alsdkjf", "sl;odkjf"));
         gameService.joinGame(authToken, new JoinGameRequest("BLACK", 1));
         assertEquals(gameDAO.getGame(1).blackUsername(), "player1");
     }
@@ -29,7 +29,7 @@ public class JoinGameTests extends ServiceTest {
         userService.register(new RegisterRequest("player2", "password", "email"));
         String authToken1 = userService.login(new LoginRequest("player1", "password")).authToken();
 
-        gameService.createGame(authToken1, new CreateGameRequest("alsdkjf"));
+        gameService.createGame(authToken1, new CreateGameRequest("alsdkjf", "asljkdhf"));
         gameService.joinGame(authToken1, new JoinGameRequest("BLACK", 1));
 
         assertThrows(DataAccessException.class, () -> gameService.joinGame(authToken, new JoinGameRequest("BLACK", 1)));

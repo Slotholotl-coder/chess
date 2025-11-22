@@ -14,7 +14,7 @@ public class ListGamesTests extends ServiceTest{
     void testListGamesSuccess() throws DataAccessException {
 
         RegisterResult registerResult = userService.register(new RegisterRequest("player1", "password", "email"));
-        gameService.createGame(registerResult.authToken(), new CreateGameRequest("asldkfj"));
+        gameService.createGame(registerResult.authToken(), new CreateGameRequest("asldkfj", "sldjkf"));
 
         ListGamesResult games = gameService.listGames(new ListGamesRequest(registerResult.authToken()));
 
@@ -25,7 +25,7 @@ public class ListGamesTests extends ServiceTest{
     void testListGamesFailure() {
         Exception exception = assertThrows(DataAccessException.class, () -> {
             RegisterResult registerResult = userService.register(new RegisterRequest("player1", "password", "email"));
-            gameService.createGame(registerResult.authToken(), new CreateGameRequest("asldkfj"));
+            gameService.createGame(registerResult.authToken(), new CreateGameRequest("asldkfj", "'as;l"));
 
             ListGamesResult games = gameService.listGames(new ListGamesRequest("alsdkjf"));
         });
