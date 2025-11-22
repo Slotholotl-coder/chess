@@ -24,6 +24,7 @@ public class GameUI {
     }
 
     public void updateBoard(ChessGame chessGame, ChessGame.TeamColor teamColor){
+        boardPrinter = new BoardPrinter();
         boardPrinter.printBoard(chessGame, teamColor);
     }
 

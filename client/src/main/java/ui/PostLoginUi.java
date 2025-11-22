@@ -69,7 +69,7 @@ public class PostLoginUi {
 
     private void logout(){
         try {
-            serverFacade.logout(new LogoutRequest(null));
+            serverFacade.logout();
             running = false;
         } catch (Exception e) {
             printError(e);
@@ -78,7 +78,7 @@ public class PostLoginUi {
 
     private void listGames(){
         try {
-            ListGamesResult listGamesResult = serverFacade.listGames(null);
+            ListGamesResult listGamesResult = serverFacade.listGames();
             System.out.println(listGamesResult.toString());
         } catch (Exception e) {
             printError(e);
