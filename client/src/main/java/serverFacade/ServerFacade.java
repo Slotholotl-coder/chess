@@ -113,7 +113,7 @@ public class ServerFacade {
             handleErrors(e.getMessage());
         }
         if (response == null || !validResponse(response.statusCode())){
-            handleErrors("Server Error, please try again");
+            handleErrors("Server Error, please try again" + response.body());
         }
 
         return response;
