@@ -35,7 +35,7 @@ public class ServerFacade {
         HttpRequest request = buildRequest("POST", "/user", registerRequest);
         var response = sendRequest(request);
 
-        //login(new LoginRequest(registerRequest.username(), registerRequest.username()));
+        login(new LoginRequest(registerRequest.username(), registerRequest.username()));
     }
 
     public void login(LoginRequest loginRequest) throws Exception {

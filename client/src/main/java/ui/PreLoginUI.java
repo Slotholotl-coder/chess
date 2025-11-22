@@ -74,6 +74,7 @@ public class PreLoginUI {
 
         try {
             serverFacade.register(new RegisterRequest(username, password, email));
+            postLoginUi.run();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
