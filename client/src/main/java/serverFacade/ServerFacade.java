@@ -37,13 +37,13 @@ public class ServerFacade {
         authToken =loginResult.authToken();
     }
 
-    public void logout(LogoutRequest logoutRequest) throws Exception {
+    public void logout() throws Exception {
         LogoutRequest logoutRequestAuthorized = new LogoutRequest(authToken);
         HttpRequest request = buildRequest("DELETE", "/session", logoutRequestAuthorized);
         var response = sendRequest(request);
     }
 
-    public ListGamesResult listGames(ListGamesRequest listGamesRequest) throws Exception {
+    public ListGamesResult listGames() throws Exception {
         ListGamesRequest listGamesRequestAuthorized = new ListGamesRequest(authToken);
         HttpRequest request = buildRequest("GET", "/game", listGamesRequestAuthorized);
         ListGamesResult response = serializer.fromJson(sendRequest(request).body().toString(), ListGamesResult.class);
