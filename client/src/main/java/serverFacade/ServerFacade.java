@@ -33,7 +33,9 @@ public class ServerFacade {
 
     public void register(RegisterRequest registerRequest) throws Exception {
         HttpRequest request = buildRequest("POST", "/user", registerRequest);
-        var response = sendRequest(request);
+        RegisterResult response = serializer.fromJson(sendRequest(request).body().toString(), RegisterResult.class);
+
+        authToken = response.authToken();
 
         login(new LoginRequest(registerRequest.username(), registerRequest.username()));
     }
