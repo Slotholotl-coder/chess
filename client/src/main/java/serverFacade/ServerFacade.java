@@ -113,6 +113,15 @@ public class ServerFacade {
         return request.build();
     }
 
+    public void clear(){
+        HttpRequest request = buildRequest("DELETE", "/db", "");
+        try {
+            sendRequest(request);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public HttpResponse sendRequest(HttpRequest request) throws Exception {
         HttpResponse response = null;
         try{

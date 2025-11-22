@@ -39,6 +39,9 @@ public class PreLoginUI {
                 case "login":
                     login();
                     break;
+                case "clear":
+                    clear();
+                    break;
                 case "quit":
                     running = false;
                     break;
@@ -96,6 +99,10 @@ public class PreLoginUI {
             System.out.println(e.getMessage());
         }
 
+    }
+
+    private void clear(){
+        serverFacade.clear();
     }
 
 }
