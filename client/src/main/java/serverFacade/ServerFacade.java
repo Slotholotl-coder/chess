@@ -81,8 +81,13 @@ public class ServerFacade {
 
     }
 
-    public ChessGame getGame(int displayedGameNumber){
-        return displayedGameList.get(displayedGameNumber).game();
+    public ChessGame getGame(int displayedGameNumber) throws Exception {
+        try {
+            return displayedGameList.get(displayedGameNumber).game();
+        } catch (Exception e) {
+            handleErrors("Invalid game number");
+        }
+        return null;
     }
 
     private HttpRequest buildRequest(String method, String path, Object body){
@@ -108,7 +113,7 @@ public class ServerFacade {
             handleErrors(e.getMessage());
         }
         if (response == null || !validResponse(response.statusCode())){
-            handleErrors("Server Status Error" + response.statusCode() + response.body());
+            handleErrors("Server Error, please try again");
         }
 
         return response;
