@@ -120,10 +120,14 @@ public class PostLoginUi {
         System.out.println("Enter Game Number:");
         int gameNumber = Integer.parseInt(scanner.nextLine());
 
-        ChessGame chessGame = serverFacade.getGame(gameNumber);
+        try {
+            ChessGame chessGame = serverFacade.getGame(gameNumber);
+            GameUI gameUI = new GameUI();
+            gameUI.updateBoard(chessGame, ChessGame.TeamColor.WHITE);
 
-        GameUI gameUI = new GameUI();
-        gameUI.updateBoard(chessGame, ChessGame.TeamColor.WHITE);
+        } catch (Exception e) {
+            printError(e);
+        }
 
     }
 
