@@ -29,7 +29,10 @@ public class ServerFacadeTests {
         facade = new ServerFacade(port);
         preLoginUI = new PreLoginUI(facade);
         postLoginUi = new PostLoginUi(facade, preLoginUI);
+    }
 
+    @BeforeEach
+    public void clear(){
         facade.clear();
     }
 

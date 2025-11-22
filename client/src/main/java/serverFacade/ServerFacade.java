@@ -42,7 +42,7 @@ public class ServerFacade {
         HttpRequest request = buildRequest("POST", "/session", loginRequest);
         model.LoginResult loginResult = serializer.fromJson(sendRequest(request).body().toString(), LoginResult.class);
 
-        authToken =loginResult.authToken();
+        authToken = loginResult.authToken();
     }
 
     public void logout() throws Exception {
