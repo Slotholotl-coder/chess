@@ -25,6 +25,12 @@ public class ServerFacade {
         displayedGameList = new HashMap<>();
     }
 
+    public ServerFacade (int port){
+        this.serverUrl = serverUrl;
+        serializer = new Gson();
+        displayedGameList = new HashMap<>();
+    }
+
     public void register(RegisterRequest registerRequest) throws Exception {
         HttpRequest request = buildRequest("POST", "/user", registerRequest);
         var response = sendRequest(request);
