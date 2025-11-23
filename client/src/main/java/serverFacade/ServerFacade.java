@@ -31,7 +31,7 @@ public class ServerFacade {
 
         authToken = response.authToken();
 
-        login(new LoginRequest(registerRequest.username(), registerRequest.username()));
+        login(new LoginRequest(registerRequest.username(), registerRequest.password()));
     }
 
     public void login(LoginRequest loginRequest) throws Exception {
