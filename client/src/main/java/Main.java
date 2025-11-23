@@ -9,7 +9,7 @@ public class Main {
         }
 
         ServerFacade serverFacade = new ServerFacade(port);
-        
+
         PreLoginUI preLoginUI = new PreLoginUI(serverFacade);
         preLoginUI.run();
     }
