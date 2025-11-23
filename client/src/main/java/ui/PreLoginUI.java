@@ -14,8 +14,8 @@ public class PreLoginUI {
 
     PostLoginUi postLoginUi;
 
-    public PreLoginUI(ServerFacade serverFacade){
-        this.serverFacade = serverFacade;
+    public PreLoginUI(){
+        this.serverFacade = new ServerFacade(0);
         scanner = new Scanner(System.in);
         postLoginUi = new PostLoginUi(serverFacade, this);
     }
