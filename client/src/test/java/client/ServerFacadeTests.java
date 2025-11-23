@@ -99,6 +99,7 @@ public class ServerFacadeTests {
     @Test
     void createGameNegative() throws Exception {
         facade.register(new RegisterRequest("player1", "password", "p1@email.com"));
+        facade.logout();
         assertThrows(Exception.class, ()-> facade.createGame(new CreateGameRequest("adslfjk", "asdlfkj")));
     }
 
@@ -106,6 +107,7 @@ public class ServerFacadeTests {
     void joinGamePositive() throws Exception {
         facade.register(new RegisterRequest("player1", "password", "p1@email.com"));
         CreateGameResult createGameResult = facade.createGame(new CreateGameRequest("adslfjk", "asdlfkj"));
+        facade.listGames();
         JoinGameResult joinGameResult = facade.joinGame(new JoinGameRequest("BLACK", 1));
     }
 
@@ -128,7 +130,7 @@ public class ServerFacadeTests {
     void getGameNegative() throws Exception {
         facade.register(new RegisterRequest("player1", "password", "p1@email.com"));
         CreateGameResult createGameResult = facade.createGame(new CreateGameRequest("adslfjk", "asdlfkj"));
-        assertThrows(Exception.class, () ->  facade.getGame(1));
+        assertThrows(Exception.class, () ->  facade.getGame(5));
     }
 
     @Test
