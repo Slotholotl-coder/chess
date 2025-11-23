@@ -19,12 +19,6 @@ public class ServerFacade {
 
     private HashMap<Integer, GameData> displayedGameList;
 
-    public ServerFacade (String serverUrl){
-        this.serverUrl = serverUrl;
-        serializer = new Gson();
-        displayedGameList = new HashMap<>();
-    }
-
     public ServerFacade (int port){
         this.serverUrl = "http://localhost:" + port;
         serializer = new Gson();
