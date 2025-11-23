@@ -1,8 +1,7 @@
 package client;
 
-import model.AuthData;
-import model.LoginRequest;
-import model.RegisterRequest;
+import chess.ChessGame;
+import model.*;
 import org.junit.jupiter.api.*;
 import server.Server;
 import serverFacade.ServerFacade;
@@ -75,6 +74,66 @@ public class ServerFacadeTests {
     @Test
     void logoutNegative() throws Exception {
         assertThrows(Exception.class, () -> facade.logout());
+    }
+
+    @Test
+    void listGamesPositive() throws Exception {
+        facade.register(new RegisterRequest("player1", "password", "p1@email.com"));
+        facade.createGame(new CreateGameRequest("adlsfkj", "alsdfkj"));
+        ListGamesResult listGamesResult = facade.listGames();
+        assertNotNull(listGamesResult);
+    }
+
+    @Test
+    void listGamesNegative() throws Exception {
+        assertThrows(Exception.class, () -> facade.listGames());
+    }
+
+    @Test
+    void createGamePositive() throws Exception {
+        facade.register(new RegisterRequest("player1", "password", "p1@email.com"));
+        CreateGameResult createGameResult = facade.createGame(new CreateGameRequest("adslfjk", "asdlfkj"));
+        assertNotNull(createGameResult);
+    }
+
+    @Test
+    void createGameNegative() throws Exception {
+        facade.register(new RegisterRequest("player1", "password", "p1@email.com"));
+        assertThrows(Exception.class, ()-> facade.createGame(new CreateGameRequest("adslfjk", "asdlfkj")));
+    }
+
+    @Test
+    void joinGamePositive() throws Exception {
+        facade.register(new RegisterRequest("player1", "password", "p1@email.com"));
+        CreateGameResult createGameResult = facade.createGame(new CreateGameRequest("adslfjk", "asdlfkj"));
+        JoinGameResult joinGameResult = facade.joinGame(new JoinGameRequest("BLACK", 1));
+    }
+
+    @Test
+    void joinGameNegative() throws Exception {
+        facade.register(new RegisterRequest("player1", "password", "p1@email.com"));
+        assertThrows(Exception.class, ()-> facade.joinGame(new JoinGameRequest("BLACK", 9)));
+    }
+
+    @Test
+    void getGamePositive() throws Exception {
+        facade.register(new RegisterRequest("player1", "password", "p1@email.com"));
+        CreateGameResult createGameResult = facade.createGame(new CreateGameRequest("adslfjk", "asdlfkj"));
+        facade.listGames();
+        ChessGame chessGame = facade.getGame(1);
+        assertNotNull(chessGame);
+    }
+
+    @Test
+    void getGameNegative() throws Exception {
+        facade.register(new RegisterRequest("player1", "password", "p1@email.com"));
+        CreateGameResult createGameResult = facade.createGame(new CreateGameRequest("adslfjk", "asdlfkj"));
+        assertThrows(Exception.class, () ->  facade.getGame(1));
+    }
+
+    @Test
+    void clearPositive() throws Exception {
+        assertDoesNotThrow(() -> facade.clear());
     }
 
 }
