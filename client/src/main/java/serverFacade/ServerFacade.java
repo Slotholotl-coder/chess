@@ -45,6 +45,8 @@ public class ServerFacade {
         LogoutRequest logoutRequestAuthorized = new LogoutRequest(authToken);
         HttpRequest request = buildRequest("DELETE", "/session", logoutRequestAuthorized);
         var response = sendRequest(request);
+
+        authToken = null;
     }
 
     public ListGamesResult listGames() throws Exception {
@@ -68,6 +70,9 @@ public class ServerFacade {
     }
 
     public CreateGameResult createGame(CreateGameRequest createGameRequest) throws Exception {
+        if (authToken == null){
+            handleErrors("Invalid authorization");
+        }
         HttpRequest request = buildRequest("POST", "/game", createGameRequest);
         var response = sendRequest(request);
         return serializer.fromJson(response.body().toString(), CreateGameResult.class);
