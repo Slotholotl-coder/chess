@@ -1,9 +1,14 @@
-package serverfacade;
+package serverFacade;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import jakarta.websocket.ContainerProvider;
+import jakarta.websocket.Session;
+import jakarta.websocket.WebSocketContainer;
 import model.*;
+import websocket.commands.UserGameCommand;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -12,6 +17,8 @@ import java.util.HashMap;
 
 public class ServerFacade {
     private HttpClient client = HttpClient.newHttpClient();
+    private WebSocketClient webSocketClient;
+
     private String serverUrl;
     private Gson serializer;
 
@@ -143,12 +150,25 @@ public class ServerFacade {
         } else if (error.contains("Invalid game number")) {
             throw new Exception("Invalid game number");
         } else {
-            throw new Exception("Server Error, please try again");
+            throw new Exception(error);
         }
     }
 
     private boolean validResponse(int serverStatus){
         return serverStatus / 100 == 2;
+    }
+
+    public void connect(int gameID) throws Exception{
+        webSocketClient = new WebSocketClient();
+        WebSocketContainer webSocketContainer = ContainerProvider.getWebSocketContainer();
+        Session session = webSocketContainer.connectToServer(webSocketClient, new URI("ws://localhost:8080/ws"));
+        UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
+        webSocketClient.send(serializer.toJson(userGameCommand));
+    }
+
+    public void leave(int gameID) throws IOException {
+        UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
+        webSocketClient.send(serializer.toJson(userGameCommand, UserGameCommand.class));
     }
 
 }

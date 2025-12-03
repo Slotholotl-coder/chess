@@ -2,7 +2,7 @@ package ui;
 
 import chess.ChessGame;
 import model.*;
-import serverfacade.ServerFacade;
+import serverFacade.ServerFacade;
 
 import java.util.Scanner;
 
@@ -110,8 +110,11 @@ public class PostLoginUi {
         try {
             JoinGameResult joinGameResult = serverFacade.joinGame(new JoinGameRequest(teamColor, gameID));
 
-            GameUI gameUI = new GameUI();
-            gameUI.updateBoard(joinGameResult.game().game(), joinedColor);
+            serverFacade.connect(gameID);
+
+            GameUI gameUI = new GameUI(serverFacade, joinGameResult.game().game(), joinedColor);
+            gameUI.run();
+
         } catch (Exception e) {
             printError(e);
         }
@@ -124,9 +127,8 @@ public class PostLoginUi {
 
         try {
             ChessGame chessGame = serverFacade.getGame(gameNumber);
-            GameUI gameUI = new GameUI();
-            gameUI.updateBoard(chessGame, ChessGame.TeamColor.WHITE);
-
+            GameUI gameUI = new GameUI(serverFacade, chessGame, ChessGame.TeamColor.WHITE);
+            gameUI.run();
         } catch (Exception e) {
             printError(e);
         }

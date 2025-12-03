@@ -1,4 +1,4 @@
-import serverfacade.ServerFacade;
+import serverFacade.ServerFacade;
 import ui.PreLoginUI;
 
 public class Main {

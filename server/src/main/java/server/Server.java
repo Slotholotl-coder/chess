@@ -16,12 +16,16 @@ public class Server {
 
     private GameHandler gameHandler;
 
+    private WebSocketHandler webSocketHandler;
+
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
         userHandler = new UserHandler(userDAO, authDAO);
         clearAllDataHandler = new ClearAllDataHandler(userDAO, authDAO, gameDAO);
         gameHandler = new GameHandler(userDAO, authDAO, gameDAO);
+
+        webSocketHandler = new WebSocketHandler();
 
         // Register your endpoints and exception handlers here.
 
@@ -32,6 +36,14 @@ public class Server {
         javalin.get("/game", context -> gameHandler.listGames(context));
         javalin.post("/game", context -> gameHandler.createGame(context));
         javalin.put("/game", context -> gameHandler.joinGame(context));
+
+
+        javalin.ws("/ws", wsConfig -> {
+            wsConfig.onConnect(webSocketHandler);
+            wsConfig.onMessage(webSocketHandler);
+            wsConfig.onClose(webSocketHandler);
+        });
+
 
         javalin.delete("/db", context -> {
            clearAllDataHandler.clear(context);
