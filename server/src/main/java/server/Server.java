@@ -52,7 +52,7 @@ public class Server {
                System.out.println("Connected");
            });
            wsConfig.onMessage(wsMessageContext -> {
-               System.out.println(wsMessageContext.message());
+               wsMessageContext.send(wsMessageContext.message());
            });
            wsConfig.onClose(websocketHandler);
         });
