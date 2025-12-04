@@ -36,15 +36,26 @@ public class Server {
         javalin.post("/game", context -> gameHandler.createGame(context));
         javalin.put("/game", context -> gameHandler.joinGame(context));
 
-        javalin.ws("/ws", wsConfig -> {
-           wsConfig.onConnect(wsConnectContext -> {
-               System.out.println("Connected");
-           });
-           wsConfig.onMessage(wsMessageContext -> {
-               System.out.println(wsMessageContext.message());
-           });
-           wsConfig.onClose(websocketHandler);
-        });
+        Javalin.create()
+                .get("/echo/{msg}", ctx -> ctx.result("HTTP response: " + ctx.pathParam("msg")))
+                .ws("/ws", ws -> {
+                    ws.onConnect(ctx -> {
+                        ctx.enableAutomaticPings();
+                        System.out.println("Websocket connected");
+                    });
+                    ws.onMessage(ctx -> ctx.send("WebSocket response:" + ctx.message()));
+                    ws.onClose(_ -> System.out.println("Websocket closed"));
+                });
+
+//        javalin.ws("/ws", wsConfig -> {
+//           wsConfig.onConnect(wsConnectContext -> {
+//               System.out.println("Connected");
+//           });
+//           wsConfig.onMessage(wsMessageContext -> {
+//               System.out.println(wsMessageContext.message());
+//           });
+//           wsConfig.onClose(websocketHandler);
+//        });
 
         javalin.delete("/db", context -> {
            clearAllDataHandler.clear(context);
