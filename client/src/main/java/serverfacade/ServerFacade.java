@@ -151,4 +151,13 @@ public class ServerFacade {
         return serverStatus / 100 == 2;
     }
 
+    public void echo(){
+        try {
+            WebsocketClient websocketClient = new WebsocketClient();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }
