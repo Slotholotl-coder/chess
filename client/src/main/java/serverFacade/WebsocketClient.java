@@ -1,4 +1,4 @@
-package serverfacade;
+package serverFacade;
 
 import jakarta.websocket.*;
 

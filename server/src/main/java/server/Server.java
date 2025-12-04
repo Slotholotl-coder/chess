@@ -37,8 +37,12 @@ public class Server {
         javalin.put("/game", context -> gameHandler.joinGame(context));
 
         javalin.ws("/ws", wsConfig -> {
-           wsConfig.onConnect(websocketHandler);
-           wsConfig.onMessage(websocketHandler);
+           wsConfig.onConnect(wsConnectContext -> {
+               System.out.println("Connected");
+           });
+           wsConfig.onMessage(wsMessageContext -> {
+               System.out.println(wsMessageContext.message());
+           });
            wsConfig.onClose(websocketHandler);
         });
 
