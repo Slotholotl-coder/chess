@@ -4,7 +4,7 @@ import chess.ChessGame;
 import model.*;
 import org.junit.jupiter.api.*;
 import server.Server;
-import serverFacade.ServerFacade;
+import serverfacade.ServerFacade;
 import ui.PostLoginUi;
 import ui.PreLoginUI;
 
