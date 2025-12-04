@@ -154,6 +154,7 @@ public class ServerFacade {
     public void echo(){
         try {
             WebsocketClient websocketClient = new WebsocketClient();
+            websocketClient.run();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
