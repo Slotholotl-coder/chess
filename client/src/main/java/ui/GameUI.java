@@ -47,6 +47,7 @@ public class GameUI {
                 case "observe game":
                     break;
                 case "quit":
+                    echo();
                     running = false;
                     break;
             }
