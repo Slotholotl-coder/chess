@@ -10,7 +10,7 @@ public class WebsocketClient extends Endpoint {
 
     Session session;
 
-    public static void run() throws Exception {
+    public static void main(String[] args) throws Exception {
         WebsocketClient client = new WebsocketClient();
 
         Scanner scanner = new Scanner(System.in);
@@ -32,7 +32,6 @@ public class WebsocketClient extends Endpoint {
                 System.out.println("\nEnter another message you want to echo:");
             }
         });
-        run();
     }
 
     public void send(String message) throws IOException {
