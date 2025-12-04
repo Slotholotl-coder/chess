@@ -10,7 +10,7 @@ public class WebsocketClient extends Endpoint {
 
     Session session;
 
-    public static void main(String[] args) throws Exception {
+    public static void run() throws Exception {
         WebsocketClient client = new WebsocketClient();
 
         Scanner scanner = new Scanner(System.in);
@@ -22,6 +22,8 @@ public class WebsocketClient extends Endpoint {
     }
 
     public WebsocketClient() throws Exception {
+        run();
+
         URI uri = new URI("ws://localhost:8080/ws");
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         session = container.connectToServer(this, uri);
