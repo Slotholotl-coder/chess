@@ -25,7 +25,6 @@ public class GameUI {
         boardPrinter = new BoardPrinter();
         this.chessGame = chessGame;
         this.teamColor = teamColor;
-        updateBoard();
     }
 
     public void run(){

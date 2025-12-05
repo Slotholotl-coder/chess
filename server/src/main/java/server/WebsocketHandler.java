@@ -28,8 +28,8 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             UserGameCommand userGameCommand = serializer.fromJson(wsMessageContext.message(), UserGameCommand.class);
 
             switch (userGameCommand.getCommandType()){
-                case CONNECT -> connect(userGameCommand.getGameID(), session, wsMessageContext);
-                case LEAVE -> leave(userGameCommand.getGameID(), session, wsMessageContext);
+                case CONNECT -> connect(userGameCommand, session, wsMessageContext);
+                case LEAVE -> leave(userGameCommand, session, wsMessageContext);
             }
 
         } catch (Exception e) {
@@ -42,26 +42,28 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         System.out.println("Disconnected");
     }
 
-    private void connect(int gameID, Session session, WsMessageContext wsMessageContext){
-        websocketConnectionManager.add(gameID, session);
+    private void connect(UserGameCommand userGameCommand, Session session, WsMessageContext wsMessageContext){
+        websocketConnectionManager.add(userGameCommand.getGameID(), session);
         wsMessageContext.send(serializer.toJson(new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME), ServerMessage.class));
 
         try {
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-            serverMessage.setMessage("joined the game");
-            websocketConnectionManager.broadcast(gameID, wsMessageContext.session, serverMessage);
+            serverMessage.setMessage(userGameCommand.getUsername() + " joined the game as " +userGameCommand.getTeamColor());
+            websocketConnectionManager.broadcast(userGameCommand.getGameID(), wsMessageContext.session, serverMessage);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void leave(int gameID, Session session, WsMessageContext wsMessageContext){
+    private void leave(UserGameCommand userGameCommand, Session session, WsMessageContext wsMessageContext){
         try {
-            websocketConnectionManager.broadcast(gameID, null, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION));
+            ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            serverMessage.setMessage(userGameCommand.getUsername() + " left");
+            websocketConnectionManager.broadcast(userGameCommand.getGameID(), wsMessageContext.session, serverMessage);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        websocketConnectionManager.remove(gameID, session);
+        websocketConnectionManager.remove(userGameCommand.getGameID(), session);
     }
 
 }

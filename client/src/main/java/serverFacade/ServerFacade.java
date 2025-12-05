@@ -26,6 +26,12 @@ public class ServerFacade {
 
     private GameUI gameUI;
 
+
+    String username;
+    String teamColor;
+    int gameID;
+
+
     public ServerFacade (int port){
         this.serverUrl = "http://localhost:" + port;
         serializer = new Gson();
@@ -37,6 +43,7 @@ public class ServerFacade {
         RegisterResult response = serializer.fromJson(sendRequest(request).body().toString(), RegisterResult.class);
 
         authToken = response.authToken();
+        username = response.username();
 
         login(new LoginRequest(registerRequest.username(), registerRequest.password()));
     }
@@ -92,6 +99,9 @@ public class ServerFacade {
 
         HttpRequest request = buildRequest("PUT", "/game", joinGameRequestUpdated);
         JoinGameResult response = serializer.fromJson(sendRequest(request).body().toString(), JoinGameResult.class);
+
+        teamColor = joinGameRequest.playerColor();
+        gameID = joinGameRequest.gameID();
 
         return response;
 
@@ -164,7 +174,10 @@ public class ServerFacade {
 
         try {
             websocketClient = new WebsocketClient(this);
-            websocketClient.send(serializer.toJson(new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken,  1)));
+            UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
+            userGameCommand .setTeamColor(teamColor);
+            userGameCommand.setUsername(username);
+            websocketClient.send(serializer.toJson(userGameCommand));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -172,7 +185,7 @@ public class ServerFacade {
 
     public void leave(){
         try {
-            websocketClient.send(serializer.toJson(new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, 1)));
+            websocketClient.send(serializer.toJson(new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID)));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
