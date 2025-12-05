@@ -44,7 +44,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private void connect(int gameID, Session session, WsMessageContext wsMessageContext){
         websocketConnectionManager.add(gameID, session);
-        wsMessageContext.send(serializer.toJson(new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME)));
+        wsMessageContext.send(serializer.toJson(new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME), ServerMessage.class));
 
         try {
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
