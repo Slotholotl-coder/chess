@@ -1,6 +1,7 @@
 package server;
 
 import chess.ChessGame;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
@@ -8,6 +9,7 @@ import io.javalin.websocket.*;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
@@ -41,6 +43,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             switch (userGameCommand.getCommandType()){
                 case CONNECT -> connect(userGameCommand, session, wsMessageContext);
                 case LEAVE -> leave(userGameCommand, session, wsMessageContext);
+                case MAKE_MOVE -> makeMove(session, wsMessageContext);
             }
 
         } catch (Exception e) {
@@ -90,5 +93,25 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             throw new RuntimeException(e);
         }
     }
+
+    private void makeMove(Session session, WsMessageContext wsMessageContext) throws IOException {
+        MakeMoveCommand makeMoveCommand = serializer.fromJson(wsMessageContext.message(), MakeMoveCommand.class);
+        try {
+
+            GameData gameData = gameDAO.getGame(makeMoveCommand.getGameID());
+            gameData.game().makeMove(makeMoveCommand.getChessMove());
+
+            gameDAO.updateGame(gameData);
+
+            ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            serverMessage.setMessage(makeMoveCommand.getUsername() + makeMoveCommand.getChessMove().toString());
+            websocketConnectionManager.broadcast(makeMoveCommand.getGameID(), session, serverMessage);
+        } catch (InvalidMoveException | DataAccessException e){
+            ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            serverMessage.setMessage("Invalid move");
+            wsMessageContext.send(serializer.toJson(serverMessage, ServerMessage.class));
+        }
+    }
+
 
 }
