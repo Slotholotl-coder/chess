@@ -26,14 +26,12 @@ public class WebsocketConnectionManager {
         connections.get(gameID).remove(session);
     }
 
-    public void broadcast(Session excludeSession, ServerMessage notification) throws IOException {
+    public void broadcast(int gameId, Session excludeSession, ServerMessage notification) throws IOException {
         String msg = notification.toString();
-        for (List<Session> gameSessions : connections.values()) {
-            for (Session c : gameSessions) {
-                if (c.isOpen()) {
-                    if (!c.equals(excludeSession)) {
-                        c.getRemote().sendString(msg);
-                    }
+        for (Session c : connections.get(gameId)) {
+            if (c.isOpen()) {
+                if (!c.equals(excludeSession)) {
+                    c.getRemote().sendString(msg);
                 }
             }
         }
