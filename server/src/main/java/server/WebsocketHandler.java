@@ -49,7 +49,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         try {
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
             serverMessage.setMessage("joined the game");
-            websocketConnectionManager.broadcast(wsMessageContext.session, serverMessage);
+            websocketConnectionManager.broadcast(gameID, wsMessageContext.session, serverMessage);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -57,7 +57,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private void leave(int gameID, Session session, WsMessageContext wsMessageContext){
         try {
-            websocketConnectionManager.broadcast(null, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION));
+            websocketConnectionManager.broadcast(gameID, null, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
