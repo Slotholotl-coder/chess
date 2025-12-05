@@ -2,10 +2,13 @@ package server;
 
 import com.google.gson.Gson;
 import io.javalin.websocket.*;
+import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import websocket.commands.UserGameCommand;
 
 public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsCloseHandler {
+
+    WebsocketConnectionManager websocketConnectionManager = new WebsocketConnectionManager();
 
     Gson serializer = new Gson();
 
@@ -17,7 +20,10 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     @Override
     public void handleMessage(@NotNull WsMessageContext wsMessageContext) throws Exception {
-        wsMessageContext.send(wsMessageContext.message());
+        Session session = wsMessageContext.session;
+        UserGameCommand userGameCommand = serializer.fromJson(wsMessageContext.message(), UserGameCommand.class);
+        websocketConnectionManager.add(userGameCommand.getGameID(), session);
+        wsMessageContext.send(userGameCommand.getCommandType());
     }
 
     @Override
