@@ -8,19 +8,7 @@ import java.util.Objects;
  * Note: You can add to this class, but you should not alter the existing
  * methods.
  */
-public class UserGameCommand {
-
-    public final CommandType commandType;
-
-    public final String authToken;
-
-    public final Integer gameID;
-
-    public UserGameCommand(CommandType commandType, String authToken, Integer gameID) {
-        this.commandType = commandType;
-        this.authToken = authToken;
-        this.gameID = gameID;
-    }
+public record UserGameCommand(CommandType commandType, String authToken, Integer gameID) {
 
     public enum CommandType {
         CONNECT,
@@ -29,33 +17,21 @@ public class UserGameCommand {
         RESIGN
     }
 
-    public CommandType getCommandType() {
-        return commandType;
-    }
-
-    public String getAuthToken() {
-        return authToken;
-    }
-
-    public Integer getGameID() {
-        return gameID;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof UserGameCommand that)) {
+        if (!(o instanceof UserGameCommand(CommandType type, String token, Integer id))) {
             return false;
         }
-        return getCommandType() == that.getCommandType() &&
-                Objects.equals(getAuthToken(), that.getAuthToken()) &&
-                Objects.equals(getGameID(), that.getGameID());
+        return commandType() == type &&
+                Objects.equals(authToken(), token) &&
+                Objects.equals(gameID(), id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getCommandType(), getAuthToken(), getGameID());
+        return Objects.hash(commandType(), authToken(), gameID());
     }
 }

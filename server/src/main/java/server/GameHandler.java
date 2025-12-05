@@ -13,7 +13,7 @@ import java.util.Collection;
 
 public class GameHandler {
 
-    private Gson serializer = new Gson();
+    private final Gson serializer = new Gson();
 
     UserDAO userDAO;
     AuthDAO authDAO;

@@ -10,7 +10,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     WebsocketConnectionManager websocketConnectionManager = new WebsocketConnectionManager();
 
-    Gson serializer = new Gson();
+    private final Gson serializer = new Gson();
 
     @Override
     public void handleConnect(@NotNull WsConnectContext wsConnectContext) throws Exception {
@@ -23,8 +23,8 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         Session session = wsMessageContext.session;
         try {
             UserGameCommand userGameCommand = serializer.fromJson(wsMessageContext.message(), UserGameCommand.class);
-            websocketConnectionManager.add(userGameCommand.getGameID(), session);
-            wsMessageContext.send(userGameCommand.getCommandType());
+            websocketConnectionManager.add(userGameCommand.gameID(), session);
+            wsMessageContext.send(userGameCommand.commandType());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
