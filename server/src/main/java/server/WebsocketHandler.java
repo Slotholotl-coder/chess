@@ -83,6 +83,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
             serverMessage.setMessage(userGameCommand.getUsername() + " left");
             websocketConnectionManager.broadcast(userGameCommand.getGameID(), wsMessageContext.session, serverMessage);
+            wsMessageContext.closeSession();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (DataAccessException e) {
