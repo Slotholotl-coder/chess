@@ -27,8 +27,6 @@ public class WebsocketClient extends Endpoint {
         this.session.addMessageHandler(new MessageHandler.Whole<String>() {
             public void onMessage(String message) {
                 websocketNotificationHandler.notify(message);
-
-                System.out.println(message);
             }
         });
     }

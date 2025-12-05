@@ -23,6 +23,9 @@ public class GameUI {
         this.serverFacade = serverFacade;
         scanner = new Scanner(System.in);
         boardPrinter = new BoardPrinter();
+        this.chessGame = chessGame;
+        this.teamColor = teamColor;
+        updateBoard();
     }
 
     public void run(){
