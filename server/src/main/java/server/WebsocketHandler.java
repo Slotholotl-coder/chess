@@ -5,6 +5,9 @@ import io.javalin.websocket.*;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ServerMessage;
+
+import java.io.IOException;
 
 public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsCloseHandler {
 
@@ -23,8 +26,12 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         Session session = wsMessageContext.session;
         try {
             UserGameCommand userGameCommand = serializer.fromJson(wsMessageContext.message(), UserGameCommand.class);
-            websocketConnectionManager.add(userGameCommand.gameID(), session);
-            wsMessageContext.send(userGameCommand.commandType().toString());
+
+            switch (userGameCommand.getCommandType()){
+                case CONNECT -> connect(userGameCommand.getGameID(), session, wsMessageContext);
+                case LEAVE -> leave(userGameCommand.getGameID(), session, wsMessageContext);
+            }
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -33,6 +40,20 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     @Override
     public void handleClose(@NotNull WsCloseContext wsCloseContext) throws Exception {
         System.out.println("Disconnected");
+    }
+
+    private void connect(int gameID, Session session, WsMessageContext wsMessageContext){
+        websocketConnectionManager.add(gameID, session);
+        wsMessageContext.send(serializer.toJson(new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME)));
+    }
+
+    private void leave(int gameID, Session session, WsMessageContext wsMessageContext){
+        try {
+            websocketConnectionManager.broadcast(null, new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        websocketConnectionManager.remove(gameID, session);
     }
 
 }
