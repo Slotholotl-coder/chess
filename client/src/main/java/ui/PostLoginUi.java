@@ -110,9 +110,10 @@ public class PostLoginUi {
         try {
             JoinGameResult joinGameResult = serverFacade.joinGame(new JoinGameRequest(teamColor, gameID));
 
-            serverFacade.connect();
+            GameUI gameUI = new GameUI(serverFacade, joinGameResult.game().game(), joinedColor);
 
-            GameUI gameUI = new GameUI(serverFacade);
+            serverFacade.connect(gameUI);
+
             gameUI.run();
         } catch (Exception e) {
             printError(e);
@@ -127,9 +128,10 @@ public class PostLoginUi {
         try {
             ChessGame chessGame = serverFacade.getGame(gameNumber);
 
-            serverFacade.connect();
+            GameUI gameUI = new GameUI(serverFacade, chessGame, ChessGame.TeamColor.WHITE);
 
-            GameUI gameUI = new GameUI(serverFacade);
+            serverFacade.connect(gameUI);
+
             gameUI.run();
 
         } catch (Exception e) {

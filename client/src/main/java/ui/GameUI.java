@@ -19,7 +19,7 @@ public class GameUI {
 
     Scanner scanner;
 
-    public GameUI(ServerFacade serverFacade){
+    public GameUI(ServerFacade serverFacade, ChessGame chessGame, ChessGame.TeamColor teamColor){
         this.serverFacade = serverFacade;
         scanner = new Scanner(System.in);
     }
@@ -55,9 +55,13 @@ public class GameUI {
         serverFacade.leave();
     }
 
-    public void updateBoard(ChessGame chessGame, ChessGame.TeamColor teamColor){
+    public void updateBoard(){
         boardPrinter = new BoardPrinter();
         boardPrinter.printBoard(chessGame, teamColor);
+    }
+
+    public void displayNotification(String message){
+        System.out.println(message);
     }
 
 }

@@ -45,6 +45,14 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private void connect(int gameID, Session session, WsMessageContext wsMessageContext){
         websocketConnectionManager.add(gameID, session);
         wsMessageContext.send(serializer.toJson(new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME)));
+
+        try {
+            ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            serverMessage.setMessage("joined the game");
+            websocketConnectionManager.broadcast(wsMessageContext.session, serverMessage);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void leave(int gameID, Session session, WsMessageContext wsMessageContext){
