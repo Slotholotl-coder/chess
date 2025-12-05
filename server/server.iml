@@ -27,5 +27,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="jwebmp.jackson.core.databind" level="project" />
   </component>
 </module>
