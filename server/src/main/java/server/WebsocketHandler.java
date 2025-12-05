@@ -1,19 +1,30 @@
 package server;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
+import dataaccess.GameDAO;
 import io.javalin.websocket.*;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsCloseHandler {
 
     WebsocketConnectionManager websocketConnectionManager = new WebsocketConnectionManager();
 
     private final Gson serializer = new Gson();
+
+    GameDAO gameDAO;
+
+    public WebsocketHandler(GameDAO gameDAO){
+        this.gameDAO = gameDAO;
+    }
 
     @Override
     public void handleConnect(@NotNull WsConnectContext wsConnectContext) throws Exception {
@@ -57,13 +68,26 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private void leave(UserGameCommand userGameCommand, Session session, WsMessageContext wsMessageContext){
         try {
+            websocketConnectionManager.remove(userGameCommand.getGameID(), session);
+            GameData gameData = gameDAO.getGame(userGameCommand.getGameID());
+            ChessGame.TeamColor teamColor = Objects.equals(userGameCommand.getTeamColor(), "black") ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
+            GameData updatedGameData;
+            if (teamColor == ChessGame.TeamColor.BLACK){
+                updatedGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), null, gameData.gameName(), gameData.game());
+            } else {
+                updatedGameData = new GameData(gameData.gameID(), null, gameData.blackUsername(), gameData.gameName(), gameData.game());
+            }
+
+            gameDAO.updateGame(updatedGameData);
+
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
             serverMessage.setMessage(userGameCommand.getUsername() + " left");
             websocketConnectionManager.broadcast(userGameCommand.getGameID(), wsMessageContext.session, serverMessage);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
         }
-        websocketConnectionManager.remove(userGameCommand.getGameID(), session);
     }
 
 }
