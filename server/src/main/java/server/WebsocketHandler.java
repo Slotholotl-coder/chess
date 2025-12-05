@@ -12,6 +12,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     @Override
     public void handleConnect(@NotNull WsConnectContext wsConnectContext) throws Exception {
         System.out.println("Connected to client");
+        wsConnectContext.enableAutomaticPings();
     }
 
     @Override
