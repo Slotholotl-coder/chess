@@ -29,11 +29,11 @@ public class WebsocketConnectionManager {
     }
 
     public void broadcast(int gameId, Session excludeSession, ServerMessage notification) throws IOException {
-        String msg = notification.toString();
+        String msg = serializer.toJson(notification, ServerMessage.class);
         for (Session c : connections.get(gameId)) {
             if (c.isOpen()) {
                 if (!c.equals(excludeSession)) {
-                    c.getRemote().sendString(serializer.toJson(notification));
+                    c.getRemote().sendString(msg);
                 }
             }
         }
