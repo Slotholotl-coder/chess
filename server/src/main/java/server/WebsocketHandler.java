@@ -17,8 +17,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     @Override
     public void handleMessage(@NotNull WsMessageContext wsMessageContext) throws Exception {
-        UserGameCommand command = serializer.fromJson(wsMessageContext.message(), UserGameCommand.class);
-        wsMessageContext.send(command.getCommandType());
+        wsMessageContext.send(wsMessageContext.message());
     }
 
     @Override
