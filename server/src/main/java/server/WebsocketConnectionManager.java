@@ -38,12 +38,4 @@ public class WebsocketConnectionManager {
             }
         }
     }
-
-    @Override
-    public String toString() {
-        return "WebsocketConnectionManager{" +
-                "connections=" + connections.size() +
-                + connections.get(1).size() +
-                '}';
-    }
 }

@@ -20,6 +20,7 @@ public class WebsocketNotificationHandler {
             case LOAD_GAME -> serverFacade.sendLoadGame();
             case ERROR, NOTIFICATION -> serverFacade.sendPrintNotification(serverMessage.getMessage());
         }
+        System.out.println(serverMessage.getServerMessageType());
     }
 
 }
