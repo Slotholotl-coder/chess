@@ -175,7 +175,7 @@ public class ServerFacade {
         try {
             websocketClient = new WebsocketClient(this);
             UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
-            userGameCommand .setTeamColor(teamColor);
+            userGameCommand.setTeamColor(teamColor);
             userGameCommand.setUsername(username);
             websocketClient.send(serializer.toJson(userGameCommand));
         } catch (Exception e) {
@@ -185,7 +185,9 @@ public class ServerFacade {
 
     public void leave(){
         try {
-            websocketClient.send(serializer.toJson(new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID)));
+            UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
+            userGameCommand.setUsername(username);
+            websocketClient.send(serializer.toJson(userGameCommand));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
