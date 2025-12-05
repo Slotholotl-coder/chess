@@ -110,6 +110,8 @@ public class PostLoginUi {
         try {
             JoinGameResult joinGameResult = serverFacade.joinGame(new JoinGameRequest(teamColor, gameID));
 
+            serverFacade.connect();
+
             GameUI gameUI = new GameUI(serverFacade);
             gameUI.run();
         } catch (Exception e) {
@@ -124,6 +126,9 @@ public class PostLoginUi {
 
         try {
             ChessGame chessGame = serverFacade.getGame(gameNumber);
+
+            serverFacade.connect();
+
             GameUI gameUI = new GameUI(serverFacade);
             gameUI.run();
 

@@ -3,7 +3,9 @@ package serverFacade;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import model.*;
+import websocket.commands.UserGameCommand;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -16,6 +18,8 @@ public class ServerFacade {
     private Gson serializer;
 
     private String authToken;
+
+    private WebsocketClient websocketClient;
 
     private HashMap<Integer, GameData> displayedGameList;
 
@@ -151,14 +155,21 @@ public class ServerFacade {
         return serverStatus / 100 == 2;
     }
 
-    public void echo(){
+    public void connect(){
         try {
-            WebsocketClient websocketClient = new WebsocketClient();
-            websocketClient.run();
+            websocketClient = new WebsocketClient();
+            websocketClient.send(serializer.toJson(new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken,  1)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    public void leave(){
+        try {
+            websocketClient.send(serializer.toJson(new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, 1)));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

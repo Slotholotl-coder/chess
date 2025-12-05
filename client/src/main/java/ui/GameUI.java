@@ -34,32 +34,26 @@ public class GameUI {
 
             switch (command){
                 case "help":
-                    echo();
                     break;
-                case "logout":
+                case "redraw chess board", "redraw":
                     break;
-                case "list games":
+                case "make move", "move":
                     break;
-                case "create game":
+                case "resign":
                     break;
-                case "play game":
+                case "highlight legal moves", "highlight":
                     break;
-                case "observe game":
-                    break;
-                case "quit":
-                    echo();
+                case "quit", "leave":
+                    leave();
                     running = false;
                     break;
             }
-
         }
-
     }
 
-    private void echo(){
-        serverFacade.echo();
-    }
+    private void leave(){
 
+    }
 
     public void updateBoard(ChessGame chessGame, ChessGame.TeamColor teamColor){
         boardPrinter = new BoardPrinter();
