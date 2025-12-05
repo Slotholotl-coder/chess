@@ -22,6 +22,7 @@ public class GameUI {
     public GameUI(ServerFacade serverFacade, ChessGame chessGame, ChessGame.TeamColor teamColor){
         this.serverFacade = serverFacade;
         scanner = new Scanner(System.in);
+        boardPrinter = new BoardPrinter();
     }
 
     public void run(){
@@ -56,7 +57,6 @@ public class GameUI {
     }
 
     public void updateBoard(){
-        boardPrinter = new BoardPrinter();
         boardPrinter.printBoard(chessGame, teamColor);
     }
 

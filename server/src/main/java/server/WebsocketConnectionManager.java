@@ -19,6 +19,7 @@ public class WebsocketConnectionManager {
             newGameSession.add(session);
             connections.put(gameID, newGameSession);
         }
+        System.out.println(connections.toString());
     }
 
     public void remove(int gameID, Session session) {
@@ -36,5 +37,13 @@ public class WebsocketConnectionManager {
                 }
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "WebsocketConnectionManager{" +
+                "connections=" + connections.size() +
+                + connections.get(1).size() +
+                '}';
     }
 }
