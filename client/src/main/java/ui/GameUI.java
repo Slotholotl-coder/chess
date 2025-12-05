@@ -52,7 +52,7 @@ public class GameUI {
     }
 
     private void leave(){
-
+        serverFacade.leave();
     }
 
     public void updateBoard(ChessGame chessGame, ChessGame.TeamColor teamColor){
