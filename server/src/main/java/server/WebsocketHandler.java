@@ -25,7 +25,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             String message = wsMessageContext.message();
             UserGameCommand userGameCommand = serializer.fromJson(message, UserGameCommand.class);
             websocketConnectionManager.add(userGameCommand.gameID(), session);
-            wsMessageContext.send(userGameCommand.commandType());
+            wsMessageContext.send(userGameCommand.commandType().toString());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
