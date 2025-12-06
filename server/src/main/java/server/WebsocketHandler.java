@@ -77,7 +77,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         try {
             websocketConnectionManager.remove(userGameCommand.getGameID(), session);
             GameData gameData = gameDAO.getGame(userGameCommand.getGameID());
-            ChessGame.TeamColor teamColor = getTeamColor(userGameCommand);
+            ChessGame.TeamColor teamColor = getTeamColor(userGameCommand.getTeamColor());
             GameData updatedGameData;
             if (teamColor == ChessGame.TeamColor.BLACK){
                 updatedGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), null, gameData.gameName(), gameData.game());
