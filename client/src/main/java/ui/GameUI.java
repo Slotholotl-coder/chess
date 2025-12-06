@@ -90,8 +90,8 @@ public class GameUI {
         int startRow = startRowChar - 'a' + 1;
         int endRow = endRowChar - 'a' + 1;
 
-        int startColumn = move.charAt(1);
-        int endColumn = move.charAt(4);
+        int startColumn = Integer.parseInt(String.valueOf(move.charAt(1)));
+        int endColumn = Integer.parseInt(String.valueOf(move.charAt(4)));
 
         ChessPosition startPosition = new ChessPosition(startRow, startColumn);
         ChessPosition endPosition = new ChessPosition(endRow, endColumn);
@@ -103,7 +103,7 @@ public class GameUI {
         boolean validMove = false;
 
         for (ChessMove possibleMove : possibleChessMoves){
-            if (possibleMove == chessMove){
+            if (possibleMove.equals(chessMove)){
                 validMove = true;
                 break;
             }
