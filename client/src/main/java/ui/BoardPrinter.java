@@ -59,6 +59,8 @@ public class BoardPrinter {
                 if (chessBoard.getPiece(new ChessPosition(vertical, x)) != null) {
                     ChessPiece chessPiece = chessBoard.getPiece(new ChessPosition(vertical, x));
                     System.out.print(chessPiece.getTeamColor() == ChessGame.TeamColor.WHITE ?
+                            EscapeSequences.SET_TEXT_COLOR_BLUE : EscapeSequences.SET_TEXT_COLOR_RED);
+                    System.out.print(chessPiece.getTeamColor() == ChessGame.TeamColor.WHITE ?
                                     whitePieces.get(chessPiece.getPieceType()) : blackPieces.get(chessPiece.getPieceType()));
                 } else{
                     System.out.print(EscapeSequences.EMPTY);
