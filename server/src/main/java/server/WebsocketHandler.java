@@ -99,7 +99,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     }
 
     private static ChessGame.TeamColor getTeamColor(String teamColor) {
-        return Objects.equals(teamColor, "black") ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
+        return Objects.equals(teamColor, "BLACK") ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
     }
 
     private void makeMove(Session session, WsMessageContext wsMessageContext) throws IOException {
@@ -117,7 +117,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
             ServerMessage updateGameMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
             updateGameMessage.setChessGame(gameData.game());
-            
+
             websocketConnectionManager.broadcast(makeMoveCommand.getGameID(), null, updateGameMessage);
 
             ChessGame.TeamColor oppositeTeamColor = makeMoveCommand.getTeamColor() == "black" ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
