@@ -115,7 +115,9 @@ public class GameUI {
     }
 
     public void updateGame(ChessGame chessGame){
-        this.chessGame = chessGame;
+        if (chessGame != null) {
+            this.chessGame = chessGame;
+        }
         updateBoard();
     }
 

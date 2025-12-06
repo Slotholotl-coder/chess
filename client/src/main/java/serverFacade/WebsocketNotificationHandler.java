@@ -17,7 +17,12 @@ public class WebsocketNotificationHandler {
         ServerMessage serverMessage = serializer.fromJson(message, ServerMessage.class);
 
         switch (serverMessage.getServerMessageType()){
-            case LOAD_GAME -> serverFacade.sendLoadGame(serverMessage.getChessGame());
+            case LOAD_GAME:
+                if (serverMessage.getChessGame() != null) {
+                    serverFacade.sendLoadGame(serverMessage.getChessGame());
+                } else {
+                    serverFacade.sendLoadGame();
+                }
             case ERROR, NOTIFICATION -> serverFacade.sendPrintNotification(serverMessage.getMessage());
         }
     }
