@@ -77,6 +77,11 @@ public class GameUI {
     }
 
     public void makeMove(){
+        if (chessGame.getTeamTurn() != teamColor){
+            System.out.println("It's not your turn yo");
+            return;
+        }
+
         System.out.println("Enter move - format a5 b6");
         String move = scanner.nextLine();
         if (move.length() != 5){
