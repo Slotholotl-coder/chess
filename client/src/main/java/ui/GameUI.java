@@ -40,8 +40,6 @@ public class GameUI {
 
             if (!isObserver) {
                 switch (command) {
-                    case "help":
-                        break;
                     case "make move", "move":
                         break;
                     case "resign":
@@ -49,6 +47,9 @@ public class GameUI {
                 }
             }
             switch (command){
+                case "help":
+                    displayHelpMenu();
+                    break;
                 case "redraw chess board", "redraw":
                     break;
                 case "highlight legal moves", "highlight":
@@ -61,11 +62,26 @@ public class GameUI {
         }
     }
 
+    private void displayHelpMenu(){
+        System.out.println("Available Commands:\n" +
+                "help - Display this help menu\n" +
+                "make move - make a move\n" +
+                "resign - resign\n" +
+                "redraw - redraw chess board\n" +
+                "highlight - highlight legal moves\n" +
+                "quit - Exit");
+    }
+
+    public void updateGame(ChessGame chessGame){
+        this.chessGame = chessGame;
+        updateBoard();
+    }
+
     private void leave(){
         serverFacade.leave();
     }
 
-    public void updateBoard(){
+    private void updateBoard(){
         boardPrinter.printBoard(chessGame, teamColor);
     }
 

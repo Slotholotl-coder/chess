@@ -109,6 +109,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
             serverMessage.setMessage(makeMoveCommand.getUsername() + makeMoveCommand.getChessMove().toString());
+            serverMessage.setChessGame(gameData.game());
             websocketConnectionManager.broadcast(makeMoveCommand.getGameID(), session, serverMessage);
         } catch (InvalidMoveException | DataAccessException e){
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);

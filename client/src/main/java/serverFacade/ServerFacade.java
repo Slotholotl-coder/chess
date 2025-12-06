@@ -197,8 +197,8 @@ public class ServerFacade {
         }
     }
 
-    public void sendLoadGame(){
-        gameUI.updateBoard();
+    public void sendLoadGame(ChessGame chessGame){
+        gameUI.updateGame(chessGame);
     }
 
     public void sendPrintNotification(String message){
