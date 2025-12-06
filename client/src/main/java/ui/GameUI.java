@@ -77,17 +77,20 @@ public class GameUI {
     }
 
     public void makeMove(){
-        System.out.println("Enter move - format a5");
+        System.out.println("Enter move - format a5 b6");
         String move = scanner.nextLine();
         if (move.length() != 5){
             System.out.println("Invalid move format");
             return;
         }
 
-        int startRow = Integer.parseInt(String.valueOf(move.charAt(0)));
-        int startColumn = move.charAt(1);
+        char startRowChar = move.charAt(0);
+        char endRowChar = move.charAt(3);
 
-        int endRow = Integer.parseInt(String.valueOf(move.charAt(3)));
+        int startRow = startRowChar - 'a' + 1;
+        int endRow = endRowChar - 'a' + 1;
+
+        int startColumn = move.charAt(1);
         int endColumn = move.charAt(4);
 
         ChessPosition startPosition = new ChessPosition(startRow, startColumn);
