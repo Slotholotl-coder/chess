@@ -44,6 +44,7 @@ public class GameUI {
             if (!isObserver) {
                 switch (command) {
                     case "make move", "move":
+                        makeMove();
                         break;
                     case "resign":
                         break;
