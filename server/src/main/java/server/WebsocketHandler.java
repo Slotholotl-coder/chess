@@ -63,7 +63,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         try {
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
                 serverMessage.setMessage(userGameCommand.getUsername() + " joined the game as " + userGameCommand.getTeamColor());
-                serverMessage.setMessage(userGameCommand.getUsername() + " is observing");
+                //serverMessage.setMessage(userGameCommand.getUsername() + " is observing");
             websocketConnectionManager.broadcast(userGameCommand.getGameID(), wsMessageContext.session, serverMessage);
         } catch (IOException e) {
             throw new RuntimeException(e);
