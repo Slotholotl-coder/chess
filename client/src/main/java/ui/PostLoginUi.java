@@ -37,16 +37,16 @@ public class PostLoginUi {
                 case "logout":
                     logout();
                     break;
-                case "list games":
+                case "list games", "list":
                     listGames();
                     break;
-                case "create game":
+                case "create game", "create":
                     createGame();
                     break;
-                case "play game":
+                case "play game", "play":
                     joinGame();
                     break;
-                case "observe game":
+                case "observe game", "observe":
                     observeGame();
                     break;
                 case "quit":
