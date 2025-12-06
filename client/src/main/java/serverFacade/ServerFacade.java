@@ -183,6 +183,10 @@ public class ServerFacade {
         }
     }
 
+    public void resetTeamColor(){
+        teamColor = null;
+    }
+
     public void leave(){
         try {
             UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);

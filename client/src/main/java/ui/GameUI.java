@@ -19,12 +19,15 @@ public class GameUI {
 
     Scanner scanner;
 
-    public GameUI(ServerFacade serverFacade, ChessGame chessGame, ChessGame.TeamColor teamColor){
+    boolean isObserver;
+
+    public GameUI(ServerFacade serverFacade, ChessGame chessGame, ChessGame.TeamColor teamColor, boolean isObserver){
         this.serverFacade = serverFacade;
         scanner = new Scanner(System.in);
         boardPrinter = new BoardPrinter();
         this.chessGame = chessGame;
         this.teamColor = teamColor;
+        this.isObserver = isObserver;
     }
 
     public void run(){
@@ -35,14 +38,18 @@ public class GameUI {
             System.out.println("Game\n Enter a command please:\n");
             String command = scanner.nextLine();
 
+            if (!isObserver) {
+                switch (command) {
+                    case "help":
+                        break;
+                    case "make move", "move":
+                        break;
+                    case "resign":
+                        break;
+                }
+            }
             switch (command){
-                case "help":
-                    break;
                 case "redraw chess board", "redraw":
-                    break;
-                case "make move", "move":
-                    break;
-                case "resign":
                     break;
                 case "highlight legal moves", "highlight":
                     break;
