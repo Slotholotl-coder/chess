@@ -112,16 +112,25 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             gameDAO.updateGame(gameData);
 
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-            String message = makeMoveCommand.getUsername() + makeMoveCommand.getChessMove().toString();
-            ChessGame.TeamColor oppositeTeamColor = makeMoveCommand.getTeamColor() == "black" ? ChessGame.TeamColor.WHITE ? ChessGame.TeamColor.BLACK;
-            if (gameData.game().isInCheckmate(oppositeTeamColor)){
-                message += "\n" + oppositeTeamColor + " is in checkmate.\nGood game!";
-            } else if (gameData.game().isInCheck(oppositeTeamColor)) {
-                message += "\n" + oppositeTeamColor + " is in check";
-            }
-            serverMessage.setMessage(message);
-            serverMessage.setChessGame(gameData.game());
+            serverMessage.setMessage(makeMoveCommand.getUsername() + makeMoveCommand.getChessMove().toString());
             websocketConnectionManager.broadcast(makeMoveCommand.getGameID(), session, serverMessage);
+
+            ServerMessage updateGameMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+            updateGameMessage.setChessGame(gameData.game());
+            
+            websocketConnectionManager.broadcast(makeMoveCommand.getGameID(), null, updateGameMessage);
+
+            ChessGame.TeamColor oppositeTeamColor = makeMoveCommand.getTeamColor() == "black" ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+            if (gameData.game().isInCheckmate(oppositeTeamColor)){
+                serverMessage.setMessage(oppositeTeamColor + " is in checkmate.\nGood game!");
+            } else if (gameData.game().isInCheck(oppositeTeamColor)) {
+                serverMessage.setMessage(oppositeTeamColor + " is in check");
+            } else if (gameData.game().isInStalemate(oppositeTeamColor)) {
+                serverMessage.setMessage(oppositeTeamColor + " is in stalemate.\nGood game!");
+            }
+
+            websocketConnectionManager.broadcast(makeMoveCommand.getGameID(), null, serverMessage);
+
         } catch (InvalidMoveException | DataAccessException e){
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
             serverMessage.setMessage("Invalid move");
