@@ -1,8 +1,11 @@
 package ui;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
 import serverFacade.ServerFacade;
 
+import java.util.Collection;
 import java.util.Scanner;
 
 public class GameUI {
@@ -70,6 +73,45 @@ public class GameUI {
                 "redraw - redraw chess board\n" +
                 "highlight - highlight legal moves\n" +
                 "quit - Exit");
+    }
+
+    public void makeMove(){
+        System.out.println("Enter move - format a5");
+        String move = scanner.nextLine();
+        if (move.length() != 5){
+            System.out.println("Invalid move format");
+            return;
+        }
+
+        int startRow = Integer.parseInt(String.valueOf(move.charAt(0)));
+        int startColumn = move.charAt(1);
+
+        int endRow = Integer.parseInt(String.valueOf(move.charAt(3)));
+        int endColumn = move.charAt(4);
+
+        ChessPosition startPosition = new ChessPosition(startRow, startColumn);
+        ChessPosition endPosition = new ChessPosition(endRow, endColumn);
+
+        ChessMove chessMove = new ChessMove(startPosition, endPosition, null);
+
+        Collection<ChessMove> possibleChessMoves = chessGame.validMoves(startPosition);
+
+        boolean validMove = false;
+
+        for (ChessMove possibleMove : possibleChessMoves){
+            if (possibleMove == chessMove){
+                validMove = true;
+                break;
+            }
+        }
+
+        if (!validMove){
+            System.out.println("Not a valid move");
+            return;
+        }
+
+        serverFacade.makeMove(chessMove);
+
     }
 
     public void updateGame(ChessGame chessGame){

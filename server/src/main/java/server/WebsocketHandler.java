@@ -77,7 +77,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         try {
             websocketConnectionManager.remove(userGameCommand.getGameID(), session);
             GameData gameData = gameDAO.getGame(userGameCommand.getGameID());
-            ChessGame.TeamColor teamColor = Objects.equals(userGameCommand.getTeamColor(), "black") ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
+            ChessGame.TeamColor teamColor = getTeamColor(userGameCommand);
             GameData updatedGameData;
             if (teamColor == ChessGame.TeamColor.BLACK){
                 updatedGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), null, gameData.gameName(), gameData.game());
@@ -98,6 +98,10 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         }
     }
 
+    private static ChessGame.TeamColor getTeamColor(String teamColor) {
+        return Objects.equals(teamColor, "black") ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
+    }
+
     private void makeMove(Session session, WsMessageContext wsMessageContext) throws IOException {
         MakeMoveCommand makeMoveCommand = serializer.fromJson(wsMessageContext.message(), MakeMoveCommand.class);
         try {
@@ -108,7 +112,14 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             gameDAO.updateGame(gameData);
 
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-            serverMessage.setMessage(makeMoveCommand.getUsername() + makeMoveCommand.getChessMove().toString());
+            String message = makeMoveCommand.getUsername() + makeMoveCommand.getChessMove().toString();
+            ChessGame.TeamColor oppositeTeamColor = makeMoveCommand.getTeamColor() == "black" ? ChessGame.TeamColor.WHITE ? ChessGame.TeamColor.BLACK;
+            if (gameData.game().isInCheckmate(oppositeTeamColor)){
+                message += "\n" + oppositeTeamColor + " is in checkmate.\nGood game!";
+            } else if (gameData.game().isInCheck(oppositeTeamColor)) {
+                message += "\n" + oppositeTeamColor + " is in check";
+            }
+            serverMessage.setMessage(message);
             serverMessage.setChessGame(gameData.game());
             websocketConnectionManager.broadcast(makeMoveCommand.getGameID(), session, serverMessage);
         } catch (InvalidMoveException | DataAccessException e){

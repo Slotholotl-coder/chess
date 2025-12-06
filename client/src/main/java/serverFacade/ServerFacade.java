@@ -1,9 +1,11 @@
 package serverFacade;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import com.google.gson.Gson;
 import model.*;
 import ui.GameUI;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 
 import java.io.IOException;
@@ -193,6 +195,18 @@ public class ServerFacade {
             userGameCommand.setUsername(username);
             websocketClient.send(serializer.toJson(userGameCommand));
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void makeMove(ChessMove chessMove){
+        try {
+            websocketClient = new WebsocketClient(this);
+            MakeMoveCommand makeMoveCommand = new MakeMoveCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID, chessMove);
+            makeMoveCommand.setTeamColor(teamColor);
+            makeMoveCommand.setUsername(username);
+            websocketClient.send(serializer.toJson(makeMoveCommand));
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
