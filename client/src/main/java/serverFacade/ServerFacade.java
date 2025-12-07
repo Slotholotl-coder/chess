@@ -102,7 +102,7 @@ public class ServerFacade {
         HttpRequest request = buildRequest("PUT", "/game", joinGameRequestUpdated);
         JoinGameResult response = serializer.fromJson(sendRequest(request).body().toString(), JoinGameResult.class);
 
-        teamColor = joinGameRequest.playerColor();
+        teamColor = joinGameRequest.playerColor().toUpperCase();
         gameID = joinGameRequest.gameID();
 
         return response;

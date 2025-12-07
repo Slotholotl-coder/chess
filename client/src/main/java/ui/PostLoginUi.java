@@ -105,7 +105,7 @@ public class PostLoginUi {
         System.out.println("Join Which Side? black/white");
         String teamColor = scanner.nextLine().toUpperCase();
 
-        ChessGame.TeamColor joinedColor = teamColor.equals("BlACK") ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
+        ChessGame.TeamColor joinedColor = teamColor.equals("BLACK") ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
 
         try {
             JoinGameResult joinGameResult = serverFacade.joinGame(new JoinGameRequest(teamColor, gameID));

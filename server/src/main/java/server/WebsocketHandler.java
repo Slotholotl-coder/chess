@@ -62,7 +62,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
         try {
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-            if (userGameCommand.getTeamColor() != null || userGameCommand.getTeamColor().isEmpty()) {
+            if (userGameCommand.getTeamColor() != null) {
                 serverMessage.setMessage(userGameCommand.getUsername() + " joined the game as " + userGameCommand.getTeamColor());
             } else {
                 serverMessage.setMessage(userGameCommand.getUsername() + " is observing");
@@ -75,7 +75,6 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
     private void leave(UserGameCommand userGameCommand, Session session, WsMessageContext wsMessageContext){
         try {
-            websocketConnectionManager.remove(userGameCommand.getGameID(), session);
             GameData gameData = gameDAO.getGame(userGameCommand.getGameID());
             ChessGame.TeamColor teamColor = getTeamColor(userGameCommand.getTeamColor());
             GameData updatedGameData;
@@ -89,8 +88,9 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
             serverMessage.setMessage(userGameCommand.getUsername() + " left");
-            websocketConnectionManager.broadcast(userGameCommand.getGameID(), wsMessageContext.session, serverMessage);
+            websocketConnectionManager.broadcast(userGameCommand.getGameID(), session, serverMessage);
             wsMessageContext.closeSession();
+            websocketConnectionManager.remove(userGameCommand.getGameID(), session);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (DataAccessException e) {
@@ -120,16 +120,20 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
             websocketConnectionManager.broadcast(makeMoveCommand.getGameID(), null, updateGameMessage);
 
-            ChessGame.TeamColor oppositeTeamColor = makeMoveCommand.getTeamColor() == "black" ? ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
-            if (gameData.game().isInCheckmate(oppositeTeamColor)){
-                serverMessage.setMessage(oppositeTeamColor + " is in checkmate.\nGood game!");
-            } else if (gameData.game().isInCheck(oppositeTeamColor)) {
-                serverMessage.setMessage(oppositeTeamColor + " is in check");
-            } else if (gameData.game().isInStalemate(oppositeTeamColor)) {
-                serverMessage.setMessage(oppositeTeamColor + " is in stalemate.\nGood game!");
-            }
+            ServerMessage checkMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
 
-            websocketConnectionManager.broadcast(makeMoveCommand.getGameID(), null, serverMessage);
+            ChessGame.TeamColor oppositeTeamColor = Objects.equals(makeMoveCommand.getTeamColor(), "black") ?
+                    ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
+            if (gameData.game().isInCheckmate(oppositeTeamColor)){
+                checkMessage.setMessage(oppositeTeamColor + " is in checkmate.\nGood game!");
+            } else if (gameData.game().isInCheck(oppositeTeamColor)) {
+                checkMessage.setMessage(oppositeTeamColor + " is in check");
+            } else if (gameData.game().isInStalemate(oppositeTeamColor)) {
+                checkMessage.setMessage(oppositeTeamColor + " is in stalemate.\nGood game!");
+            }
+            if (checkMessage.getMessage() != null) {
+                websocketConnectionManager.broadcast(makeMoveCommand.getGameID(), null, checkMessage);
+            }
 
         } catch (InvalidMoveException | DataAccessException e){
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);

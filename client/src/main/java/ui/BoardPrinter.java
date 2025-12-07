@@ -40,6 +40,9 @@ public class BoardPrinter {
 
 
     public void printBoard(ChessGame game, ChessGame.TeamColor teamColor){
+
+        System.out.print(EscapeSequences.SET_TEXT_BOLD);
+
         int direction = teamColor == ChessGame.TeamColor.BLACK ? 1 : -8;
 
         int top = teamColor == ChessGame.TeamColor.BLACK ? 8 : -1;
@@ -66,6 +69,7 @@ public class BoardPrinter {
                     System.out.print(EscapeSequences.EMPTY);
                 }
             }
+            System.out.print(EscapeSequences.RESET_TEXT_COLOR);
             System.out.print(EscapeSequences.RESET_BG_COLOR);
             System.out.print(EscapeSequences.EMPTY);
             System.out.println();
