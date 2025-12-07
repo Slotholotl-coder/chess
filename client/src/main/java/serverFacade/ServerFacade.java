@@ -193,6 +193,7 @@ public class ServerFacade {
         try {
             UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
             userGameCommand.setUsername(username);
+            userGameCommand.setTeamColor(teamColor);
             websocketClient.send(serializer.toJson(userGameCommand));
         } catch (IOException e) {
             throw new RuntimeException(e);
