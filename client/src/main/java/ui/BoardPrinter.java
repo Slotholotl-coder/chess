@@ -54,7 +54,7 @@ public class BoardPrinter {
             for (int x = 1; x <= 8; x++) {
 
                 if (x == 1) {
-                    System.out.print(Math.abs(y));
+                    System.out.print(" " + Math.abs(y) + " ");
                 }
 
                 int columnEven = x % 2;
@@ -86,10 +86,15 @@ public class BoardPrinter {
     }
 
     private void printLetterPositioning(boolean reverse){
-        if (!reverse) {
-            System.out.println(" abcdefgh ");
+        String letters;
+        if (reverse){
+            letters = "hgfedcba";
         } else {
-            System.out.println(" hgfedcba ");
+            letters = "abcdefgh";
+        }
+        for (int x = 1; x <= 8; x++) {
+            System.out.print(letters.charAt(x));
+            System.out.print(EscapeSequences.EMPTY);
         }
     }
 
