@@ -122,7 +122,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
             ServerMessage checkMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
 
-            ChessGame.TeamColor oppositeTeamColor = Objects.equals(makeMoveCommand.getTeamColor(), "black") ?
+            ChessGame.TeamColor oppositeTeamColor = Objects.equals(makeMoveCommand.getTeamColor(), "BLACK") ?
                     ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
             if (gameData.game().isInCheckmate(oppositeTeamColor)){
                 checkMessage.setMessage(oppositeTeamColor + " is in checkmate.\nGood game!");
