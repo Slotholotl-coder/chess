@@ -89,14 +89,14 @@ public class GameUI {
             return;
         }
 
-        char startRowChar = move.charAt(0);
-        char endRowChar = move.charAt(3);
+        char startColumnChar = move.charAt(0);
+        char endColumnChar = move.charAt(3);
 
-        int startRow = startRowChar - 'a' + 1;
-        int endRow = endRowChar - 'a' + 1;
+        int startColumn = startColumnChar - 'a' + 1;
+        int endColumn = endColumnChar - 'a' + 1;
 
-        int startColumn = Integer.parseInt(String.valueOf(move.charAt(1)));
-        int endColumn = Integer.parseInt(String.valueOf(move.charAt(4)));
+        int startRow = Integer.parseInt(String.valueOf(move.charAt(1)));
+        int endRow = Integer.parseInt(String.valueOf(move.charAt(4)));
 
         ChessPosition startPosition = new ChessPosition(startRow, startColumn);
         ChessPosition endPosition = new ChessPosition(endRow, endColumn);
