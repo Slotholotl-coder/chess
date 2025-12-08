@@ -49,7 +49,7 @@ public class BoardPrinter {
 
         ChessBoard chessBoard = game.getBoard();
 
-        printLetterPositioning(false);
+        printLetterPositioning(teamColor == ChessGame.TeamColor.BLACK);
         for (int y = direction; y <= top; y++) {
             for (int x = 1; x <= 8; x++) {
 
@@ -82,7 +82,7 @@ public class BoardPrinter {
             System.out.print(EscapeSequences.EMPTY);
             System.out.println();
         }
-        printLetterPositioning(true);
+        printLetterPositioning(teamColor == ChessGame.TeamColor.BLACK);
     }
 
     private void printLetterPositioning(boolean reverse){
