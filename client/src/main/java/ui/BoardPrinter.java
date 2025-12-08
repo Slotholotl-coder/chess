@@ -50,9 +50,9 @@ public class BoardPrinter {
 
         printLetterPositioning(teamColor == ChessGame.TeamColor.BLACK);
         for (int y = direction; y <= top; y++) {
-            for (int x = direction; x <= top; x++) {
+            for (int x = top; x >= direction; x--) {
 
-                if (Math.abs(x) == 1) {
+                if (x == top) {
                     System.out.print(" " + Math.abs(y) + " ");
                 }
 
@@ -75,7 +75,7 @@ public class BoardPrinter {
                 }
                 System.out.print(EscapeSequences.RESET_TEXT_COLOR);
                 System.out.print(EscapeSequences.RESET_BG_COLOR);
-                if (Math.abs(x) == 8) {
+                if (x == direction) {
                     System.out.print(" " + Math.abs(y) + " ");
                 }
             }
@@ -101,10 +101,10 @@ public class BoardPrinter {
 
     private static void setSquareColor(int columnEven, int rowEven, int flip) {
         if (columnEven == flip && rowEven == flip || columnEven != flip && rowEven != flip){
-            System.out.print(EscapeSequences.SET_BG_COLOR_WHITE);
+            System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
         }
         else{
-            System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+            System.out.print(EscapeSequences.SET_BG_COLOR_WHITE);
         }
     }
 
