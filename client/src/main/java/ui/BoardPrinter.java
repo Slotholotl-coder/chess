@@ -41,7 +41,7 @@ public class BoardPrinter {
 
     public void printBoard(ChessGame game, ChessGame.TeamColor teamColor){
 
-        System.out.print(EscapeSequences.SET_TEXT_BOLD);
+        //System.out.print(EscapeSequences.SET_TEXT_BOLD);
 
         int direction = teamColor == ChessGame.TeamColor.BLACK ? 1 : -8;
 
@@ -87,13 +87,14 @@ public class BoardPrinter {
 
     private void printLetterPositioning(boolean reverse){
         String letters;
+        System.out.print("   ");
         if (reverse){
             letters = "hgfedcba";
         } else {
             letters = "abcdefgh";
         }
         for (int x = 1; x <= 8; x++) {
-            System.out.print(EscapeSequences.EMPTY + letters.charAt(x - 1));
+            System.out.print(" " + letters.charAt(x - 1) + "  ");
         }
         System.out.println();
     }
