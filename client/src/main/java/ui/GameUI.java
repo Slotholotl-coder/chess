@@ -79,9 +79,7 @@ public class GameUI {
     
     private boolean isPromotionalMove(ChessPosition startPosition, ChessPosition endPosition){
         if (endPosition.getRow() == 8 || endPosition.getRow() == 1) {
-            if (chessGame.getBoard().getPiece(startPosition).getPieceType() == ChessPiece.PieceType.PAWN){
-                return true;
-            }
+            return chessGame.getBoard().getPiece(startPosition).getPieceType() == ChessPiece.PieceType.PAWN;
         }
         return false;
     }
