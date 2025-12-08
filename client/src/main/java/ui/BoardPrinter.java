@@ -53,9 +53,7 @@ public class BoardPrinter {
         for (int y = direction; y <= top; y++) {
             for (int x = 1; x <= 8; x++) {
 
-                if (x == 1 || x == 8){
-                    System.out.print(y);
-                }
+                System.out.print(Math.abs(y));
 
                 int columnEven = x % 2;
                 int rowEven = y % 2;
@@ -76,7 +74,7 @@ public class BoardPrinter {
             }
             System.out.print(EscapeSequences.RESET_TEXT_COLOR);
             System.out.print(EscapeSequences.RESET_BG_COLOR);
-            System.out.print(EscapeSequences.EMPTY);
+            System.out.print(Math.abs(y));
             System.out.println();
         }
         printLetterPositioning(true);
