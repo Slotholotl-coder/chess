@@ -93,8 +93,7 @@ public class BoardPrinter {
             letters = "abcdefgh";
         }
         for (int x = 1; x <= 8; x++) {
-            System.out.print(letters.charAt(x));
-            System.out.print(EscapeSequences.EMPTY);
+            System.out.print(EscapeSequences.EMPTY + letters.charAt(x - 1));
         }
         System.out.println();
     }
