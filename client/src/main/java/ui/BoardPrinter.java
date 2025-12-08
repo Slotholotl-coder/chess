@@ -96,6 +96,7 @@ public class BoardPrinter {
             System.out.print(letters.charAt(x));
             System.out.print(EscapeSequences.EMPTY);
         }
+        System.out.println();
     }
 
     private static void setSquareColor(int columnEven, int rowEven, int flip) {
