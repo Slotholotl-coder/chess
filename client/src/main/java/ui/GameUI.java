@@ -99,7 +99,7 @@ public class GameUI {
             endColumn = endColumnChar - 'a' + 1;
         } else {
             startColumn = 'h' + 1 - startColumnChar;
-            endColumn = 'h' + 1 - startColumnChar;  
+            endColumn = 'h' + 1 - startColumnChar;
         }
 
         int startRow = Integer.parseInt(String.valueOf(move.charAt(1)));

@@ -202,7 +202,6 @@ public class ServerFacade {
 
     public void makeMove(ChessMove chessMove){
         try {
-            websocketClient = new WebsocketClient(this);
             MakeMoveCommand makeMoveCommand = new MakeMoveCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID, chessMove);
             makeMoveCommand.setTeamColor(teamColor);
             makeMoveCommand.setUsername(username);
