@@ -50,7 +50,7 @@ public class BoardPrinter {
 
         printLetterPositioning(teamColor == ChessGame.TeamColor.BLACK);
         for (int y = direction; y <= top; y++) {
-            for (int x = 1; x <= 8; x++) {
+            for (int x = direction; x <= top; x++) {
 
                 if (Math.abs(x) == 1) {
                     System.out.print(" " + Math.abs(y) + " ");
@@ -63,8 +63,9 @@ public class BoardPrinter {
                 setSquareColor(columnEven, rowEven, flip);
 
                 int vertical = Math.abs(y);
-                if (chessBoard.getPiece(new ChessPosition(vertical, x)) != null) {
-                    ChessPiece chessPiece = chessBoard.getPiece(new ChessPosition(vertical, x));
+                int horizontal = Math.abs(x);
+                if (chessBoard.getPiece(new ChessPosition(vertical, horizontal)) != null) {
+                    ChessPiece chessPiece = chessBoard.getPiece(new ChessPosition(vertical, horizontal));
                     System.out.print(chessPiece.getTeamColor() == ChessGame.TeamColor.WHITE ?
                             EscapeSequences.SET_TEXT_COLOR_BLUE : EscapeSequences.SET_TEXT_COLOR_RED);
                     System.out.print(chessPiece.getTeamColor() == ChessGame.TeamColor.WHITE ?
