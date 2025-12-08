@@ -119,16 +119,9 @@ public class GameUI {
 
         char startColumnChar = move.charAt(0);
         char endColumnChar = move.charAt(3);
-
-        int startColumn;
-        int endColumn;
-        if (teamColor == ChessGame.TeamColor.WHITE) {
-            startColumn = startColumnChar - 'a' + 1;
-            endColumn = endColumnChar - 'a' + 1;
-        } else {
-            startColumn = 'h' + 1 - startColumnChar;
-            endColumn = 'h' + 1 - startColumnChar;
-        }
+        
+        int startColumn = startColumnChar - 'a' + 1;
+        int endColumn = endColumnChar - 'a' + 1;
 
         int startRow = Integer.parseInt(String.valueOf(move.charAt(1)));
         int endRow = Integer.parseInt(String.valueOf(move.charAt(4)));
