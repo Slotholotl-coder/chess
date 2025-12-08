@@ -50,9 +50,9 @@ public class BoardPrinter {
 
         printLetterPositioning(teamColor == ChessGame.TeamColor.BLACK);
         for (int y = direction; y <= top; y++) {
-            for (int x = direction; x <= top; x++) {
+            for (int x = 1; x <= 8; x++) {
 
-                if (x == 1) {
+                if (Math.abs(x) == 1) {
                     System.out.print(" " + Math.abs(y) + " ");
                 }
 
@@ -74,7 +74,7 @@ public class BoardPrinter {
                 }
                 System.out.print(EscapeSequences.RESET_TEXT_COLOR);
                 System.out.print(EscapeSequences.RESET_BG_COLOR);
-                if (x == 8) {
+                if (Math.abs(x) == 8) {
                     System.out.print(" " + Math.abs(y) + " ");
                 }
             }
