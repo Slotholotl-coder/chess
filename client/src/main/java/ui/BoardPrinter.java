@@ -41,7 +41,6 @@ public class BoardPrinter {
 
     public void printBoard(ChessGame game, ChessGame.TeamColor teamColor){
 
-        //System.out.print(EscapeSequences.SET_TEXT_BOLD);
 
         int direction = teamColor == ChessGame.TeamColor.BLACK ? 1 : -8;
 
@@ -59,7 +58,7 @@ public class BoardPrinter {
 
                 int columnEven = x % 2;
                 int rowEven = y % 2;
-                int flip = direction % 2;
+                int flip = 1;
 
                 setSquareColor(columnEven, rowEven, flip);
 
