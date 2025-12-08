@@ -2,6 +2,7 @@ package ui;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import serverFacade.ServerFacade;
 
@@ -75,6 +76,35 @@ public class GameUI {
                 "highlight - highlight legal moves\n" +
                 "quit - Exit");
     }
+    
+    private boolean isPromotionalMove(ChessPosition startPosition, ChessPosition endPosition){
+        if (endPosition.getRow() == 8 || endPosition.getRow() == 1) {
+            if (chessGame.getBoard().getPiece(startPosition).getPieceType() == ChessPiece.PieceType.PAWN){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private ChessPiece.PieceType getPromotionPiece(String promotionString){
+        switch (promotionString.toLowerCase()){
+            case "queen" -> {
+                return ChessPiece.PieceType.QUEEN;
+            }
+            case "bishop" -> {
+                return ChessPiece.PieceType.BISHOP;
+            }
+            case "rook" -> {
+                return ChessPiece.PieceType.ROOK;
+            }
+            case "knight" -> {
+                return ChessPiece.PieceType.KNIGHT;
+            }
+            default -> {
+                return null;
+            }
+        }
+    }
 
     public void makeMove(){
         if (chessGame.getTeamTurn() != teamColor){
@@ -108,7 +138,18 @@ public class GameUI {
         ChessPosition startPosition = new ChessPosition(startRow, startColumn);
         ChessPosition endPosition = new ChessPosition(endRow, endColumn);
 
-        ChessMove chessMove = new ChessMove(startPosition, endPosition, null);
+        ChessPiece.PieceType promotionPiece = null;
+        if (isPromotionalMove(startPosition, endPosition)){
+            System.out.println("Choose a piece to promote to: (queen, bishop, rook, knight)");
+            String promotionString = scanner.nextLine();
+            promotionPiece = getPromotionPiece(promotionString);
+            if (promotionPiece == null){
+                System.out.println("Invalid promotion piece");
+                return;
+            }
+        }
+
+        ChessMove chessMove = new ChessMove(startPosition, endPosition, promotionPiece);
 
         Collection<ChessMove> possibleChessMoves = chessGame.validMoves(startPosition);
 
