@@ -50,7 +50,7 @@ public class BoardPrinter {
 
         printLetterPositioning(teamColor == ChessGame.TeamColor.BLACK);
         for (int y = direction; y <= top; y++) {
-            for (int x = 1; x <= 8; x++) {
+            for (int x = direction; x <= top; x++) {
 
                 if (x == 1) {
                     System.out.print(" " + Math.abs(y) + " ");
@@ -58,7 +58,7 @@ public class BoardPrinter {
 
                 int columnEven = x % 2;
                 int rowEven = y % 2;
-                int flip = 1;
+                int flip = direction % 2;
 
                 setSquareColor(columnEven, rowEven, flip);
 
