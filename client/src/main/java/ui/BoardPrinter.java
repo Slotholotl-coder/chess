@@ -76,7 +76,7 @@ public class BoardPrinter {
                 System.out.print(EscapeSequences.RESET_TEXT_COLOR);
                 System.out.print(EscapeSequences.RESET_BG_COLOR);
                 if (x == 8) {
-                    System.out.print(Math.abs(y));
+                    System.out.print(" " + Math.abs(y) + " ");
                 }
             }
             System.out.print(EscapeSequences.EMPTY);
