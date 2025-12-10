@@ -4,7 +4,7 @@ import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
-import serverFacade.ServerFacade;
+import serverfacade.ServerFacade;
 
 import java.util.Collection;
 import java.util.Objects;

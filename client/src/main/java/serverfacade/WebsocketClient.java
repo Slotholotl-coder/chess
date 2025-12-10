@@ -1,10 +1,9 @@
-package serverFacade;
+package serverfacade;
 
 import jakarta.websocket.*;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Scanner;
 
 public class WebsocketClient extends Endpoint {
 

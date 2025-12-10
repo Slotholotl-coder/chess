@@ -2,7 +2,7 @@ package ui;
 
 import chess.ChessGame;
 import model.*;
-import serverFacade.ServerFacade;
+import serverfacade.ServerFacade;
 
 import java.util.Scanner;
 

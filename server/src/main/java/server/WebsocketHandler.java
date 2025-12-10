@@ -80,7 +80,8 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         websocketConnectionManager.broadcast(userGameCommand.getGameID(), null, serverMessage);
     }
 
-    private void connect(UserGameCommand userGameCommand, Session session, WsMessageContext wsMessageContext) throws DataAccessException, IOException {
+    private void connect(UserGameCommand userGameCommand, Session session,
+                         WsMessageContext wsMessageContext) throws DataAccessException, IOException {
         websocketConnectionManager.add(userGameCommand.getGameID(), session);
         ServerMessage loadGame = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
         loadGame.setChessGame(gameDAO.getGame(userGameCommand.getGameID()).game());
