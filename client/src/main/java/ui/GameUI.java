@@ -89,6 +89,11 @@ public class GameUI {
 
         Collection<ChessMove> possibleChessMoves = chessGame.validMoves(chessPosition);
 
+        if (possibleChessMoves == null){
+            System.out.println("Invalid starting position");
+            return;
+        }
+
         boardPrinter.setHighlightMoves(possibleChessMoves);
 
         updateBoard();
@@ -181,6 +186,11 @@ public class GameUI {
         ChessMove chessMove = new ChessMove(startPosition, endPosition, promotionPiece);
 
         Collection<ChessMove> possibleChessMoves = chessGame.validMoves(startPosition);
+
+        if (possibleChessMoves == null){
+            System.out.println("Invalid starting position");
+            return;
+        }
 
         boolean validMove = false;
 
