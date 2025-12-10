@@ -24,7 +24,7 @@ public class Server {
         userHandler = new UserHandler(userDAO, authDAO);
         clearAllDataHandler = new ClearAllDataHandler(userDAO, authDAO, gameDAO);
         gameHandler = new GameHandler(userDAO, authDAO, gameDAO);
-        websocketHandler = new WebsocketHandler(gameDAO);
+        websocketHandler = new WebsocketHandler(gameDAO, authDAO);
 
         // Register your endpoints and exception handlers here.
 
