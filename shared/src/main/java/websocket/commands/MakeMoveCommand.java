@@ -14,5 +14,4 @@ public class MakeMoveCommand extends UserGameCommand {
     public ChessMove getChessMove(){
         return move;
     }
-
 }

@@ -7,6 +7,7 @@ import chess.ChessPosition;
 import serverFacade.ServerFacade;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class GameUI {
@@ -61,6 +62,7 @@ public class GameUI {
                     updateBoard();
                     break;
                 case "highlight legal moves", "highlight":
+                    highlight();
                     break;
                 case "quit", "leave":
                     leave();
@@ -70,10 +72,35 @@ public class GameUI {
         }
     }
 
+    private void highlight(){
+        System.out.println("Enter a position to highlight moves for: ex: a5");
+        String move = scanner.nextLine();
+        if (move.length() != 2){
+            System.out.println("Invalid position format");
+            return;
+        }
+
+        char startColumnChar = move.charAt(0);
+        int startColumn = startColumnChar - 'a' + 1;
+
+        int startRow = Integer.parseInt(String.valueOf(move.charAt(1)));
+
+        ChessPosition chessPosition = new ChessPosition(startRow, startColumn);
+
+        Collection<ChessMove> possibleChessMoves = chessGame.validMoves(chessPosition);
+
+        boardPrinter.setHighlightMoves(possibleChessMoves);
+
+        updateBoard();
+
+        boardPrinter.setHighlightMoves(null);
+
+    }
+
     private void resign(){
         System.out.println("Are you sure? yes or no");
         String response = scanner.nextLine();
-        if (response == "yes"){
+        if (Objects.equals(response, "yes")){
             serverFacade.resign();
         }
     }
@@ -193,7 +220,9 @@ public class GameUI {
     }
 
     public void displayNotification(String message){
-        System.out.println(message);
+        if (message != null) {
+            System.out.println(message);
+        }
     }
 
 }

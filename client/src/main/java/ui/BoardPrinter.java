@@ -1,12 +1,10 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 
 import ui.EscapeSequences;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 public class BoardPrinter {
@@ -16,6 +14,7 @@ public class BoardPrinter {
 
     static HashMap<ChessPiece.PieceType, String> whitePieces;
 
+    private Collection<ChessMove> highlightMoves;
 
     public BoardPrinter(){
         blackPieces = new HashMap<ChessPiece.PieceType, String>() {{
@@ -37,6 +36,9 @@ public class BoardPrinter {
         }};
     }
 
+    public void setHighlightMoves(Collection<ChessMove> chessMoves){
+        highlightMoves = chessMoves;
+    }
 
 
     public void printBoard(ChessGame game, ChessGame.TeamColor teamColor){
@@ -60,10 +62,12 @@ public class BoardPrinter {
                 int rowEven = y % 2;
                 int flip = direction % 2;
 
-                setSquareColor(columnEven, rowEven, flip);
-
                 int vertical = Math.abs(y);
                 int horizontal = Math.abs(x);
+
+                setSquareColor(columnEven, rowEven, flip, vertical, horizontal);
+
+
                 if (chessBoard.getPiece(new ChessPosition(vertical, horizontal)) != null) {
                     ChessPiece chessPiece = chessBoard.getPiece(new ChessPosition(vertical, horizontal));
                     System.out.print(chessPiece.getTeamColor() == ChessGame.TeamColor.WHITE ?
@@ -99,12 +103,19 @@ public class BoardPrinter {
         System.out.println();
     }
 
-    private static void setSquareColor(int columnEven, int rowEven, int flip) {
+    private void setSquareColor(int columnEven, int rowEven, int flip, int row, int column) {
         if (columnEven == flip && rowEven == flip || columnEven != flip && rowEven != flip){
-            System.out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+            System.out.print(EscapeSequences.SET_BG_COLOR_DARK_GREY);
         }
         else{
-            System.out.print(EscapeSequences.SET_BG_COLOR_WHITE);
+            System.out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        }
+        if (highlightMoves != null) {
+            for (ChessMove move : highlightMoves) {
+                if (move.getEndPosition().getRow() == row && move.getEndPosition().getColumn() == column) {
+                    System.out.print(EscapeSequences.SET_BG_COLOR_YELLOW);
+                }
+            }
         }
     }
 

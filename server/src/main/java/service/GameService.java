@@ -27,6 +27,14 @@ public class GameService {
     public CreateGameResult createGame(String authToken, CreateGameRequest createGameRequest) throws DataAccessException {
         authDAO.getAuthToken(authToken);
 
+        Collection<GameData> games = gameDAO.getAllGames();
+
+        for (GameData game : games){
+            if (gameIDCounter < game.gameID()){
+                gameIDCounter = game.gameID();
+            }
+        }
+
         gameIDCounter++;
         GameData gameData = new GameData(gameIDCounter, null, null, createGameRequest.gameName(), new ChessGame());
         gameDAO.insertGame(gameData);

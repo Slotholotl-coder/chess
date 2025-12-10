@@ -95,6 +95,9 @@ public class ServerFacade {
     }
 
     public JoinGameResult joinGame(JoinGameRequest joinGameRequest) throws Exception {
+        if (displayedGameList == null || displayedGameList.isEmpty()){
+            handleErrors("type list");
+        }
         int displayedID = displayedGameList.get(joinGameRequest.gameID()).gameID();
 
         JoinGameRequest joinGameRequestUpdated = new JoinGameRequest(joinGameRequest.playerColor(), displayedID);
@@ -161,6 +164,8 @@ public class ServerFacade {
             throw new Exception("Invalid authorization");
         } else if (error.contains("Invalid game number")) {
             throw new Exception("Invalid game number");
+        }else if (error.contains("Duplicate")) {
+            throw new Exception("Duplicate entry : try another username");
         } else {
             throw new Exception("Server Error, please try again");
         }

@@ -75,7 +75,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         gameDAO.updateGame(gameData);
 
         ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-        serverMessage.setMessage(userGameCommand.getUsername() + "resigned");
+        serverMessage.setMessage(userGameCommand.getUsername() + " resigned");
         serverMessage.setGameOver(true);
         websocketConnectionManager.broadcast(userGameCommand.getGameID(), null, serverMessage);
     }
@@ -135,13 +135,13 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             gameDAO.updateGame(gameData);
 
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-            serverMessage.setMessage(makeMoveCommand.getUsername() + makeMoveCommand.getChessMove().toString());
+            serverMessage.setMessage(makeMoveCommand.getUsername() + " " + makeMoveCommand.getChessMove().toString());
             websocketConnectionManager.broadcast(makeMoveCommand.getGameID(), session, serverMessage);
 
             ServerMessage updateGameMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
             updateGameMessage.setChessGame(gameData.game());
 
-            websocketConnectionManager.broadcast(makeMoveCommand.getGameID(), null, updateGameMessage);
+
 
             ServerMessage checkMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
 
@@ -149,14 +149,19 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                     ChessGame.TeamColor.WHITE : ChessGame.TeamColor.BLACK;
             if (gameData.game().isInCheckmate(oppositeTeamColor)){
                 checkMessage.setMessage(oppositeTeamColor + " is in checkmate.\nGood game!");
+                updateGameMessage.setGameOver(true);
             } else if (gameData.game().isInCheck(oppositeTeamColor)) {
                 checkMessage.setMessage(oppositeTeamColor + " is in check");
+                updateGameMessage.setGameOver(true);
             } else if (gameData.game().isInStalemate(oppositeTeamColor)) {
                 checkMessage.setMessage(oppositeTeamColor + " is in stalemate.\nGood game!");
+                updateGameMessage.setGameOver(true);
             }
             if (checkMessage.getMessage() != null) {
                 websocketConnectionManager.broadcast(makeMoveCommand.getGameID(), null, checkMessage);
             }
+
+            websocketConnectionManager.broadcast(makeMoveCommand.getGameID(), null, updateGameMessage);
 
         } catch (InvalidMoveException | DataAccessException e){
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
