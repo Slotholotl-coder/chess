@@ -211,21 +211,6 @@ public class ServerFacade {
         }
     }
 
-    public void resign(){
-        try {
-            UserGameCommand userGameCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
-            userGameCommand.setUsername(username);
-            userGameCommand.setTeamColor(teamColor);
-            websocketClient.send(serializer.toJson(userGameCommand));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void sendResigned(boolean resigned){
-        gameUI.updateResign(resigned);
-    }
-
     public void sendLoadGame(ChessGame chessGame){
         gameUI.updateGame(chessGame);
     }

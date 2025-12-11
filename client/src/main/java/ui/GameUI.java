@@ -24,7 +24,6 @@ public class GameUI {
     Scanner scanner;
 
     boolean isObserver;
-    boolean resigned;
 
     public GameUI(ServerFacade serverFacade, ChessGame chessGame, ChessGame.TeamColor teamColor, boolean isObserver){
         this.serverFacade = serverFacade;
@@ -43,13 +42,12 @@ public class GameUI {
             System.out.println("Game\n Enter a command please:\n");
             String command = scanner.nextLine();
 
-            if (!isObserver && !resigned) {
+            if (!isObserver) {
                 switch (command) {
                     case "make move", "move":
                         makeMove();
                         break;
                     case "resign":
-                        resign();
                         break;
                 }
             }
@@ -58,7 +56,6 @@ public class GameUI {
                     displayHelpMenu();
                     break;
                 case "redraw chess board", "redraw":
-                    updateBoard();
                     break;
                 case "highlight legal moves", "highlight":
                     break;
@@ -67,14 +64,6 @@ public class GameUI {
                     running = false;
                     break;
             }
-        }
-    }
-
-    private void resign(){
-        System.out.println("Are you sure? yes or no");
-        String response = scanner.nextLine();
-        if (response == "yes"){
-            serverFacade.resign();
         }
     }
 
@@ -178,10 +167,6 @@ public class GameUI {
             this.chessGame = chessGame;
         }
         updateBoard();
-    }
-
-    public void updateResign(boolean gameOver){
-        resigned = gameOver;
     }
 
     private void leave(){

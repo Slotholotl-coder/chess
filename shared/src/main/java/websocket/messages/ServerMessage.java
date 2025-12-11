@@ -15,11 +15,7 @@ public class ServerMessage {
 
     String message;
 
-    String errorMessage;
-
-    ChessGame game;
-
-    boolean gameOver = false;
+    ChessGame chessGame;
 
     public enum ServerMessageType {
         LOAD_GAME,
@@ -39,28 +35,16 @@ public class ServerMessage {
         this.message = message;
     }
 
-    public void setGameOver(boolean bool){
-        gameOver = bool;
-    }
-
-    public boolean getGameOver(){
-        return gameOver;
-    }
-
     public String getMessage(){
         return message;
     }
 
-    public void setErrorMessage(String message){
-        errorMessage = message;
-    }
-
-    public void setChessGame(ChessGame game){
-        this.game = game;
+    public void setChessGame(ChessGame chessGame){
+        this.chessGame = chessGame;
     }
 
     public ChessGame getChessGame(){
-        return game;
+        return chessGame;
     }
 
     @Override

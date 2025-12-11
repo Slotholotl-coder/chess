@@ -3,7 +3,6 @@ package server;
 import chess.ChessGame;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
-import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import io.javalin.websocket.*;
@@ -24,11 +23,9 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private final Gson serializer = new Gson();
 
     GameDAO gameDAO;
-    AuthDAO authDAO;
 
-    public WebsocketHandler(GameDAO gameDAO, AuthDAO authDAO){
+    public WebsocketHandler(GameDAO gameDAO){
         this.gameDAO = gameDAO;
-        this.authDAO = authDAO;
     }
 
     @Override
@@ -43,18 +40,14 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         try {
             UserGameCommand userGameCommand = serializer.fromJson(wsMessageContext.message(), UserGameCommand.class);
 
-            authDAO.getAuthToken(userGameCommand.getAuthToken());
-
             switch (userGameCommand.getCommandType()){
                 case CONNECT -> connect(userGameCommand, session, wsMessageContext);
                 case LEAVE -> leave(userGameCommand, session, wsMessageContext);
                 case MAKE_MOVE -> makeMove(session, wsMessageContext);
-                case RESIGN -> resign(userGameCommand);
             }
-        } catch(Exception e){
-            ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-            errorMessage.setErrorMessage("error " + e.getMessage());
-            wsMessageContext.send(serializer.toJson(errorMessage, ServerMessage.class));
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -63,48 +56,46 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         System.out.println("Disconnected");
     }
 
-    private void resign(UserGameCommand userGameCommand) throws IOException {
-        if (userGameCommand.getUsername() == null){
-            throw new IOException();
-        }
-        ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-        serverMessage.setMessage(userGameCommand.getUsername() + "resigned");
-        serverMessage.setGameOver(true);
-        websocketConnectionManager.broadcast(userGameCommand.getGameID(), null, serverMessage);
-    }
-
-    private void connect(UserGameCommand userGameCommand, Session session, WsMessageContext wsMessageContext) throws DataAccessException, IOException {
+    private void connect(UserGameCommand userGameCommand, Session session, WsMessageContext wsMessageContext){
         websocketConnectionManager.add(userGameCommand.getGameID(), session);
-        ServerMessage loadGame = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
-        loadGame.setChessGame(gameDAO.getGame(userGameCommand.getGameID()).game());
-        wsMessageContext.send(serializer.toJson(loadGame, ServerMessage.class));
+        wsMessageContext.send(serializer.toJson(new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME), ServerMessage.class));
 
-        ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-        if (userGameCommand.getTeamColor() != null) {
-            serverMessage.setMessage(userGameCommand.getUsername() + " joined the game as " + userGameCommand.getTeamColor());
-        } else {
-            serverMessage.setMessage(userGameCommand.getUsername() + " is observing");
+        try {
+            ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            if (userGameCommand.getTeamColor() != null) {
+                serverMessage.setMessage(userGameCommand.getUsername() + " joined the game as " + userGameCommand.getTeamColor());
+            } else {
+                serverMessage.setMessage(userGameCommand.getUsername() + " is observing");
+            }
+            websocketConnectionManager.broadcast(userGameCommand.getGameID(), wsMessageContext.session, serverMessage);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        websocketConnectionManager.broadcast(userGameCommand.getGameID(), wsMessageContext.session, serverMessage);
     }
 
-    private void leave(UserGameCommand userGameCommand, Session session, WsMessageContext wsMessageContext) throws DataAccessException, IOException {
-        GameData gameData = gameDAO.getGame(userGameCommand.getGameID());
-        ChessGame.TeamColor teamColor = getTeamColor(userGameCommand.getTeamColor());
-        GameData updatedGameData;
-        if (teamColor == ChessGame.TeamColor.BLACK){
-            updatedGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), null, gameData.gameName(), gameData.game());
-        } else {
-            updatedGameData = new GameData(gameData.gameID(), null, gameData.blackUsername(), gameData.gameName(), gameData.game());
+    private void leave(UserGameCommand userGameCommand, Session session, WsMessageContext wsMessageContext){
+        try {
+            GameData gameData = gameDAO.getGame(userGameCommand.getGameID());
+            ChessGame.TeamColor teamColor = getTeamColor(userGameCommand.getTeamColor());
+            GameData updatedGameData;
+            if (teamColor == ChessGame.TeamColor.BLACK){
+                updatedGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), null, gameData.gameName(), gameData.game());
+            } else {
+                updatedGameData = new GameData(gameData.gameID(), null, gameData.blackUsername(), gameData.gameName(), gameData.game());
+            }
+
+            gameDAO.updateGame(updatedGameData);
+
+            ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+            serverMessage.setMessage(userGameCommand.getUsername() + " left");
+            websocketConnectionManager.broadcast(userGameCommand.getGameID(), session, serverMessage);
+            wsMessageContext.closeSession();
+            websocketConnectionManager.remove(userGameCommand.getGameID(), session);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+
         }
-
-        gameDAO.updateGame(updatedGameData);
-
-        ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-        serverMessage.setMessage(userGameCommand.getUsername() + " left");
-        websocketConnectionManager.broadcast(userGameCommand.getGameID(), session, serverMessage);
-        wsMessageContext.closeSession();
-        websocketConnectionManager.remove(userGameCommand.getGameID(), session);
     }
 
     private static ChessGame.TeamColor getTeamColor(String teamColor) {
@@ -145,7 +136,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             }
 
         } catch (InvalidMoveException | DataAccessException e){
-            ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+            ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
             serverMessage.setMessage("Invalid move");
             wsMessageContext.send(serializer.toJson(serverMessage, ServerMessage.class));
         }
