@@ -80,7 +80,8 @@ public class PostLoginUi {
 
     private void listGames(){
         try {
-            serverFacade.listGames();
+            ListGamesResult listGamesResult = serverFacade.listGames();
+            System.out.println(listGamesResult.toString());
         } catch (Exception e) {
             printError(e);
         }
