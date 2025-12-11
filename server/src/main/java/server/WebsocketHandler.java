@@ -7,7 +7,6 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import io.javalin.websocket.*;
-import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
@@ -64,16 +63,10 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         System.out.println("Disconnected");
     }
 
-    private void resign(UserGameCommand userGameCommand) throws IOException, DataAccessException {
-        GameData gameData = gameDAO.getGame(userGameCommand.getGameID());
-        if (gameData.game().isGameOver() || (
-                !Objects.equals(authDAO.getAuthToken(userGameCommand.getAuthToken()).username(), gameData.blackUsername()) &&
-                !Objects.equals(authDAO.getAuthToken(userGameCommand.getAuthToken()).username(), gameData.whiteUsername()))){
-            throw new DataAccessException("You can't resign");
+    private void resign(UserGameCommand userGameCommand) throws IOException {
+        if (userGameCommand.getUsername() == null){
+            throw new IOException();
         }
-        gameData.game().setGameOver(true);
-        gameDAO.updateGame(gameData);
-
         ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
         serverMessage.setMessage(userGameCommand.getUsername() + "resigned");
         serverMessage.setGameOver(true);
@@ -123,13 +116,6 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         try {
 
             GameData gameData = gameDAO.getGame(makeMoveCommand.getGameID());
-            ChessGame.TeamColor teamColor = gameDAO.getGame(makeMoveCommand.getGameID()).game().getTeamTurn();
-            if (gameData.game().isGameOver() ||
-                    !Objects.equals(authDAO.getAuthToken(makeMoveCommand.getAuthToken()).username(),
-                    teamColor == ChessGame.TeamColor.BLACK ? gameData.blackUsername() : gameData.whiteUsername())){
-                throw new DataAccessException("Not your turn");
-            }
-
             gameData.game().makeMove(makeMoveCommand.getChessMove());
 
             gameDAO.updateGame(gameData);
@@ -160,7 +146,7 @@ public class WebsocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
         } catch (InvalidMoveException | DataAccessException e){
             ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-            serverMessage.setErrorMessage(e.getMessage() == null ? "Invalid move" : e.getMessage());
+            serverMessage.setMessage("Invalid move");
             wsMessageContext.send(serializer.toJson(serverMessage, ServerMessage.class));
         }
     }
