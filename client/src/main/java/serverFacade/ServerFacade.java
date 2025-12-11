@@ -1,4 +1,4 @@
-package serverfacade;
+package serverFacade;
 
 import chess.ChessGame;
 import chess.ChessMove;

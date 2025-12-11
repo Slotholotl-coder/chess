@@ -1,4 +1,4 @@
-package serverfacade;
+package serverFacade;
 
 import com.google.gson.Gson;
 import websocket.messages.ServerMessage;
